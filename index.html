@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1226">
+  <title>TeaTime</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body data-route="tv">
+
+  <!-- Review aid: jump to any screen (wide screens only) -->
+  <nav class="flow-nav" aria-label="Onboarding screens">
+    <p class="flow-nav-title">Onboarding v2.1</p>
+    <p class="flow-nav-group">A · At the TV</p>
+    <a href="#tv">TV · Scan to send photos</a>
+    <a href="#a1">A1 · Sign in</a>
+    <a href="#a2">A2 · Photo access</a>
+    <a href="#a3">A3 · Moments found</a>
+    <a href="#a4">A4 · Home, moments arriving</a>
+    <a href="#a5">A5 · Home, all in</a>
+    <a href="#a6">A6 · Home, after “Choose my own”</a>
+    <p class="flow-nav-group">B · From an ad</p>
+    <a href="#b1">B1 · Sign in</a>
+    <a href="#b-a2">B · Photo access</a>
+    <a href="#b2">B2 · Keep these</a>
+    <a href="#b3">B3 · Which TV</a>
+    <a href="#b4">B4 · TV in front of me</a>
+    <a href="#b5">B5 · TV somewhere else</a>
+    <a href="#b6">B6 · Set-up message</a>
+    <a href="#b7">B7 · Home, waiting</a>
+    <a href="#b8">B8 · Home, connected</a>
+    <p class="flow-nav-group">Sign-in details</p>
+    <a href="#c1">C1 · Phone number</a>
+    <a href="#c2">C2 · Enter the code</a>
+    <a href="#c3">C3 · Your name</a>
+    <p class="flow-nav-group">Photo details</p>
+    <a href="#photos-off">Photo access limited or off</a>
+    <a href="#all-photos">All 128 photos</a>
+    <a href="#picker">Choose my own · picker</a>
+    <a href="#moment">New moment · caption</a>
+    <p class="flow-nav-group">D · Skipped everything</p>
+    <a href="#d1">D1 · Home, nothing shared</a>
+    <a href="#d3">D3 · Shared, connect a TV</a>
+    <a href="#d4">D4 · Home, waiting for a TV</a>
+    <a href="#d5">D5 · TV connected, invite</a>
+  </nav>
+
+  <!-- TV: path A starts here -->
+  <section class="tv-stage" data-screen="tv" aria-labelledby="tv-title">
+    <div class="tv">
+      <div class="tv-screen">
+        <div class="tv-glow purple"></div>
+        <div class="tv-glow coral"></div>
+        <div class="tv-header">
+          <img class="tv-logo" src="assets/tv-logo.svg" alt="">
+          <span>TeaTime</span>
+        </div>
+        <button class="qr-card" type="button" data-go="a1" aria-label="Scan the code with your phone">
+          <span class="qr-finder" style="left:calc(23.79*var(--u));top:calc(23.79*var(--u))"></span>
+          <span class="qr-finder" style="left:calc(179.16*var(--u));top:calc(23.79*var(--u))"></span>
+          <span class="qr-finder" style="left:calc(23.79*var(--u));top:calc(179.16*var(--u))"></span>
+          <img class="qr-dots" src="assets/qr-dots.svg" alt="">
+          <span class="qr-bracket" style="left:calc(13.17*var(--u));top:calc(13.17*var(--u))"><img src="assets/qr-bracket-tl.svg" alt=""></span>
+          <span class="qr-bracket" style="left:calc(213.25*var(--u));top:calc(13.17*var(--u))"><img src="assets/qr-bracket-tr.svg" alt=""></span>
+          <span class="qr-bracket" style="left:calc(13.17*var(--u));top:calc(213.25*var(--u))"><img src="assets/qr-bracket-bl.svg" alt=""></span>
+          <span class="qr-bracket" style="left:calc(213.25*var(--u));top:calc(213.25*var(--u))"><img src="assets/qr-bracket-br.svg" alt=""></span>
+        </button>
+        <div class="tv-left">
+          <div class="tv-text">
+            <h1 id="tv-title" class="tv-title" tabindex="-1">Scan to send photos<br>to this TV</h1>
+            <p class="tv-sub">Point your phone camera at the code.</p>
+          </div>
+          <button class="tv-btn" type="button" data-todo="Typing a family code on the TV">
+            <img src="assets/icon-chevron-left-tv.svg" alt="">
+            <span>Got a code from family?</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <p class="tv-caption">This is the TV. Tap the code to scan it with the phone.</p>
+    <a class="tv-alt" href="#b1">Start from an ad instead</a>
+  </section>
+
+  <!-- Phone -->
+  <main class="device">
+
+    <!-- A1 · Sign in (also B1 with different copy) -->
+    <section class="screen" data-screen="a1" hidden aria-labelledby="a1-title">
+      <div class="hero"><img src="assets/hero-photo.png" alt="" decoding="async"></div>
+      <div class="hero-fade"></div>
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="body body-end">
+          <h1 id="a1-title" class="display" tabindex="-1">Send photos<br>to this TV.</h1>
+          <p class="body-small">Sign in and your best moments play in seconds.</p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-apple" type="button" data-signin="apple"><span class="mark mark-apple"><img src="assets/brand-apple.svg" alt=""></span><span data-label>Continue with Apple</span></button>
+          <button class="btn btn-google" type="button" data-signin="google"><span class="mark mark-google"><img src="assets/brand-google.svg" alt=""></span><span data-label>Continue with Google</span></button>
+          <button class="btn btn-secondary" type="button" data-go="c1">Continue with phone number</button>
+          <p class="legal">By continuing you agree to the Terms of Use and Privacy Policy.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="b1" hidden aria-labelledby="b1-title">
+      <div class="hero"><img src="assets/hero-photo.png" alt="" decoding="async"></div>
+      <div class="hero-fade"></div>
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="body body-end">
+          <h1 id="b1-title" class="display" tabindex="-1">Your photos,<br>on their TV.</h1>
+          <p class="body-small">The best of your year, playing for the people you love.</p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-apple" type="button" data-signin="apple"><span class="mark mark-apple"><img src="assets/brand-apple.svg" alt=""></span><span data-label>Continue with Apple</span></button>
+          <button class="btn btn-google" type="button" data-signin="google"><span class="mark mark-google"><img src="assets/brand-google.svg" alt=""></span><span data-label>Continue with Google</span></button>
+          <button class="btn btn-secondary" type="button" data-go="c1">Continue with phone number</button>
+          <p class="legal">By continuing you agree to the Terms of Use and Privacy Policy.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sign-in sheets: the phone's own Apple / Google sheets over A1 or B1 -->
+    <div class="sheet-layer" data-sheet="apple" hidden>
+      <div class="sheet-dim" data-sheet-close></div>
+      <div class="system-sheet" role="dialog" aria-modal="true" aria-labelledby="apple-sheet-title">
+        <span class="sheet-grabber" aria-hidden="true"></span>
+        <div class="sheet-header"><img src="assets/sheet-apple.svg" alt="" width="24" height="24"><span>Sign in with Apple</span></div>
+        <h2 id="apple-sheet-title" class="sheet-title">Sign in to TeaTime with your Apple Account</h2>
+        <p class="sheet-sub">Create an account for TeaTime using your Apple Account “sarah@icloud.com”.</p>
+        <div class="sheet-form">
+          <div class="sheet-row"><span class="sheet-key">Name</span><span class="sheet-value">Sarah Johnson</span></div>
+          <span class="sheet-divider"></span>
+          <div class="sheet-row" role="radiogroup" aria-label="Email">
+            <span class="sheet-key">Email</span>
+            <span class="sheet-options">
+              <button class="sheet-option" type="button" role="radio" aria-checked="true" data-email-option>
+                <span class="sheet-option-text"><span>Share My Email</span><small>sarah@icloud.com</small></span>
+                <span class="sheet-check"></span>
+              </button>
+              <button class="sheet-option" type="button" role="radio" aria-checked="false" data-email-option>
+                <span class="sheet-option-text"><span>Hide My Email</span><small>Forward to sarah@icloud.com</small></span>
+                <span class="sheet-check"></span>
+              </button>
+            </span>
+          </div>
+        </div>
+        <button class="sheet-primary" type="button" data-sheet-confirm="apple">Continue with Face ID</button>
+      </div>
+    </div>
+
+    <div class="sheet-layer" data-sheet="google" hidden>
+      <div class="sheet-dim" data-sheet-close></div>
+      <div class="system-sheet" role="dialog" aria-modal="true" aria-labelledby="google-sheet-title">
+        <span class="sheet-grabber" aria-hidden="true"></span>
+        <div class="sheet-header"><img src="assets/sheet-google.svg" alt="" width="24" height="24"><span>Sign in with Google</span></div>
+        <h2 id="google-sheet-title" class="sheet-title google">Choose an account</h2>
+        <p class="sheet-sub google">to continue to TeaTime</p>
+        <div class="sheet-accounts">
+          <button class="sheet-account" type="button" data-sheet-confirm="google">
+            <span class="sheet-avatar" style="background:#7c4dff">S</span>
+            <span class="sheet-account-text"><span>Sarah Johnson</span><small>sarah@johnsons.com</small></span>
+          </button>
+          <span class="sheet-divider"></span>
+          <button class="sheet-account" type="button" data-sheet-confirm="google">
+            <span class="sheet-avatar" style="background:#00897b">S</span>
+            <span class="sheet-account-text"><span>Sarah Johnson (work)</span><small>sarah.j@brightwell.com.au</small></span>
+          </button>
+          <span class="sheet-divider"></span>
+          <button class="sheet-account" type="button" data-sheet-confirm="google">
+            <span class="sheet-avatar add">+</span>
+            <span class="sheet-account-text"><span>Use another account</span></span>
+          </button>
+        </div>
+        <p class="sheet-legal">To continue, Google will share your name, email address and profile picture with TeaTime. See TeaTime’s Privacy Policy and Terms of Use.</p>
+      </div>
+    </div>
+
+    <!-- C1 · Phone number -->
+    <section class="screen" data-screen="c1" hidden aria-labelledby="c1-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <form class="content" id="phone-form" novalidate>
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-back aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body">
+          <h1 id="c1-title" class="title1" tabindex="-1">What’s your mobile number?</h1>
+          <p class="body-small">We will text you a code. No password to remember.</p>
+          <span class="spacer spacer-8"></span>
+          <label class="field">
+            <span class="field-label">Mobile number</span>
+            <input class="field-box" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+61 412 345 678" enterkeyhint="send" data-autofocus>
+          </label>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit" disabled>Send code</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- C2 · Enter the code -->
+    <section class="screen" data-screen="c2" hidden aria-labelledby="c2-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <form class="content" id="code-form" novalidate>
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="c1" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body">
+          <h1 id="c2-title" class="title1" tabindex="-1">Enter the code</h1>
+          <p class="body-small" data-sent-to>Sent to +61 412 345 678</p>
+          <span class="spacer spacer-8"></span>
+          <label class="code-input">
+            <span class="sr-only">6-digit code</span>
+            <input name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" data-autofocus>
+            <span class="code-box"></span><span class="code-box"></span><span class="code-box"></span>
+            <span class="code-box"></span><span class="code-box"></span><span class="code-box"></span>
+          </label>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit" disabled>Continue</button>
+          <p class="link-row"><span>Didn’t get a code?</span><button type="button" data-resend>Send again</button></p>
+        </div>
+      </form>
+    </section>
+
+    <!-- C3 · Your name (new numbers only) -->
+    <section class="screen" data-screen="c3" hidden aria-labelledby="c3-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <form class="content" id="name-form" novalidate>
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="c2" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body">
+          <h1 id="c3-title" class="title1" tabindex="-1">What’s your name?</h1>
+          <p class="body-small">It shows next to the moments you share.</p>
+          <span class="spacer spacer-8"></span>
+          <label class="field">
+            <span class="field-label">First name</span>
+            <input class="field-box" name="first" type="text" autocomplete="given-name" autocapitalize="words" enterkeyhint="next" maxlength="30" data-autofocus>
+          </label>
+          <label class="field">
+            <span class="field-label">Last name</span>
+            <input class="field-box" name="last" type="text" autocomplete="family-name" autocapitalize="words" enterkeyhint="done" maxlength="30">
+          </label>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit" disabled>Continue</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- A2 · Photo access (the phone's own prompt) -->
+    <section class="screen" data-screen="a2" hidden aria-labelledby="a2-alert-title">
+      <div class="content">
+        <div class="finding">
+          <p class="display">Finding your<br>best moments</p>
+          <p class="body-small">From the last 12 months on this phone.</p>
+        </div>
+      </div>
+      <div class="scrim"></div>
+      <div class="system-alert" role="alertdialog" aria-labelledby="a2-alert-title" aria-describedby="a2-alert-body">
+        <div class="system-alert-text">
+          <h1 id="a2-alert-title" tabindex="-1">“TeaTime” Would Like to Access Your Photos</h1>
+          <p id="a2-alert-body">TeaTime picks the best moments of your year to play on the TV.</p>
+        </div>
+        <button type="button" data-go="photos-off">Limit Access…</button>
+        <button type="button" class="strong" data-go="a3" data-allow>Allow Full Access</button>
+        <button type="button" data-go="photos-off">Don’t Allow</button>
+      </div>
+    </section>
+
+    <!-- A3 · Moments found — Send now -->
+    <section class="screen" data-screen="a3" hidden aria-labelledby="a3-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <span class="top-bar-spacer"></span>
+          <button class="top-bar-action" type="button" data-go="d1">Skip</button>
+        </div>
+        <div class="body">
+          <h1 id="a3-title" class="display" tabindex="-1">128 photos<br>from your year</h1>
+          <p class="body-small">Grouped into 27 moments by date. Watch them arrive on this TV.</p>
+          <div class="moments-grid" data-grid></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-go="a4">Send now</button>
+          <button class="btn btn-tertiary" type="button" data-picker>Choose my own</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- B2 · Moments found — Keep these -->
+    <section class="screen" data-screen="b2" hidden aria-labelledby="b2-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <span class="top-bar-spacer"></span>
+          <button class="top-bar-action" type="button" data-go="d1">Skip</button>
+        </div>
+        <div class="body">
+          <h1 id="b2-title" class="display" tabindex="-1">128 photos<br>from your year</h1>
+          <p class="body-small">Grouped into 27 moments by date. Saved until a TV is connected.</p>
+          <div class="moments-grid" data-grid></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-go="b3">Keep these</button>
+          <button class="btn btn-tertiary" type="button" data-picker>Choose my own</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- B3 · Which TV -->
+    <section class="screen" data-screen="b3" hidden aria-labelledby="b3-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <span class="top-bar-spacer"></span>
+          <button class="top-bar-action" type="button" data-tv-later>Later</button>
+        </div>
+        <div class="body">
+          <h1 id="b3-title" class="title1" tabindex="-1">Where should they play?</h1>
+          <span class="spacer"></span>
+          <button class="choice-row" type="button" data-go="b4">
+            <span class="choice-text">
+              <span class="choice-title">A TV in front of me</span>
+              <span class="choice-sub">At home, at Mum’s, in her room</span>
+            </span>
+            <img src="assets/icon-chevron-right.svg" alt="" width="24" height="24">
+          </button>
+          <button class="choice-row" type="button" data-go="b5">
+            <span class="choice-text">
+              <span class="choice-title">A TV somewhere else</span>
+              <span class="choice-sub">Send set-up by message</span>
+            </span>
+            <img src="assets/icon-chevron-right.svg" alt="" width="24" height="24">
+          </button>
+        </div>
+        <div class="actions actions-empty"></div>
+      </div>
+    </section>
+
+    <!-- B4 · Connect — TV in front of me -->
+    <section class="screen" data-screen="b4" hidden aria-labelledby="b4-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="b3" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+          <button class="top-bar-action" type="button" data-tv-later>Later</button>
+        </div>
+        <div class="body">
+          <h1 id="b4-title" class="title1" tabindex="-1">Open TeaTime<br>on the TV</h1>
+          <span class="spacer"></span>
+          <ol class="steps">
+            <li><span class="step-num">1</span><span>Open the TV’s app store and search TeaTime</span></li>
+            <li><span class="step-num">2</span><span>Open it. A code appears on the screen</span></li>
+            <li><span class="step-num">3</span><span>Scan the code with this phone</span></li>
+          </ol>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-tv-scan>Scan the TV’s code</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- B5 · Add another TV — somewhere else -->
+    <section class="screen" data-screen="b5" hidden aria-labelledby="b5-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <form class="content" id="setup-form" novalidate>
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="b3" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body">
+          <h1 id="b5-title" class="title1" tabindex="-1">Add another TV</h1>
+          <p class="body-small">We write the steps. You send them.</p>
+          <span class="spacer"></span>
+          <label class="field">
+            <span class="field-label">Who is it for? (optional)</span>
+            <input class="field-box" name="who" type="text" value="Mum" autocomplete="off" autocapitalize="words" enterkeyhint="next" maxlength="30">
+          </label>
+          <label class="field">
+            <span class="field-label">Their TV</span>
+            <select class="field-box" name="tv">
+              <option>Google TV</option>
+              <option>Android TV</option>
+              <option>Amazon Fire TV</option>
+              <option>Apple TV</option>
+            </select>
+          </label>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Send set-up</button>
+          <p class="legal">One subscription, every TV.</p>
+        </div>
+      </form>
+    </section>
+
+    <!-- B6 · Set-up message -->
+    <section class="screen" data-screen="b6" hidden aria-labelledby="b6-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="b5" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body">
+          <h1 id="b6-title" class="title1" tabindex="-1" data-b6-title>Send this to Mum</h1>
+          <p class="body-small">The code works for 7 days. You can send it again.</p>
+          <span class="spacer"></span>
+          <div class="message-card" data-message></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-share>Share message</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · Photo access limited or off -->
+    <section class="screen" data-screen="photos-off" hidden aria-labelledby="photos-off-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <span class="top-bar-spacer"></span>
+          <button class="top-bar-action" type="button" data-go="d1">Skip</button>
+        </div>
+        <div class="body">
+          <h1 id="photos-off-title" class="title1" tabindex="-1">We can’t see<br>your photos yet</h1>
+          <p class="body-small">Allow access and we will find the best of your year. Or pick a few yourself.</p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-photos-found>Allow photo access</button>
+          <button class="btn btn-secondary" type="button" data-picker>Pick photos myself</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · All 128 photos (from the “+120” tile) -->
+    <section class="screen" data-screen="all-photos" hidden aria-labelledby="all-photos-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-photos-found aria-label="Back without changes"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body body-tight">
+          <h1 id="all-photos-title" class="title1" tabindex="-1">128 photos</h1>
+          <p class="body-small">Tap a photo to leave it out.</p>
+          <span class="spacer spacer-8"></span>
+          <div data-all-photos></div>
+        </div>
+        <div class="actions actions-top">
+          <button class="btn btn-primary" type="button" data-all-confirm>Send 128 photos</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · Choose my own — the app's photo picker (same as “+”) -->
+    <section class="screen picker" data-screen="picker" hidden aria-labelledby="picker-title">
+      <div class="content">
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-picker-close aria-label="Close"><img src="assets/icon-close.svg" alt="" width="24" height="24"></button>
+          <h1 id="picker-title" class="top-bar-title" tabindex="-1">New moment</h1>
+          <span class="top-bar-end"></span>
+        </div>
+        <div class="picker-preview">
+          <img alt="" data-picker-preview>
+          <span class="picker-counter" data-picker-counter></span>
+        </div>
+        <div class="picker-controls">
+          <button class="album-pill" type="button" data-todo="Other albums">Recents<img src="assets/icon-chevron-down-16.svg" alt="" width="16" height="16"></button>
+          <span class="top-bar-spacer"></span>
+          <button class="select-many" type="button" aria-pressed="true" aria-label="Select many" data-todo="Picking one photo at a time"><img src="assets/icon-circle-check.svg" alt="" width="20" height="20"></button>
+        </div>
+        <div class="picker-grid" data-picker-grid></div>
+      </div>
+      <button class="btn btn-primary picker-next" type="button" data-picker-next disabled>Next</button>
+    </section>
+
+    <!-- 2 · New moment — caption optional (same screen as sharing from “+”) -->
+    <section class="screen" data-screen="moment" hidden aria-labelledby="moment-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <form class="content" id="moment-form" novalidate>
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="picker" aria-label="Back to photos"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <h1 id="moment-title" class="top-bar-title" tabindex="-1">New moment</h1>
+          <span class="top-bar-end"></span>
+        </div>
+        <div class="body moment-main">
+          <div class="moment-preview">
+            <img alt="" data-moment-preview>
+            <span class="page-counter" data-moment-counter>1/3</span>
+          </div>
+          <label class="caption-field">
+            <span class="sr-only">Caption (optional)</span>
+            <textarea name="caption" rows="1" placeholder="Write a caption…" maxlength="200" enterkeyhint="done"></textarea>
+          </label>
+          <button class="share-to" type="button" data-todo="Choosing another group">
+            <span class="share-to-avatar"><img src="assets/icon-users-choose.svg" alt="" width="18" height="18"></span>
+            <span class="share-to-text"><small>Sharing to</small><span>Your moments</span><small>Just you for now</small></span>
+            <img src="assets/icon-chevron-right-choose.svg" alt="" width="20" height="20">
+          </button>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary btn-glass-edge" type="submit">Share</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- D1 · Home — nothing shared yet (signed in, skipped photos and the TV) -->
+    <section class="screen" data-screen="d1" hidden aria-labelledby="d1-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="home-header">
+        <div class="home-title-row">
+          <h1 id="d1-title" class="home-title" tabindex="-1">Your moments</h1>
+          <button type="button" aria-label="Switch group" data-todo="Switching groups"><img src="assets/icon-chevron-down.svg" alt=""></button>
+        </div>
+        <div class="home-status-row">
+          <button class="tv-chip" type="button" data-go="b3"><img src="assets/status-dot-grey.svg" alt="">No TV yet</button>
+          <span class="members">·  Just you</span>
+        </div>
+      </div>
+      <div class="empty-home">
+        <p class="title1">Share your first moment</p>
+        <p class="body-small">What you share plays on the family TV.</p>
+        <span class="spacer spacer-16"></span>
+        <button class="btn btn-primary btn-glass-edge" type="button" data-picker>Share a moment</button>
+      </div>
+      <nav class="nav-pill" aria-label="Main">
+        <button class="nav-item" type="button" aria-label="Home" aria-current="page"><img src="assets/nav-home.svg" alt=""></button>
+        <button class="nav-item" type="button" aria-label="Family" data-todo="Family"><img src="assets/nav-users.svg" alt=""></button>
+        <button class="nav-share" type="button" aria-label="Share a moment" data-picker><img src="assets/icon-plus.svg" alt=""></button>
+        <button class="nav-bell" type="button" aria-label="Notifications" data-todo="Notifications"><img class="bell" src="assets/icon-bell.svg" alt=""><img class="dot" src="assets/nav-active-dot.svg" alt=""></button>
+        <button class="nav-item" type="button" aria-label="Profile" data-todo="Profile"><img src="assets/nav-user.svg" alt=""></button>
+      </nav>
+    </section>
+
+    <!-- Home feed screens (A4–A6, B7, B8, D4, D5; D3 is D4 with a sheet) are built from one template in app.js -->
+
+    <div class="toast" role="status" aria-live="polite" hidden></div>
+  </main>
+</body>
+</html>
