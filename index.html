@@ -9,6 +9,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>
+    /* Colour option (review only): ?palette=1-4 in the link wins, then this browser's last pick. Runs before paint so there is no flash. */
+    (function () {
+      var p = new URLSearchParams(location.search).get("palette");
+      try { p = /^[1-4]$/.test(p) ? (localStorage.setItem("teatime.palette", p), p) : localStorage.getItem("teatime.palette"); } catch (e) {}
+      if (/^[2-4]$/.test(p)) document.documentElement.dataset.palette = p;
+    })();
+  </script>
   <script src="app.js" defer></script>
 </head>
 <body data-route="tv">
@@ -551,7 +559,7 @@
         <button class="btn btn-primary btn-glass-edge" type="button" data-picker>Share a moment</button>
       </div>
       <nav class="nav-pill" aria-label="Main">
-        <button class="nav-item" type="button" aria-label="Home" aria-current="page"><img src="assets/nav-home.svg" alt=""></button>
+        <button class="nav-item" type="button" aria-label="Home" aria-current="page"><span class="nav-icon-home" aria-hidden="true"></span></button>
         <button class="nav-item" type="button" aria-label="Family" data-todo="Family"><img src="assets/nav-users.svg" alt=""></button>
         <button class="nav-share" type="button" aria-label="Share a moment" data-picker><img src="assets/icon-plus.svg" alt=""></button>
         <button class="nav-bell" type="button" aria-label="Notifications" data-todo="Notifications"><img class="bell" src="assets/icon-bell.svg" alt=""><img class="dot" src="assets/nav-active-dot.svg" alt=""></button>

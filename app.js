@@ -85,7 +85,7 @@ function feedMarkup(id, f) {
         <div data-caption-slot>${caption}</div>
       </div>
       <nav class="nav-pill" aria-label="Main">
-        <button class="nav-item" type="button" aria-label="Home" aria-current="page"><img src="assets/nav-home.svg" alt=""></button>
+        <button class="nav-item" type="button" aria-label="Home" aria-current="page"><span class="nav-icon-home" aria-hidden="true"></span></button>
         <button class="nav-item" type="button" aria-label="Family" data-todo="Family"><img src="assets/nav-users.svg" alt=""></button>
         <button class="nav-share" type="button" aria-label="Share a moment" data-picker><img src="assets/icon-plus.svg" alt=""></button>
         <button class="nav-bell" type="button" aria-label="Notifications" data-todo="Notifications"><img class="bell" src="assets/icon-bell.svg" alt=""><img class="dot" src="assets/nav-active-dot.svg" alt=""></button>
@@ -611,8 +611,113 @@ async function shareInvite() {
   if (sent && navigator.share) toast("Invite sent");
 }
 
+/* ---------- Colour options (review only) ----------
+   Four CTA colour directions for the client to compare. Remove this block,
+   the head script in index.html and the palette CSS once one is chosen. */
+
+const PALETTES = [
+  { id: "1", name: "Brand gradient", sub: "Magenta to gold", theme: "#1a1226" },
+  { id: "2", name: "Strong blue", sub: "Blue actions, gradient for brand moments", theme: "#0e0c12" },
+  { id: "3", name: "Analogous", sub: "Violet to pink", theme: "#1a1226" },
+  { id: "4", name: "Logo gold", sub: "Gold actions, dark labels", theme: "#1a1226" },
+];
+let paletteSwitch;
+
+function currentPalette() {
+  return document.documentElement.dataset.palette || "1";
+}
+
+function setPalette(id) {
+  const p = PALETTES.find((x) => x.id === id) || PALETTES[0];
+  if (p.id === "1") delete document.documentElement.dataset.palette;
+  else document.documentElement.dataset.palette = p.id;
+  try { localStorage.setItem("teatime.palette", p.id); } catch {}
+  // Keep a shared link in step with what is on screen, without touching the screen's #route.
+  const url = new URL(location.href);
+  url.searchParams.set("palette", p.id);
+  history.replaceState(history.state, "", url);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", p.theme);
+  paintPaletteSwitch();
+  return p;
+}
+
+function paintPaletteSwitch() {
+  const id = currentPalette();
+  const p = PALETTES.find((x) => x.id === id);
+  paletteSwitch.querySelector("[data-palette-label]").textContent = `Colour ${p.id} · ${p.name}`;
+  paletteSwitch.querySelector("[data-palette-toggle]").setAttribute("aria-label", `Colour option: ${p.id}, ${p.name}. Change`);
+  paletteSwitch.querySelectorAll("[data-palette-option]").forEach((b) => {
+    b.setAttribute("aria-checked", String(b.dataset.paletteOption === id));
+  });
+}
+
+function openPalettePanel(open) {
+  const panel = paletteSwitch.querySelector("[data-palette-panel]");
+  const toggle = paletteSwitch.querySelector("[data-palette-toggle]");
+  panel.hidden = !open;
+  toggle.setAttribute("aria-expanded", String(open));
+  if (open) panel.querySelector('[aria-checked="true"]')?.focus();
+}
+
+function closePalettePanel() {
+  const panel = paletteSwitch?.querySelector("[data-palette-panel]");
+  if (!panel || panel.hidden) return false;
+  openPalettePanel(false);
+  paletteSwitch.querySelector("[data-palette-toggle]").focus();
+  return true;
+}
+
+function initPaletteSwitch() {
+  paletteSwitch = document.createElement("div");
+  paletteSwitch.className = "palette-switch";
+  paletteSwitch.innerHTML = `
+    <button class="palette-toggle" type="button" data-palette-toggle aria-expanded="false" aria-controls="palette-panel">
+      <span class="palette-swatch" aria-hidden="true"></span><span class="palette-toggle-label" data-palette-label></span>
+    </button>
+    <div class="palette-panel" id="palette-panel" data-palette-panel hidden>
+      <p class="palette-title" id="palette-title">Colour option</p>
+      <p class="palette-note">For review. We keep the one the client picks.</p>
+      <div role="radiogroup" aria-labelledby="palette-title">
+        ${PALETTES.map((p) => `
+          <button class="palette-option" type="button" role="radio" aria-checked="false" data-palette-option="${p.id}">
+            <span class="palette-swatch" data-palette="${p.id}" aria-hidden="true"></span>
+            <span class="palette-option-text"><b>${p.id} · ${p.name}</b><small>${p.sub}</small></span>
+            <img class="palette-check" src="assets/icon-circle-check.svg" alt="">
+          </button>`).join("")}
+      </div>
+    </div>`;
+  document.body.append(paletteSwitch);
+
+  paletteSwitch.addEventListener("click", (e) => {
+    if (e.target.closest("[data-palette-toggle]")) {
+      openPalettePanel(paletteSwitch.querySelector("[data-palette-panel]").hidden);
+      return;
+    }
+    const option = e.target.closest("[data-palette-option]");
+    if (!option) return;
+    const p = setPalette(option.dataset.paletteOption);
+    openPalettePanel(false);
+    if (!document.body.matches('[data-route="tv"]')) toast(`Colour ${p.id} · ${p.name}`);
+  });
+  // Arrow keys move between options, like any radio group.
+  paletteSwitch.addEventListener("keydown", (e) => {
+    const option = e.target.closest("[data-palette-option]");
+    if (!option || !["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft"].includes(e.key)) return;
+    e.preventDefault();
+    const all = [...paletteSwitch.querySelectorAll("[data-palette-option]")];
+    const step = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : -1;
+    all[(all.indexOf(option) + step + all.length) % all.length].focus();
+  });
+  // Tap anywhere else closes the panel.
+  document.addEventListener("pointerdown", (e) => {
+    if (!paletteSwitch.contains(e.target)) openPalettePanel(false);
+  });
+  paintPaletteSwitch();
+}
+
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
+  if (closePalettePanel()) return;
   closeSheet();
   if (location.hash === "#d3") go("d4", { replace: true });
 });
@@ -625,5 +730,6 @@ initSetupForm();
 initPhoneForms();
 initMomentForm();
 initSheetSwipe();
+initPaletteSwitch();
 window.addEventListener("hashchange", render);
 render();

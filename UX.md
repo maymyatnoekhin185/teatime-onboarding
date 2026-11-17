@@ -58,6 +58,28 @@ All 34 frames in the section are built, except the old TV QR screen (kept in Fig
 | Keyboard / screen reader | Each screen moves focus to its heading, forms to their first field. Sheets close with Esc. Visible focus ring. |
 | Reduced motion | Sheets, notification and press feedback don't animate. |
 
+### Colour options (temporary, for the client to choose)
+Source: Figma `13960:30674` ("CTA colour options"). The original pink-orange palette has been removed, leaving four options. Only buttons, links and selected states change; the background stays the same except in option 2.
+
+| # | Option | Primary button | Text buttons / links | Selected (ticks, badges, chips) | Brand moments ("+", avatar ring) |
+|---|---|---|---|---|---|
+| 1 | Brand gradient (default) | Magenta → gold, white label | Gold | Magenta → gold | Magenta → gold |
+| 2 | Strong blue | #2F6BFF, white label | White / links #5B8CFF | Blue | Magenta → gold. Background #0E0C12, softer glow |
+| 3 | Analogous | Violet → pink, white label | White / links pink | Violet → pink | Violet → pink |
+| 4 | Logo gold | #F2B53B, dark label #1A1226 | Gold | Gold, dark tick | Magenta → gold |
+
+All four share the same secondary button (thin white outline) and disabled button (grey fill, faded label).
+
+| Scenario | Behaviour |
+|---|---|
+| Switching | Phone: round swatch tab on the left edge. Wide screen: "Colour N · name" pill bottom-right, outside the phone. Opens a list of the four options; tapping one applies it instantly, closes the list and shows a toast. |
+| Sharing one option | The page address carries `?palette=N`, so a copied link opens on that option (e.g. `…/teatime-onboarding/?palette=3#a1`). |
+| Coming back | This browser remembers the last pick. A link with `?palette=` wins. |
+| Closing the list | Tap outside or Esc; focus returns to the switcher. Arrow keys move between options. |
+| No flash | The option is applied before the page draws. |
+
+**When the client picks:** copy that option's values into `:root` in `styles.css`, then delete the other `[data-palette]` blocks, the switcher styles, the "Colour options" block in `app.js` and the head script in `index.html`. Or go back to the old palette with the `before-palettes` tag.
+
 ### Shortcuts and choices to confirm
 - A known Apple / Google account or phone number would go straight to Home; this build treats every sign-in as new.
 - B4's "Scan the TV's code" skips the camera (A0, not drawn in this section).

@@ -1,6 +1,6 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="30" height="6" viewBox="0 0 30 6" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Pagination" clip-path="url(#clip0_0_139)">
-<circle id="dot" cx="3" cy="3" r="3" fill="#F63A90"/>
+<circle id="dot" cx="3" cy="3" r="3" fill="white" fill-opacity="0"/>
 <circle id="dot_2" cx="15" cy="3" r="3" fill="white" fill-opacity="0.5"/>
 <circle id="dot_3" cx="27" cy="3" r="3" fill="white" fill-opacity="0.5"/>
 </g>
