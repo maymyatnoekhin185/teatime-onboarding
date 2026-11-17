@@ -14,6 +14,9 @@ const FEEDS = {
   d5: { photo: "roses", tv: "TV on", dot: "green", meta: "Just now · 3 photos", caption: null, count: "1 / 3", dots: 3, nudge: true },
 };
 
+// Inside Compare, each phone is this page in a frame with ?embed=1.
+const EMBED = new URLSearchParams(location.search).has("embed");
+
 const ROUTES = [
   "tv", "a1", "a2", "a3", "a4", "a5", "a6",
   "b1", "b-a2", "b2", "b3", "b4", "b5", "b6", "b7", "b8",
@@ -417,7 +420,7 @@ function toast(text) {
 /* ---------- Router ---------- */
 
 function go(id, { replace = false } = {}) {
-  if (replace) location.replace("#" + id);
+  if (replace || EMBED) location.replace("#" + id); // frames don't add Back-button entries
   else location.hash = id;
 }
 
@@ -671,6 +674,7 @@ function initPaletteSwitch() {
   paletteSwitch = document.createElement("div");
   paletteSwitch.className = "palette-switch";
   paletteSwitch.innerHTML = `
+    <button class="palette-compare-pill" type="button" data-compare-open>Compare</button>
     <button class="palette-toggle" type="button" data-palette-toggle aria-expanded="false" aria-controls="palette-panel">
       <span class="palette-swatch" aria-hidden="true"></span><span class="palette-toggle-label" data-palette-label></span>
     </button>
@@ -685,10 +689,16 @@ function initPaletteSwitch() {
             <img class="palette-check" src="assets/icon-circle-check.svg" alt="">
           </button>`).join("")}
       </div>
+      <button class="palette-compare" type="button" data-compare-open>Compare all four side by side</button>
     </div>`;
   document.body.append(paletteSwitch);
 
   paletteSwitch.addEventListener("click", (e) => {
+    if (e.target.closest("[data-compare-open]")) {
+      openPalettePanel(false);
+      openCompare();
+      return;
+    }
     if (e.target.closest("[data-palette-toggle]")) {
       openPalettePanel(paletteSwitch.querySelector("[data-palette-panel]").hidden);
       return;
@@ -715,8 +725,159 @@ function initPaletteSwitch() {
   paintPaletteSwitch();
 }
 
+/* ---------- Compare (review only) ----------
+   The current screen in all four colour options at once. Each phone is this page in a
+   frame (?palette=N&embed=1). Tapping through any phone moves all four to the same screen. */
+
+let compareEl;
+let compareReturnFocus;
+
+function compareScreens() {
+  // Same order and names as the review list: journey A, B, sign-in details, photo details, D.
+  return [...document.querySelectorAll(".flow-nav a[href^='#']")].map((l) => ({ id: l.getAttribute("href").slice(1), name: l.textContent.trim() }));
+}
+
+function compareRoute() {
+  const id = location.hash.slice(1);
+  return ROUTES.includes(id) ? id : "tv";
+}
+
+function compareFrames() {
+  return [...compareEl.querySelectorAll("iframe")];
+}
+
+function setCompareUrl(on) {
+  const url = new URL(location.href);
+  if (on) url.searchParams.set("compare", "1");
+  else url.searchParams.delete("compare");
+  history.replaceState(history.state, "", url);
+}
+
+function showCompareRoute(id, fromFrame) {
+  if (location.hash.slice(1) !== id) location.replace("#" + id); // the page behind stays in step, so closing lands here
+  compareEl.querySelector("[data-compare-screen]").value = id;
+  compareFrames().forEach((f) => {
+    if (f.contentWindow !== fromFrame) f.contentWindow?.postMessage({ tt: "go", id }, location.origin);
+  });
+}
+
+function fitCompare() {
+  if (!compareEl || compareEl.hidden) return;
+  const grid = compareEl.querySelector(".compare-grid");
+  const caption = compareEl.querySelector("figcaption").offsetHeight + 8;
+  // Try one row of four and a 2 × 2 grid; use whichever shows the phones bigger.
+  const fit = (cols) => {
+    const rows = 4 / cols;
+    const gap = cols === 4 ? 24 : 12;
+    const w = (grid.clientWidth - gap * (cols - 1)) / cols;
+    const h = (grid.clientHeight - gap * (rows - 1)) / rows - caption;
+    return { cols, gap, s: Math.max(0.2, Math.min(w / 375, h / 812, 1)) };
+  };
+  const a = fit(4), b = fit(2);
+  const best = a.s >= b.s ? a : b;
+  grid.style.setProperty("--cols", best.cols);
+  grid.style.setProperty("--gap", best.gap + "px");
+  grid.style.setProperty("--s", best.s.toFixed(3));
+}
+
+function buildCompare() {
+  compareEl = document.createElement("div");
+  compareEl.className = "compare";
+  compareEl.hidden = true;
+  compareEl.setAttribute("role", "dialog");
+  compareEl.setAttribute("aria-modal", "true");
+  compareEl.setAttribute("aria-labelledby", "compare-title");
+  compareEl.innerHTML = `
+    <header class="compare-bar">
+      <h2 class="compare-title" id="compare-title" tabindex="-1">Compare colours</h2>
+      <div class="compare-nav">
+        <button class="compare-step" type="button" data-compare-step="-1" aria-label="Previous screen"><img src="assets/icon-chevron-left.svg" alt=""></button>
+        <select class="compare-screen" data-compare-screen aria-label="Screen">
+          ${compareScreens().map((s) => `<option value="${s.id}">${s.name}</option>`).join("")}
+        </select>
+        <button class="compare-step" type="button" data-compare-step="1" aria-label="Next screen"><img src="assets/icon-chevron-right.svg" alt=""></button>
+      </div>
+      <button class="compare-close" type="button" data-compare-close aria-label="Close compare"><img src="assets/icon-close.svg" alt=""></button>
+    </header>
+    <p class="compare-hint">Tap through any phone and all four follow.</p>
+    <div class="compare-grid">
+      ${PALETTES.map((p) => `
+        <figure class="compare-cell">
+          <figcaption>
+            <span class="palette-swatch" data-palette="${p.id}" aria-hidden="true"></span>
+            <b>${p.id} · ${p.name}</b>
+            <button class="compare-use" type="button" data-compare-use="${p.id}">Use this</button>
+          </figcaption>
+          <div class="compare-frame"><iframe data-palette-frame="${p.id}" title="Option ${p.id}, ${p.name}"></iframe></div>
+        </figure>`).join("")}
+    </div>`;
+  document.body.append(compareEl);
+
+  compareEl.addEventListener("click", (e) => {
+    const step = e.target.closest("[data-compare-step]");
+    if (step) {
+      const list = compareScreens();
+      const i = list.findIndex((s) => s.id === compareEl.querySelector("[data-compare-screen]").value);
+      const next = list[(i + Number(step.dataset.compareStep) + list.length) % list.length];
+      showCompareRoute(next.id);
+      return;
+    }
+    if (e.target.closest("[data-compare-close]")) { closeCompare(); return; }
+    const use = e.target.closest("[data-compare-use]");
+    if (use) {
+      const p = setPalette(use.dataset.compareUse);
+      closeCompare();
+      if (!document.body.matches('[data-route="tv"]')) toast(`Colour ${p.id} · ${p.name}`);
+    }
+  });
+  compareEl.querySelector("[data-compare-screen]").addEventListener("change", (e) => showCompareRoute(e.target.value));
+
+  // A phone moved to another screen: bring the other three along.
+  window.addEventListener("message", (e) => {
+    if (e.origin !== location.origin || e.data?.tt !== "route" || compareEl.hidden) return;
+    if (ROUTES.includes(e.data.id)) showCompareRoute(e.data.id, e.source);
+  });
+  // Refit whenever the space changes (window resize, phone rotation, toolbar wrapping).
+  new ResizeObserver(fitCompare).observe(compareEl.querySelector(".compare-grid"));
+}
+
+function openCompare() {
+  if (!compareEl) buildCompare();
+  if (!compareEl.hidden) return;
+  compareReturnFocus = document.activeElement;
+  const id = compareRoute();
+  compareEl.querySelector("[data-compare-screen]").value = id;
+  compareFrames().forEach((f) => { f.src = `${location.pathname}?palette=${f.dataset.paletteFrame}&embed=1#${id}`; });
+  compareEl.hidden = false;
+  document.body.classList.add("is-comparing");
+  setCompareUrl(true);
+  fitCompare();
+  compareEl.querySelector("#compare-title").focus();
+}
+
+function closeCompare() {
+  if (!compareEl || compareEl.hidden) return false;
+  compareEl.hidden = true;
+  compareFrames().forEach((f) => { f.src = "about:blank"; }); // stop four copies running in the background
+  document.body.classList.remove("is-comparing");
+  setCompareUrl(false);
+  (compareReturnFocus?.isConnected ? compareReturnFocus : paletteSwitch.querySelector("[data-palette-toggle]")).focus();
+  return true;
+}
+
+function initEmbed() {
+  window.addEventListener("hashchange", () => {
+    parent.postMessage({ tt: "route", id: location.hash.slice(1) }, location.origin);
+  });
+  window.addEventListener("message", (e) => {
+    if (e.origin !== location.origin || e.data?.tt !== "go") return;
+    if (location.hash.slice(1) !== e.data.id) location.replace("#" + e.data.id);
+  });
+}
+
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
+  if (closeCompare()) return;
   if (closePalettePanel()) return;
   closeSheet();
   if (location.hash === "#d3") go("d4", { replace: true });
@@ -730,6 +891,8 @@ initSetupForm();
 initPhoneForms();
 initMomentForm();
 initSheetSwipe();
-initPaletteSwitch();
+if (EMBED) initEmbed();
+else initPaletteSwitch();
 window.addEventListener("hashchange", render);
 render();
+if (!EMBED && new URLSearchParams(location.search).has("compare")) openCompare();

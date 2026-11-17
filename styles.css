@@ -907,9 +907,74 @@ button.glass-pill { color: #fff; }
   .palette-panel { left: auto; right: 0; top: auto; bottom: 50px; transform: none; }
 }
 @media (prefers-reduced-motion: reduce) { .palette-panel { animation: none; } }
-.palette-option .palette-swatch[data-palette="1"] { background: linear-gradient(110deg, #d20661 4%, #f2b53b 96%); }
-.palette-option .palette-swatch[data-palette="2"] { background: #2f6bff; }
-.palette-option .palette-swatch[data-palette="3"] { background: linear-gradient(to right, #8a3ffc, #ec4899); }
-.palette-option .palette-swatch[data-palette="4"] { background: #f2b53b; }
+.palette-swatch[data-palette="1"] { background: linear-gradient(110deg, #d20661 4%, #f2b53b 96%); }
+.palette-swatch[data-palette="2"] { background: #2f6bff; }
+.palette-swatch[data-palette="3"] { background: linear-gradient(to right, #8a3ffc, #ec4899); }
+.palette-swatch[data-palette="4"] { background: #f2b53b; }
 .palette-toggle-label { display: none; }
 @media (min-width: 600px) { .palette-toggle-label { display: inline; } }
+
+/* Compare buttons in the switcher */
+.palette-compare { width: 100%; margin-top: 10px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .25); font: 600 14px/18px var(--font-title); }
+.palette-compare:hover { background: rgba(255, 255, 255, .06); }
+.palette-compare-pill { display: none; }
+@media (min-width: 600px) {
+  .palette-switch { display: flex; gap: 8px; }
+  .palette-compare-pill {
+    display: block; height: 40px; padding: 0 16px; border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, .25); background: rgba(20, 16, 28, .82);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    font: 500 13px/16px var(--font-title); color: #fff;
+  }
+}
+
+/* ---------- Compare view (review only) ---------- */
+.compare {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; flex-direction: column;
+  padding: 12px 16px 16px; background: #0b0810; color: #fff;
+  animation: fade-in .15s ease-out;
+}
+body.is-comparing { overflow: hidden; }
+body.is-comparing .palette-switch { display: none; }
+.compare-bar { display: flex; align-items: center; gap: 12px; min-height: 44px; }
+.compare-title { flex: 1; min-width: 0; font: 600 17px/22px var(--font-title); white-space: nowrap; }
+.compare-title:focus { outline: none; }
+.compare-nav { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.compare-step, .compare-close { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 20px; background: rgba(255, 255, 255, .08); }
+.compare-step img { width: 20px; height: 20px; }
+.compare-close img { width: 18px; height: 18px; }
+.compare-screen {
+  min-width: 0; max-width: 260px; height: 40px; padding: 0 12px; border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, .2); background: #1c1c1e; color: #fff;
+  font: 500 14px/18px var(--font-title);
+}
+.compare-hint { margin: 4px 0 10px; font: 400 13px/18px var(--font-body); color: var(--tt-text-secondary); }
+.compare-grid {
+  --cols: 4; --gap: 24px; --s: .5;
+  flex: 1; min-height: 0;
+  display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: var(--gap);
+  align-content: start; justify-items: center;
+}
+.compare-cell { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 0; min-width: 0; }
+.compare-cell figcaption { display: flex; align-items: center; gap: 8px; max-width: 100%; font: 600 14px/18px var(--font-title); white-space: nowrap; }
+.compare-cell figcaption b { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.compare-use { flex-shrink: 0; padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .25); font: 500 12px/16px var(--font-title); }
+.compare-use:hover { background: rgba(255, 255, 255, .08); }
+.compare-frame {
+  position: relative; overflow: hidden; flex-shrink: 0;
+  width: calc(375px * var(--s)); height: calc(812px * var(--s));
+  border-radius: calc(36px * var(--s)); background: #1a1226;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .12);
+}
+.compare-frame iframe { position: absolute; left: 0; top: 0; width: 375px; height: 812px; border: 0; transform: scale(var(--s)); transform-origin: 0 0; }
+@media (max-width: 599px) {
+  .compare { padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px calc(env(safe-area-inset-bottom, 0px) + 12px); }
+  .compare-bar { flex-wrap: wrap; gap: 8px; }
+  .compare-nav { order: 3; flex: 1 1 100%; }
+  .compare-screen { flex: 1; max-width: none; }
+  .compare-cell figcaption { gap: 6px; font-size: 12px; }
+  .compare-cell figcaption .palette-swatch { width: 14px; height: 14px; }
+  .compare-use { padding: 3px 8px; font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) { .compare { animation: none; } }

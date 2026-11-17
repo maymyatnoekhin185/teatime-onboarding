@@ -79,8 +79,12 @@ All four share the same secondary button (thin white outline) and disabled butto
 | Coming back | This browser remembers the last pick. A link with `?palette=` wins. |
 | Closing the list | Tap outside or Esc; focus returns to the switcher. Arrow keys move between options. |
 | No flash | The option is applied before the page draws. |
+| Compare | "Compare" pill next to the switcher (wide screens) or "Compare all four side by side" in the switcher list (phones). Shows the current screen in all four options: one row of four on a computer, 2 × 2 on a phone, whichever makes the phones bigger. |
+| Moving through screens in Compare | Tap through any phone and all four follow. ‹ › step through the screens in review-list order; the dropdown jumps to any screen. Sheets, typing and photo picks stay in the phone you used. |
+| Choosing from Compare | "Use this" under an option sets it, closes Compare and shows a toast. Close (X) or Esc returns to the same screen with the colour unchanged. |
+| Sharing Compare | The address carries `?compare=1`, so a copied link opens straight into Compare on that screen. |
 
-**When the client picks:** copy that option's values into `:root` in `styles.css`, then delete the other `[data-palette]` blocks, the switcher styles, the "Colour options" block in `app.js` and the head script in `index.html`. Or go back to the old palette with the `before-palettes` tag.
+**When the client picks:** copy that option's values into `:root` in `styles.css`, then delete the other `[data-palette]` blocks, the switcher and Compare styles, the "Colour options" and "Compare" blocks in `app.js` (plus `EMBED`) and the head script in `index.html`. Or go back to the old palette with the `before-palettes` tag.
 
 ### Shortcuts and choices to confirm
 - A known Apple / Google account or phone number would go straight to Home; this build treats every sign-in as new.
