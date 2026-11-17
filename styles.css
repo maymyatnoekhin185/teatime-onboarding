@@ -173,7 +173,9 @@ body:not([data-route="tv"]) .tv-stage { display: none; }
 .btn:active { opacity: .85; transform: scale(.98); }
 .btn-primary { background: var(--cta-bg); color: var(--cta-fg); }
 .btn-tertiary { color: var(--text-btn); }
-.btn-secondary { border: 1px solid rgba(255, 255, 255, .3); color: #fff; }
+.btn-secondary { border: 2px solid rgba(255, 255, 255, .3); color: #fff; }
+.btn-email { color: var(--email-btn, var(--text-btn)); }
+.legal-after-email { margin-top: 4px; }
 .btn-apple { padding: 0 24px; background: #fff; color: var(--tt-text-inverse); }
 .btn-google { padding: 0 24px; background: var(--tt-bg-surface); border: 1.5px solid var(--tt-border-strong); color: #fff; }
 
@@ -819,6 +821,7 @@ button.glass-pill { color: #fff; }
    Only buttons, links and selected states change. When the client picks one:
    copy its values into :root, delete the other blocks and the .palette-switch styles. */
 :root[data-palette="2"] { /* Strong blue */
+  --email-btn: #fff;
   --tt-bg-app: #0e0c12;
   --cta-bg: #2f6bff;
   --cta-fg: #fff;
@@ -837,6 +840,7 @@ button.glass-pill { color: #fff; }
 }
 :root[data-palette="2"] .pagination { --dot-off: .4; }
 :root[data-palette="3"] { /* Analogous: violet to pink */
+  --email-btn: rgba(255, 255, 255, .6);
   --cta-bg: linear-gradient(to right, #8a3ffc, #ec4899);
   --cta-fg: #fff;
   --text-btn: #fff;
@@ -956,7 +960,7 @@ body.is-comparing .palette-switch { display: none; }
   display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: var(--gap);
   align-content: start; justify-items: center;
 }
-.compare-cell { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 0; min-width: 0; }
+.compare-cell { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; margin: 0; min-width: 0; }
 .compare-cell figcaption { display: flex; align-items: center; gap: 8px; max-width: 100%; font: 600 14px/18px var(--font-title); white-space: nowrap; }
 .compare-cell figcaption b { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .compare-use { flex-shrink: 0; padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .25); font: 500 12px/16px var(--font-title); }

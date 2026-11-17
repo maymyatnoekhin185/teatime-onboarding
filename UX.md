@@ -15,7 +15,7 @@ All 34 frames in the section are built, except the old TV QR screen (kept in Fig
 | Route | Screen | Goes to |
 |---|---|---|
 | `#tv` | TV · Scan to send photos | QR → A1. "Start from an ad instead" → B1 |
-| `#a1` / `#b1` | Sign in (A1 / B1 copy) | Apple → Apple sheet · Google → Google sheet · Phone number → C1 |
+| `#a1` / `#b1` | Sign in (A1 / B1 copy) | Apple → Apple sheet · Google → Google sheet · Phone number → C1 · Use email instead → toast "Not in this build yet" (no email screens designed yet) |
 | sheet | Apple system sheet | Share / Hide My Email · Continue with Face ID → "Signing in with Apple…" → photo prompt. Swipe down, tap outside or Esc → back with nothing shown |
 | sheet | Google account sheet | Any account → "Signing in with Google…" → photo prompt. Same close rules |
 | `#c1` | C1 · Mobile number | Send code (enabled at 9+ digits) → C2. Back → sign in |
@@ -70,7 +70,9 @@ Source: Figma `13960:30674` ("CTA colour options"). The original pink-orange pal
 
 Option 2 colour rule (Instagram approach): blue = actions only (buttons, links, selected chips); white = navigation and "where am I" (active Home tab as a filled white house with a white dot, other tabs white at 60%, pagination dots white 100% / 40%); logo gradient = brand moments only ("+" share disc, avatar / TV rings, success). So the "+" is the only colour in the nav. Options 1, 3 and 4 keep the active tab and active dot in their accent colour.
 
-All four share the same secondary button (thin white outline) and disabled button (grey fill, faded label).
+"Use email instead" (text button under the phone button on A1 / B1): gold in options 1 and 4, white in option 2, white at 60% in option 3.
+
+All four share the same secondary button (2px white outline at 30%, as on the A1 option screens) and disabled button (grey fill, faded label).
 
 | Scenario | Behaviour |
 |---|---|
