@@ -68,6 +68,8 @@ Source: Figma `13960:30674` ("CTA colour options"). The original pink-orange pal
 | 3 | Analogous | Violet → pink, white label | White / links pink | Violet → pink | Violet → pink |
 | 4 | Logo gold | #F2B53B, dark label #1A1226 | Gold | Gold, dark tick | Magenta → gold |
 
+Option 2 colour rule (Instagram approach): blue = actions only (buttons, links, selected chips); white = navigation and "where am I" (active Home tab as a filled white house with a white dot, other tabs white at 60%, pagination dots white 100% / 40%); logo gradient = brand moments only ("+" share disc, avatar / TV rings, success). So the "+" is the only colour in the nav. Options 1, 3 and 4 keep the active tab and active dot in their accent colour.
+
 All four share the same secondary button (thin white outline) and disabled button (grey fill, faded label).
 
 | Scenario | Behaviour |

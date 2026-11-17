@@ -19,6 +19,10 @@
   --select-fg: #fff;
   --brand-grad: linear-gradient(132deg, #d20661 6%, #f2b53b 83%);
   --glow-opacity: 1;
+  --nav-active: var(--accent);
+  --nav-active-icon: url("assets/nav-home.svg");
+  --nav-inactive-opacity: 1;
+  --dot-active: var(--accent);
   --tt-radius-pill: 28px;
   --font-title: "Outfit", system-ui, sans-serif;
   --font-body: "Rubik", system-ui, sans-serif;
@@ -825,7 +829,13 @@ button.glass-pill { color: #fff; }
   --select-fg: #fff;
   --brand-grad: linear-gradient(to right, #d20661, #f2b53b);
   --glow-opacity: .45;
+  /* Navigation is white, so the gradient "+" is the only colour in the nav. */
+  --nav-active: #fff;
+  --nav-active-icon: url("assets/nav-home-filled.svg");
+  --nav-inactive-opacity: .6;
+  --dot-active: #fff;
 }
+:root[data-palette="2"] .pagination { --dot-off: .4; }
 :root[data-palette="3"] { /* Analogous: violet to pink */
   --cta-bg: linear-gradient(to right, #8a3ffc, #ec4899);
   --cta-fg: #fff;
@@ -850,12 +860,19 @@ button.glass-pill { color: #fff; }
 /* Shared by all four options (Figma button set) */
 .btn-primary:disabled { opacity: 1; background: rgba(255, 255, 255, .12); color: rgba(255, 255, 255, .4); }
 .glow, .tv-glow { opacity: var(--glow-opacity); }
-.pagination { background: radial-gradient(circle at 3px 3px, var(--accent) 2.7px, transparent 3.2px) no-repeat; }
-.nav-icon-home {
-  display: block; width: 26px; height: 34px; background: var(--accent);
-  -webkit-mask: url("assets/nav-home.svg") center / 26px 34px no-repeat;
-  mask: url("assets/nav-home.svg") center / 26px 34px no-repeat;
+.pagination {
+  --dot-off: .4;
+  background:
+    radial-gradient(circle at 3px 3px, var(--dot-active) 2.7px, transparent 3.2px) no-repeat,
+    radial-gradient(circle at 3px 3px, rgba(255, 255, 255, var(--dot-off)) 2.7px, transparent 3.2px) 0 0 / 12px 6px repeat-x;
 }
+.pagination.dots-3 { --dot-off: .5; }
+.nav-icon-home {
+  display: block; width: 26px; height: 34px; background: var(--nav-active);
+  -webkit-mask: var(--nav-active-icon) center / 26px 34px no-repeat;
+  mask: var(--nav-active-icon) center / 26px 34px no-repeat;
+}
+.nav-pill .nav-item:not([aria-current]) img, .nav-pill .nav-bell img { opacity: var(--nav-inactive-opacity); }
 
 /* Colour switcher. Phone: small tab on the left edge. Wide screen: bottom-right, outside the device. */
 .palette-switch { position: fixed; z-index: 100; left: 0; top: 50%; transform: translateY(-50%); font-family: var(--font-body); }
