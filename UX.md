@@ -28,36 +28,24 @@ Every frame in the section is built, except the old TV QR screen (kept in Figma 
 | `#c3` | C3 · Your name | Continue (first name needed) → E1 (F1 after the small QR). Name appears on Home |
 | `#e1` | E1 · Name your family | Pre-filled "The {surname}s" (editable; Continue disabled when empty) → photo prompt. Join a family → E2 · Care community → E4. Back → sign in |
 | `#e2` | E2 · Enter the family PIN | 4 boxes on one field. Join the family at 4 digits: right PIN → family Home (`#joined`); wrong PIN → boxes turn red with "That PIN doesn't match a family…", cleared as soon as they type. "Open it" (invite link) → "later release" toast |
-| `#joined` | Home · family moments | The family's feed (Sarah's moments, Lisa's TV on, 5 in the family). Push: "You've joined The Johnsons" (PIN) or "Sarah said yes" (approval) |
 | `#e4` | E4 · Find their community | Search focused on arrival; results as you type with the matching part highlighted ("Chelt" also finds Chelsea); count line; clear (×). Tap a result → E5 (no Continue). No results → "No communities match" + "Can't find it?" hint |
 | `#e5` | E5 · Who lives at {community}? | First + last name (both needed) → Find them. Matched (ignoring case) → E6, otherwise → E7 |
 | `#e6` | E6 · Is this {name}? | Resident card (initial, name, room). Yes, join {name}'s family → photo prompt · Not them — tell the community → E7 |
 | `#e7` | E7 · You're set up | Family made, community told, nothing blocked. Go to Home → photo prompt (flowchart: photos as in Flow 2) |
 | `#f1` | F1 · Join The Johnsons? | Ask to join → F2 · Not this family → E1. Back → sign in |
-| `#f2` → `#f2-home` | Sent to Sarah (sheet) → their own Home, "Waiting for Sarah" | Got it, swipe down, tap outside or Esc → Home. After 5 s a push "Sarah said yes…" slides in and stays; tap → `#joined` |
-| `#f3` → `#f3-home` | Admin's Home with "Tom wants to join" | Approve / Decline → sheet closes with a toast saying what happened |
 | `#declined` | E1 after a decline | Toast "The Johnsons declined your request…", then the normal E1 |
 | `#f4` | F4 · Paywall | Shown instead of sending the 4th upload. Subscribe → the upload goes through (demo toast, no payment) · Not now → nothing uploaded, back to Home · Back → the New moment screen, caption kept |
-| `#g1` | G1 · Home with Stories | The 100-photo upload as one moment; Timeline and Da Lat circles on the right open G2 / G3. A5 shows the same circles |
 | `#g2` / `#g3` | A story playing | ~3 s per photo, auto-advancing; segmented progress; chip shows the month (timeline) or the place. Tap the right ⅔ → next, left ⅓ → back, hold → pause; ← → keys, Space pauses; X, Esc or the last photo → back to where it opened. Switching away from the app pauses it |
 | `#a2` / `#b-a2` | Photo access (system prompt) | Allow → A3 / B2 · Limit Access or Don't Allow → limited screen |
-| `#photos-off` | We can't see your photos yet | Allow photo access → A3 / B2 · Pick photos myself → picker · Skip → D1 |
-| `#a3` / `#b2` | 128 photos | Send now → A4 / Keep these → B3 · "+120" → All 128 · Choose my own → picker · Skip → D1 |
+| `#photos-off` | We can't see your photos yet | Allow photo access → A3 / B2 · Pick photos myself → picker · Skip → empty Home |
+| `#a3` / `#b2` | 128 photos | Send now → Home with the bulk moment arriving (path A) / Keep these → B3 · "+120" → All 128 · Choose my own → picker · Skip → empty Home |
 | `#all-photos` | All 128 photos | All ticked; tap to leave out; button counts what's left ("Send 127 photos" / "Keep 127 photos") → A4 / B3. Back discards changes |
 | `#picker` | Choose my own · picker | Tap to number photos (max 10, toast past that); preview shows the last tapped; Next · N → New moment. X → where it was opened from |
-| `#moment` | New moment | Caption optional. Share → A6 (path A) · B3 (path B) · D3 (from D1/D4 "+") · same Home (from any other Home "+") |
-| `#a4` | Home, moments arriving | Pill counts up to the chosen total, then → A5 |
-| `#a5` | Home, all in, TV named | End of path A |
-| `#a6` | Home after "Choose my own" | Shows the person's own moment (first photo, count, caption or "Add a caption") |
-| `#b3` | Where should they play? | Row 1 → B4 · row 2 → B5 · Later → B7 (path B) / D4 (row D) |
-| `#b4` | Open TeaTime on the TV | Scan the TV's code → A4 (path B) / D5 (row D) · Later as B3 |
+| `#moment` | New moment | Caption optional; "Sharing to" = current family + free uploads left. Share → uploads over the preview → Shared → Home (D3 sheet on the first share with no TV; B3 during path B onboarding) |
+| `#b3` | Where should they play? | Row 1 → B4 · row 2 → B5 · Later → Home (moments waiting for a TV) |
+| `#b4` | Open TeaTime on the TV | Scan the TV's code → TV on → Home (kept photos arrive) · Later as B3 |
 | `#b5` | Add another TV | Send set-up → B6 |
-| `#b6` | Send this to Mum | Share message → B7 (path B) / D4 waiting for that TV (row D) |
-| `#b7` → `#b8` | Waiting for Mum's TV → connected | After 5 s; push notification slides in |
-| `#d1` | Home, nothing shared yet | Share a moment / "+" → picker · "No TV yet" → B3 |
-| `#d3` | Shared. Now connect a TV | Sheet over D4. Connect a TV → B3 · swipe down, tap outside or Esc → D4 |
-| `#d4` | Home, waiting for a TV | Pill and "No TV yet" → B3. If a set-up message was sent: "Waiting for Mum's TV", then D5 after 5 s |
-| `#d5` | TV connected, invite your family | Invite → share sheet with the family code |
+| `#b6` | Send this to Mum | Share message → Home "Waiting for Mum's TV" → 5 s → connected + push |
 
 ### Scenarios
 | Scenario | Behaviour |
@@ -78,6 +66,52 @@ Every frame in the section is built, except the old TV QR screen (kept in Figma 
 | Slow network | Dark background from first paint. Photos load only when their screen opens; tiles keep their size. |
 | Keyboard / screen reader | Each screen moves focus to its heading, forms to their first field. Sheets close with Esc. Visible focus ring. |
 | Reduced motion | Sheets, notification and press feedback don't animate. |
+
+## Home and the tabs (one Home, built from what the person did)
+Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined family, two TVs, family dropdown…). They are states of **one** Home (`#home`), worked out in `home.js` from what the person actually did. Sources: onboarding section `13871:2156` and "Other key screens" `13880:4501`.
+
+### What Home shows
+| Part | Rule |
+|---|---|
+| Title | "Your moments" while it's just you; the family name once the family has other members. Chevron opens the family menu (all your families, a tick on the current one, "+ Create a family group"); picking one switches Home to that family. |
+| TV chip | No TV → "No TV yet" (opens Which TV). One TV on → "{name} on" ("TV on" for an unnamed TV and while photos are still arriving). Two or more → "2 TVs on". |
+| Members | "Just you" or "N members". |
+| Feed | Every moment in the current family, newest first. Swipe up/down between moments, sideways through a moment's photos; "k / N" and the dots follow. Empty → "Share your first moment" (D1). |
+| What you uploaded | **Send now / Keep these** → one bulk moment: "128 photos · May – Oct 2026" (or the count left after unticking), with the Timeline and Da Lat stories on it, caption prompt "Six months in one go — add a caption". **Choose my own** → a moment with exactly the photos picked ("Just now · 3 photos") and the caption typed; no stories. **Skip** → nothing. Later "+" shares stack on top. |
+| Status pill | "Adding n of N photos" while a bulk upload arrives; "Waiting for Mum's TV" after a set-up message; "Waiting for a TV" when moments exist and there's no TV (opens Which TV); "Waiting for Sarah" while a join request is pending; nothing once it's all playing. |
+| Invite nudge | Only after a TV joins **after** they shared (D5) and it's still just them. Not on the bulk-upload Home. |
+| Sheets over Home | D3 "Shared. Now connect a TV" (first share with no TV, once) · F2 "Sent to Sarah" · F3 "Tom wants to join" (admin). Swipe down, tap outside or Esc closes to Home. |
+| Push | TV connected ("Mum's TV is connected…"), joined ("You've joined The Johnsons…"), approved ("Sarah said yes…"). |
+| Action rail | Like fills the heart and counts up · Comment → not built · Save → "Save to phone" sheet (choose photos, white ticks, "Save N items") · ⋯ → sheet: Save to phone, Copy link, and on your own moments Edit (not built), Share to another family (when you have one), Delete (asks first). |
+
+### What changes the state
+| Choice | Effect |
+|---|---|
+| E1 Continue | Makes their family (admin, just them, family PIN). Path A (scanned the TV): that TV is added to the family. |
+| A3 Send now · All 128 "Send N" | Bulk moment = upload 1; with a TV on, photos count in on Home. |
+| B2 Keep these | Bulk moment kept for the TV, then Which TV. |
+| B4 Scan the TV's code | TV on; kept photos start arriving. |
+| B5/B6 Share message | That TV waits; 5 s later it's on (push), kept photos arrive. |
+| New moment Share | Photos upload one by one over the preview ("Sharing to {family}… 2 of 3 photos", Cancel stops it), then **Shared** ("Mum will see it on the TV within a minute" / "It plays as soon as a TV is connected"), or D3 for the first share with no TV, or Which TV during path B onboarding. Leaving mid-upload sends nothing. |
+| 4th upload | Paywall first. Subscribe → the same moment uploads. Not now → nothing sent, a notification says it's waiting. "N free uploads left" shows under "Sharing to". |
+| E2 right PIN | Joins The Johnsons (their moments, Lisa's TV, 5 members) and opens Home. |
+| F1 Ask to join | Their own empty Home + F2 sheet; 5 s later Sarah approves → Home switches to The Johnsons. |
+| E6 / E7 | Family made for the resident ("Margaret's family", for Margaret), linked to the community; no paywall. |
+
+### Tabs
+| Route | Screen | Behaviour |
+|---|---|---|
+| `#families` | Families | One row per family: initial, green dot when its TV is on, "For X · N members · N TVs", "Admin/Member · PIN". Add family → sheet: Join with a family PIN (E2) · Create a new family. |
+| `#family` | A family | Avatar, "For X", counts; TV rows (on/waiting) or "No TV yet → Connect a TV" (Which TV for that family); members; Family PIN card → share sheet. Edit only for admins. |
+| `#family-edit` | Edit family | Name, who it's for (hint updates live), Save. Leave this family / Delete this family (admins) both ask first, then go to Families. Change photo → not built. |
+| `#family-new` | Create a new family | Name (button enabled once typed) → new family, admin, just you → its family screen. |
+| `#notifications` | Notifications | From what happened (TV connected, joined, approvals, "Lisa saw your photo…", waiting for a subscription, the family's activity once you're in one). Unread rows tinted with the option's colour; count badge; ⋯ marks all read; leaving the tab marks them read. Empty → "Nothing yet". Nav bell shows a dot while anything is unread. |
+| `#profile` | My profile | Name, photo (Apple/Google) or initial, families as chips (Owner/Member, open the family), Stories row only if they did a bulk upload, Moments grid of their own photos with the count. Settings and photo edit → not built. |
+
+Bottom nav on Home and every tab: Home · Families · + (share) · Notifications · Profile; the active tab follows the colour option (white in option 2).
+
+### Review list: "Start as…" presets
+Each fills in the choices a person would have made and opens Home (or its sheet): uploaded everything + TV on · uploading · chose 6 photos + TV on · kept photos, waiting for Mum's TV · skipped everything · shared, no TV · TV on, invite family · joined by PIN · asked to join, waiting · admin with a request · two families, two TVs · 3 free uploads used. Everything else is reached by clicking through.
 
 ### Colour options (temporary, for the client to choose)
 Source: Figma `13960:30674` ("CTA colour options"). The original pink-orange palette has been removed, leaving four options. Only buttons, links and selected states change; the background stays the same except in option 2.
@@ -114,7 +148,6 @@ All four share the same secondary button (2px white outline at 30%, as on the A1
 - B4's "Scan the TV's code" skips the camera (A0, not drawn in this section).
 - B7 → B8 and D4 → D5 run on a 5 s timer to show the moment the other TV joins.
 - D2 ("New moment — from +") is the same New moment screen, as the design note says.
-- D4 is built from the Home layer under D3's sheet.
 - Path B's All-128 button says "Keep N photos" to match B2's "Keep these"; the design shows "Send".
 - B5's "Their TV" options (Google TV, Android TV, Amazon Fire TV, Apple TV) are placeholders.
 - Family PIN `4829` (E2 and the invite) is a placeholder; any other PIN shows the error.

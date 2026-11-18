@@ -18,46 +18,51 @@
       if (/^[2-4]$/.test(p)) document.documentElement.dataset.palette = p;
     })();
   </script>
+  <script src="home.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body data-route="tv">
 
   <!-- Review aid: jump to any screen (wide screens only) -->
-  <nav class="flow-nav" aria-label="Onboarding screens">
-    <p class="flow-nav-title">Onboarding v2.1</p>
+  <nav class="flow-nav" aria-label="Screens and scenarios">
+    <p class="flow-nav-title">TeaTime v2.1</p>
+    <p class="flow-nav-group">Start as… (fills in the choices)</p>
+    <a href="#p-bulk">Uploaded everything, TV on</a>
+    <a href="#p-arriving">Uploading, moments arriving</a>
+    <a href="#p-own">Chose 6 photos, TV on</a>
+    <a href="#p-waiting-mum">Kept photos, waiting for Mum’s TV</a>
+    <a href="#p-skipped">Skipped everything</a>
+    <a href="#p-no-tv">Shared, no TV yet</a>
+    <a href="#p-invite">TV on, invite your family</a>
+    <a href="#p-joined">Joined The Johnsons by PIN</a>
+    <a href="#p-asked">Asked to join, waiting for Sarah</a>
+    <a href="#p-admin">Admin: Tom wants to join</a>
+    <a href="#p-two">Two families, two TVs</a>
+    <a href="#p-paywall">3 free uploads used</a>
+    <p class="flow-nav-group">App</p>
+    <a href="#home">Home</a>
+    <a href="#families">Families</a>
+    <a href="#notifications">Notifications</a>
+    <a href="#profile">Profile</a>
+    <a href="#family-new">Create a new family</a>
     <p class="flow-nav-group">1 · Scanned the TV, new family</p>
     <a href="#tv">TV · Scan to send photos</a>
     <a href="#a1">A1 · Sign in</a>
     <a href="#e1">E1 · Name your family</a>
     <a href="#a2">A2 · Photo access</a>
     <a href="#a3">A3 · Moments found</a>
-    <a href="#a4">A4 · Home, moments arriving</a>
-    <a href="#a5">A5 · Home, all in</a>
-    <p class="flow-nav-group">2a · From an ad, TV in front</p>
+    <p class="flow-nav-group">2 · From an ad</p>
     <a href="#ad">B1 · Sign in</a>
     <a href="#b-a2">Photo access</a>
     <a href="#b2">B2 · Keep these</a>
     <a href="#b3">B3 · Which TV</a>
     <a href="#b4">B4 · TV in front of me</a>
-    <p class="flow-nav-group">2b · TV somewhere else</p>
     <a href="#b5">B5 · Add another TV</a>
     <a href="#b6">B6 · Set-up message</a>
-    <a href="#b7">B7 · Home, waiting</a>
-    <a href="#b8">B8 · Home, connected</a>
-    <p class="flow-nav-group">3 · Skipped everything</p>
-    <a href="#d1">D1 · Home, nothing shared</a>
-    <a href="#d3">D3 · Shared, connect a TV</a>
-    <a href="#d4">D4 · Home, waiting for a TV</a>
-    <a href="#d5">D5 · TV connected, invite</a>
-    <p class="flow-nav-group">4 · Second member, family PIN</p>
+    <p class="flow-nav-group">4–5 · Second family member</p>
     <a href="#e2">E2 · Enter the family PIN</a>
-    <a href="#joined">Home · family moments</a>
-    <p class="flow-nav-group">5 · Second member, TV’s small QR</p>
-    <a href="#tvqr">Start · scanned the small QR</a>
+    <a href="#tvqr">Start · scanned the TV’s small QR</a>
     <a href="#f1">F1 · Join The Johnsons?</a>
-    <a href="#f2">F2 · Request sent</a>
-    <a href="#f2-home">Home · waiting for Sarah</a>
-    <a href="#f3">F3 · Admin approves</a>
     <a href="#declined">Declined · back to E1</a>
     <p class="flow-nav-group">6 · Care community</p>
     <a href="#e4">E4 · Find their community</a>
@@ -65,7 +70,6 @@
     <a href="#e6">E6 · Is this them?</a>
     <a href="#e7">E7 · No match, not blocked</a>
     <p class="flow-nav-group">7 · After onboarding</p>
-    <a href="#g1">G1 · Home with Stories</a>
     <a href="#g2">G2 · Story, timeline</a>
     <a href="#g3">G3 · Story, a place</a>
     <a href="#f4">F4 · Paywall, upload 4</a>
@@ -78,7 +82,7 @@
     <a href="#all-photos">All 128 photos</a>
     <a href="#picker">Choose my own · picker</a>
     <a href="#moment">New moment · caption</a>
-    <a href="#a6">A6 · Home, after “Choose my own”</a>
+    <a href="#shared">Shared</a>
   </nav>
 
   <!-- TV: path A starts here -->
@@ -483,7 +487,7 @@
           <p class="hint">Anyone in the room can scan the TV, so a family admin checks it’s really you.</p>
         </div>
         <div class="actions">
-          <button class="btn btn-primary" type="button" data-go="f2">Ask to join</button>
+          <button class="btn btn-primary" type="button" data-ask-join>Ask to join</button>
           <button class="btn btn-tertiary" type="button" data-not-family>Not this family</button>
         </div>
       </div>
@@ -568,7 +572,7 @@
       <div class="content">
         <div class="top-bar">
           <span class="top-bar-spacer"></span>
-          <button class="top-bar-action" type="button" data-go="d1">Skip</button>
+          <button class="top-bar-action" type="button" data-skip-photos>Skip</button>
         </div>
         <div class="body">
           <h1 id="a3-title" class="display" tabindex="-1">128 photos<br>from your year</h1>
@@ -576,7 +580,7 @@
           <div class="moments-grid" data-grid></div>
         </div>
         <div class="actions">
-          <button class="btn btn-primary" type="button" data-go="a4">Send now</button>
+          <button class="btn btn-primary" type="button" data-send-all>Send now</button>
           <button class="btn btn-tertiary" type="button" data-picker>Choose my own</button>
         </div>
       </div>
@@ -589,7 +593,7 @@
       <div class="content">
         <div class="top-bar">
           <span class="top-bar-spacer"></span>
-          <button class="top-bar-action" type="button" data-go="d1">Skip</button>
+          <button class="top-bar-action" type="button" data-skip-photos>Skip</button>
         </div>
         <div class="body">
           <h1 id="b2-title" class="display" tabindex="-1">128 photos<br>from your year</h1>
@@ -597,7 +601,7 @@
           <div class="moments-grid" data-grid></div>
         </div>
         <div class="actions">
-          <button class="btn btn-primary" type="button" data-go="b3">Keep these</button>
+          <button class="btn btn-primary" type="button" data-keep-all>Keep these</button>
           <button class="btn btn-tertiary" type="button" data-picker>Choose my own</button>
         </div>
       </div>
@@ -721,7 +725,7 @@
       <div class="content">
         <div class="top-bar">
           <span class="top-bar-spacer"></span>
-          <button class="top-bar-action" type="button" data-go="d1">Skip</button>
+          <button class="top-bar-action" type="button" data-skip-photos>Skip</button>
         </div>
         <div class="body">
           <h1 id="photos-off-title" class="title1" tabindex="-1">We can’t see<br>your photos yet</h1>
@@ -791,53 +795,344 @@
           <div class="moment-preview">
             <img alt="" data-moment-preview>
             <span class="page-counter" data-moment-counter>1/3</span>
+            <div class="upload-overlay" data-upload-overlay hidden>
+              <img class="upload-spinner" src="assets/spinner.svg" alt="" width="52" height="52">
+              <p class="upload-title" data-upload-title>Sharing…</p>
+              <p class="upload-count" data-upload-count aria-live="polite"></p>
+            </div>
           </div>
           <label class="caption-field">
             <span class="sr-only">Caption (optional)</span>
             <textarea name="caption" rows="1" placeholder="Write a caption…" maxlength="200" enterkeyhint="done"></textarea>
           </label>
           <button class="share-to" type="button" data-todo="Choosing another group">
-            <span class="share-to-avatar"><img src="assets/icon-users-choose.svg" alt="" width="18" height="18"></span>
-            <span class="share-to-text"><small>Sharing to</small><span data-family-name>Your moments</span><small>Just you for now</small></span>
+            <span class="share-to-avatar" data-family-initial-share><img src="assets/icon-users-choose.svg" alt="" width="18" height="18"></span>
+            <span class="share-to-text"><small>Sharing to</small><span data-family-name>Your moments</span><small data-share-sub>Just you for now</small></span>
             <img src="assets/icon-chevron-right-choose.svg" alt="" width="20" height="20">
           </button>
         </div>
         <div class="actions">
           <button class="btn btn-primary btn-glass-edge" type="submit">Share</button>
+          <button class="btn btn-tertiary" type="button" data-upload-cancel hidden>Cancel</button>
         </div>
       </form>
     </section>
 
-    <!-- D1 · Home — nothing shared yet (signed in, skipped photos and the TV) -->
-    <section class="screen" data-screen="d1" hidden aria-labelledby="d1-title">
+    <!-- Home: one screen built from what the person did (home.js). Sheets over it have their own routes. -->
+    <section class="screen feed home" data-screen="home" hidden aria-labelledby="home-title">
       <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
       <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
-      <div class="home-header">
-        <div class="home-title-row">
-          <h1 id="d1-title" class="home-title" tabindex="-1">Your moments</h1>
-          <button type="button" aria-label="Switch group" data-todo="Switching groups"><img src="assets/icon-chevron-down.svg" alt=""></button>
-        </div>
-        <div class="home-status-row">
-          <button class="tv-chip" type="button" data-go="b3"><img src="assets/status-dot-grey.svg" alt="">No TV yet</button>
-          <span class="members">·  Just you</span>
-        </div>
-      </div>
-      <div class="empty-home">
+      <div class="feed-scroll" data-feed aria-label="Moments"></div>
+      <div class="empty-home" data-home-empty hidden>
         <p class="title1">Share your first moment</p>
         <p class="body-small">What you share plays on the family TV.</p>
         <span class="spacer spacer-16"></span>
         <button class="btn btn-primary btn-glass-edge" type="button" data-picker>Share a moment</button>
       </div>
+      <div class="home-header">
+        <div class="home-title-row">
+          <h1 id="home-title" class="home-title" tabindex="-1" data-home-title>Your moments</h1>
+          <button type="button" aria-label="Switch family" aria-haspopup="menu" aria-expanded="false" data-group-toggle><img src="assets/icon-chevron-down.svg" alt=""></button>
+        </div>
+        <div class="home-status-row">
+          <button class="tv-chip" type="button" data-go="b3" data-tv-chip></button>
+          <span class="members" data-members>·  Just you</span>
+        </div>
+        <div class="group-menu" role="menu" aria-label="Your families" data-group-menu hidden></div>
+      </div>
+      <button class="glass-pill left" type="button" data-go="b3" data-home-pill hidden></button>
+      <div class="nudge" data-nudge hidden>
+        <span class="nudge-text"><span class="nudge-title">Invite your family</span><span class="nudge-sub">They can send photos too.</span></span>
+        <button class="nudge-btn" type="button" data-invite>Invite</button>
+      </div>
       <nav class="nav-pill" aria-label="Main">
-        <button class="nav-item" type="button" aria-label="Home" aria-current="page"><span class="nav-icon-home" aria-hidden="true"></span></button>
-        <button class="nav-item" type="button" aria-label="Family" data-todo="Family"><img src="assets/nav-users.svg" alt=""></button>
+        <button class="nav-item" type="button" aria-label="Home" data-nav="home"><span class="nav-icon nav-icon-home-tab" aria-hidden="true"></span></button>
+        <button class="nav-item" type="button" aria-label="Families" data-nav="families"><span class="nav-icon nav-icon-users" aria-hidden="true"></span></button>
         <button class="nav-share" type="button" aria-label="Share a moment" data-picker><img src="assets/icon-plus.svg" alt=""></button>
-        <button class="nav-bell" type="button" aria-label="Notifications" data-todo="Notifications"><img class="bell" src="assets/icon-bell.svg" alt=""><img class="dot" src="assets/nav-active-dot.svg" alt=""></button>
-        <button class="nav-item" type="button" aria-label="Profile" data-todo="Profile"><img src="assets/nav-user.svg" alt=""></button>
+        <button class="nav-item" type="button" aria-label="Notifications" data-nav="notifications"><span class="nav-icon nav-icon-bell" aria-hidden="true"></span><span class="nav-unread" data-nav-unread hidden></span></button>
+        <button class="nav-item" type="button" aria-label="Profile" data-nav="profile"><span class="nav-icon nav-icon-user" aria-hidden="true"></span></button>
+      </nav>
+      <button class="push" type="button" data-push aria-label="Notification">
+        <span class="push-icon"><img src="assets/push-logo.svg" alt=""></span>
+        <span class="push-text">
+          <span class="push-title-row"><span class="push-title">TeaTime</span><span class="push-time">now</span></span>
+          <span class="push-body" data-push-body></span>
+        </span>
+      </button>
+
+      <!-- D3 · Shared, now connect a TV (first share with no TV) -->
+      <div class="connect-layer" data-home-sheet="home-connect" hidden>
+        <div class="connect-dim" data-connect-close></div>
+        <div class="connect-sheet" role="dialog" aria-modal="true" aria-labelledby="connect-title">
+          <span class="connect-grabber" aria-hidden="true"></span>
+          <span class="spacer-10"></span>
+          <h2 id="connect-title" class="title1">Shared. Now connect a TV</h2>
+          <p class="body-small">Your moment is saved. It plays as soon as a TV is connected.</p>
+          <span class="spacer-12"></span>
+          <button class="btn btn-primary btn-glass-edge" type="button" data-go="b3">Connect a TV</button>
+        </div>
+      </div>
+      <!-- F2 · Request sent (asked to join from the TV’s small QR) -->
+      <div class="connect-layer" data-home-sheet="home-sent" hidden>
+        <div class="connect-dim" data-connect-close></div>
+        <div class="connect-sheet" role="dialog" aria-modal="true" aria-labelledby="sent-title">
+          <span class="connect-grabber" aria-hidden="true"></span>
+          <span class="spacer-10"></span>
+          <h2 id="sent-title" class="title1">Sent to Sarah</h2>
+          <p class="body-small">We’ll tell you the moment she says yes. Until then you can look around and get your photos ready.</p>
+          <span class="spacer-12"></span>
+          <button class="btn btn-primary btn-glass-edge" type="button" data-connect-close>Got it</button>
+        </div>
+      </div>
+      <!-- F3 · The admin’s phone: someone wants to join -->
+      <div class="connect-layer" data-home-sheet="home-approve" hidden>
+        <div class="connect-dim" data-connect-close></div>
+        <div class="connect-sheet" role="dialog" aria-modal="true" aria-labelledby="approve-title">
+          <span class="connect-grabber" aria-hidden="true"></span>
+          <span class="spacer-10"></span>
+          <div class="sheet-who">
+            <span class="sheet-who-avatar" aria-hidden="true">T</span>
+            <span class="sheet-who-text"><span class="sheet-who-name">Tom Nguyen</span><span class="sheet-who-sub">Signed in with Google · just now</span></span>
+          </div>
+          <h2 id="approve-title" class="title1">Tom wants to join</h2>
+          <p class="body-small">Tom Nguyen scanned the code on Lisa’s TV. Approve only if you know him — he’ll see every moment and can send to the TV.</p>
+          <span class="spacer-12"></span>
+          <button class="btn btn-primary btn-glass-edge" type="button" data-approve="yes">Approve</button>
+          <button class="btn btn-tertiary" type="button" data-approve="no">Decline</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Overlays shared by Home and the tabs (More, Save, confirm) -->
+    <div class="sheet-overlay" data-overlay="more" hidden>
+      <div class="connect-dim" data-overlay-close></div>
+      <div class="option-sheet" role="dialog" aria-modal="true" aria-label="Moment options">
+        <span class="connect-grabber" aria-hidden="true"></span>
+        <button class="option-row" type="button" data-more-action="save"><img src="assets/sheet-save.svg" alt="" width="22" height="22">Save to phone</button>
+        <button class="option-row" type="button" data-mine-only data-todo="Editing a moment"><img src="assets/sheet-edit.svg" alt="" width="22" height="22">Edit moment</button>
+        <button class="option-row" type="button" data-share-other data-more-action="share-other"><img src="assets/sheet-share.svg" alt="" width="22" height="22">Share to another family</button>
+        <button class="option-row" type="button" data-more-action="copy"><img src="assets/sheet-link.svg" alt="" width="22" height="22">Copy link</button>
+        <button class="option-row is-danger" type="button" data-mine-only data-more-action="delete"><img src="assets/sheet-delete.svg" alt="" width="22" height="22">Delete moment</button>
+      </div>
+    </div>
+    <div class="sheet-overlay" data-overlay="save" hidden>
+      <div class="connect-dim" data-overlay-close></div>
+      <div class="option-sheet save-sheet" role="dialog" aria-modal="true" aria-labelledby="save-title">
+        <span class="connect-grabber" aria-hidden="true"></span>
+        <div class="sheet-header"><h2 id="save-title">Save to phone</h2><p data-save-sub></p></div>
+        <div class="save-grid" data-save-grid></div>
+        <button class="btn btn-primary" type="button" data-save-confirm>Save</button>
+      </div>
+    </div>
+    <div class="sheet-overlay" data-overlay="confirm" hidden>
+      <div class="connect-dim" data-overlay-close></div>
+      <div class="option-sheet confirm-sheet" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-body">
+        <span class="connect-grabber" aria-hidden="true"></span>
+        <h2 id="confirm-title" class="confirm-title" data-confirm-title></h2>
+        <p id="confirm-body" class="body-small" data-confirm-body></p>
+        <button class="btn btn-danger" type="button" data-confirm-yes></button>
+        <button class="btn btn-tertiary" type="button" data-overlay-close>Cancel</button>
+      </div>
+    </div>
+
+    <!-- Tab · Families -->
+    <section class="screen tab" data-screen="families" hidden aria-labelledby="families-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="tab-bar"><h1 id="families-title" class="tab-title" tabindex="-1">Families</h1><span class="top-bar-spacer"></span><button class="top-bar-action" type="button" data-go="families-add">Add family</button></div>
+        <div class="tab-body"><div class="row-list" data-families-list></div></div>
+      </div>
+      <nav class="nav-pill" aria-label="Main">
+        <button class="nav-item" type="button" aria-label="Home" data-nav="home"><span class="nav-icon nav-icon-home-tab" aria-hidden="true"></span></button>
+        <button class="nav-item" type="button" aria-label="Families" data-nav="families"><span class="nav-icon nav-icon-users" aria-hidden="true"></span></button>
+        <button class="nav-share" type="button" aria-label="Share a moment" data-picker><img src="assets/icon-plus.svg" alt=""></button>
+        <button class="nav-item" type="button" aria-label="Notifications" data-nav="notifications"><span class="nav-icon nav-icon-bell" aria-hidden="true"></span><span class="nav-unread" data-nav-unread hidden></span></button>
+        <button class="nav-item" type="button" aria-label="Profile" data-nav="profile"><span class="nav-icon nav-icon-user" aria-hidden="true"></span></button>
+      </nav>
+      <div class="connect-layer" data-add-sheet hidden>
+        <div class="connect-dim" data-go="families"></div>
+        <div class="connect-sheet add-sheet" role="dialog" aria-modal="true" aria-labelledby="add-title">
+          <span class="connect-grabber" aria-hidden="true"></span>
+          <h2 id="add-title" class="add-title">Add a family</h2>
+          <p class="add-sub">Join with the PIN a relative gave you, or start a new family for someone.</p>
+          <button class="btn btn-primary" type="button" data-go="e2">Join with a family PIN</button>
+          <button class="btn btn-tertiary" type="button" data-go="family-new">Create a new family</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- A family: TV and members -->
+    <section class="screen" data-screen="family" hidden aria-labelledby="family-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="families" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <h1 id="family-title" class="top-bar-title" tabindex="-1" data-family-title>Family</h1>
+          <button class="top-bar-action top-bar-end" type="button" data-go="family-edit" data-family-edit>Edit</button>
+        </div>
+        <div class="tab-body">
+          <div class="family-hero">
+            <span class="avatar-disc avatar-disc-xl" data-family-initial>J</span>
+            <span class="row-title" data-family-for></span>
+            <span class="row-sub" data-family-counts></span>
+          </div>
+          <p class="list-label">TV</p>
+          <div class="row-list" data-family-tvs></div>
+          <p class="list-label">Members</p>
+          <div class="row-list" data-family-members></div>
+          <button class="pin-card" type="button" data-share-pin>
+            <span class="row-text"><span class="row-title" data-family-pin>Family PIN</span><span class="row-sub">Share it so relatives can join</span></span>
+            <img src="assets/icon-share.svg" alt="" width="20" height="20">
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Edit family -->
+    <section class="screen" data-screen="family-edit" hidden aria-labelledby="family-edit-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <form class="content" id="family-edit-form" novalidate>
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="family" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <h1 id="family-edit-title" class="top-bar-title" tabindex="-1">Edit family</h1>
+          <button class="top-bar-action top-bar-end" type="submit">Save</button>
+        </div>
+        <div class="tab-body">
+          <div class="family-hero">
+            <span class="avatar-disc avatar-disc-96" data-edit-initial>J</span>
+            <button class="link-btn" type="button" data-todo="Changing the family photo">Change photo</button>
+          </div>
+          <label class="field"><span class="field-label">Family name</span><input class="field-box is-glass" name="name" type="text" maxlength="40" autocapitalize="words" data-autofocus></label>
+          <label class="field"><span class="field-label">Who is it for</span><input class="field-box is-glass" name="forWhom" type="text" maxlength="30" autocapitalize="words"></label>
+          <p class="body-small small" data-for-hint></p>
+          <p class="list-label caps">Manage</p>
+          <div class="manage-card">
+            <button class="manage-row" type="button" data-leave-family>
+              <span class="row-icon is-brand is-square"><img src="assets/icon-users-white.svg" alt="" width="20" height="20"></span>
+              <span class="row-text"><span class="row-title">Leave this family</span><span class="row-sub">You stop seeing its moments and TV. Ask for the PIN to come back.</span></span>
+              <img src="assets/icon-chevron-right.svg" alt="" width="20" height="20">
+            </button>
+            <button class="manage-row" type="button" data-delete-family>
+              <span class="row-icon is-danger is-square"><img src="assets/icon-trash.svg" alt="" width="20" height="20"></span>
+              <span class="row-text"><span class="row-title is-danger">Delete this family</span><span class="row-sub" data-delete-sub></span></span>
+              <img src="assets/icon-chevron-right.svg" alt="" width="20" height="20">
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Create a new family -->
+    <section class="screen" data-screen="family-new" hidden aria-labelledby="family-new-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <form class="content" id="family-new-form" novalidate>
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="families" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <h1 id="family-new-title" class="top-bar-title" tabindex="-1">Create a new family</h1>
+          <span class="top-bar-end"></span>
+        </div>
+        <div class="tab-body">
+          <div class="family-hero">
+            <span class="avatar-wrap"><span class="avatar-disc avatar-disc-96" data-new-initial>?</span><span class="camera-badge"><img src="assets/icon-camera.svg" alt="" width="16" height="16"></span></span>
+            <button class="link-btn" type="button" data-todo="Adding a family photo">Add a photo (optional)</button>
+          </div>
+          <label class="field"><span class="field-label">Family name</span><input class="field-box is-glass" name="name" type="text" maxlength="40" autocapitalize="words" placeholder="e.g. Nan’s place" data-autofocus></label>
+          <p class="body-small small">Your family sees this name on the TV.</p>
+        </div>
+        <div class="actions"><button class="btn btn-primary" type="submit" disabled>Create family</button></div>
+      </form>
+    </section>
+
+    <!-- Tab · Notifications -->
+    <section class="screen tab" data-screen="notifications" hidden aria-labelledby="notifications-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="tab-bar">
+          <h1 id="notifications-title" class="tab-title" tabindex="-1">Notifications</h1>
+          <span class="count-badge" data-unread-badge hidden></span>
+          <span class="top-bar-spacer"></span>
+          <button class="circle-btn" type="button" aria-label="Mark all as read" data-mark-read><span class="mask-icon" style="--icon:url(assets/icon-more-dots.svg)"></span></button>
+        </div>
+        <div class="tab-body tab-body-flush">
+          <div data-notifications-list></div>
+          <div class="notes-empty" data-notifications-empty hidden>
+            <span class="notes-empty-icon"><span class="mask-icon" style="--icon:url(assets/icon-bell.svg)"></span></span>
+            <p class="row-title">Nothing yet</p>
+            <p class="notes-empty-sub">When the family sees, loves or comments on a moment, or a TV needs a hand, it shows here.</p>
+          </div>
+        </div>
+      </div>
+      <nav class="nav-pill" aria-label="Main">
+        <button class="nav-item" type="button" aria-label="Home" data-nav="home"><span class="nav-icon nav-icon-home-tab" aria-hidden="true"></span></button>
+        <button class="nav-item" type="button" aria-label="Families" data-nav="families"><span class="nav-icon nav-icon-users" aria-hidden="true"></span></button>
+        <button class="nav-share" type="button" aria-label="Share a moment" data-picker><img src="assets/icon-plus.svg" alt=""></button>
+        <button class="nav-item" type="button" aria-label="Notifications" data-nav="notifications"><span class="nav-icon nav-icon-bell" aria-hidden="true"></span><span class="nav-unread" data-nav-unread hidden></span></button>
+        <button class="nav-item" type="button" aria-label="Profile" data-nav="profile"><span class="nav-icon nav-icon-user" aria-hidden="true"></span></button>
       </nav>
     </section>
 
-    <!-- Home feed screens (A4–A6, B7, B8, D4, D5; D3 is D4 with a sheet) are built from one template in app.js -->
+    <!-- Tab · Profile -->
+    <section class="screen tab" data-screen="profile" hidden aria-labelledby="profile-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <span class="top-bar-end"></span>
+          <h1 id="profile-title" class="top-bar-title" tabindex="-1">My profile</h1>
+          <button class="top-bar-end icon-btn" type="button" aria-label="Settings" data-todo="Settings"><img src="assets/icon-settings.svg" alt="" width="24" height="24"></button>
+        </div>
+        <div class="tab-body tab-body-flush profile-body">
+          <div class="profile-who">
+            <span class="profile-ring"><span class="profile-avatar" data-profile-avatar></span><button class="edit-badge" type="button" aria-label="Edit profile photo" data-todo="Editing your photo"><img src="assets/icon-pencil-dark.svg" alt="" width="14" height="14"></button></span>
+            <span class="profile-name-block"><span class="profile-name" data-profile-name></span><span class="row-sub">Member since Nov 2026</span></span>
+          </div>
+          <div class="profile-section">
+            <p class="section-head">Your families <span class="count-pill" data-profile-families-count>0</span></p>
+            <div class="family-chips" data-profile-families></div>
+          </div>
+          <div class="profile-section" data-profile-stories>
+            <p class="section-head">Stories <span class="count-pill">2</span></p>
+            <div class="highlights">
+              <button class="highlight" type="button" data-story="g2"><span class="story-ring story-ring-lg"><img src="assets/story-cover-timeline.png" alt=""></span><span>Timeline</span></button>
+              <button class="highlight" type="button" data-story="g3"><span class="story-ring story-ring-lg"><img src="assets/story-cover-place.png" alt=""></span><span>Da Lat</span></button>
+            </div>
+          </div>
+          <div class="profile-section is-flush">
+            <p class="section-head">Moments <span class="count-pill" data-profile-moments-count>0</span></p>
+            <div class="profile-grid" data-profile-grid></div>
+          </div>
+        </div>
+      </div>
+      <nav class="nav-pill" aria-label="Main">
+        <button class="nav-item" type="button" aria-label="Home" data-nav="home"><span class="nav-icon nav-icon-home-tab" aria-hidden="true"></span></button>
+        <button class="nav-item" type="button" aria-label="Families" data-nav="families"><span class="nav-icon nav-icon-users" aria-hidden="true"></span></button>
+        <button class="nav-share" type="button" aria-label="Share a moment" data-picker><img src="assets/icon-plus.svg" alt=""></button>
+        <button class="nav-item" type="button" aria-label="Notifications" data-nav="notifications"><span class="nav-icon nav-icon-bell" aria-hidden="true"></span><span class="nav-unread" data-nav-unread hidden></span></button>
+        <button class="nav-item" type="button" aria-label="Profile" data-nav="profile"><span class="nav-icon nav-icon-user" aria-hidden="true"></span></button>
+      </nav>
+    </section>
+
+    <!-- Shared (after a moment uploads) -->
+    <section class="screen" data-screen="shared" hidden aria-labelledby="shared-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="body shared-body">
+          <div class="shared-preview"><img src="assets/photo-dinner.png" alt="" data-shared-photo><span class="shared-check"><img src="assets/icon-check.svg" alt="" width="24" height="24"></span></div>
+          <h1 id="shared-title" class="shared-title" tabindex="-1" data-shared-title>Shared</h1>
+          <p class="body-small center" data-shared-sub></p>
+        </div>
+        <div class="actions">
+          <p class="link-row" data-last-free hidden><span>That was your last free moment.</span><button type="button" data-go="f4">See plans</button></p>
+          <button class="btn btn-primary" type="button" data-shared-done>Done</button>
+        </div>
+      </div>
+    </section>
 
     <div class="toast" role="status" aria-live="polite" hidden></div>
   </main>

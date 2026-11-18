@@ -2,40 +2,18 @@
 
 const GRID_PHOTOS = ["birthday", "beach", "newborn", "dog", "roses", "dinner", "trophy", "drawing"];
 
-// Home feed screens share one layout; only the moment and the status change.
-const FEEDS = {
-  a4: { photo: "newborn", tv: "TV on", dot: "green", meta: "25 December 2025 · 9 photos", caption: null, count: "1 / 9", pill: "Adding 38 of 128 photos" },
-  a5: { photo: "newborn", tv: "Lisa’s TV on", dot: "green", meta: "25 December 2025 · 9 photos", caption: null, count: "1 / 9", stories: true },
-  a6: { photo: "birthday", tv: "Lisa’s TV on", dot: "green", meta: "Just now · 6 photos", caption: "Lily’s 6th birthday 🎂", count: "1 / 6" },
-  b7: { photo: "roses", tv: "No TV yet", dot: "grey", meta: "24 December 2025 · 6 photos", caption: null, count: "1 / 6", pill: "" },
-  b8: { photo: "roses", tv: "", dot: "green", meta: "24 December 2025 · 6 photos", caption: null, count: "1 / 6", push: true },
-  // Row D: shared with "+" before any TV. The pill and "No TV yet" both open Which TV.
-  d4: { photo: "roses", tv: "No TV yet", dot: "grey", meta: "Just now · 3 photos", caption: null, count: "1 / 3", pill: "Waiting for a TV", dots: 3, toWhichTv: true, sheet: "connect" },
-  d5: { photo: "roses", tv: "TV on", dot: "green", meta: "Just now · 3 photos", caption: null, count: "1 / 3", dots: 3, nudge: true },
-  // Row 4 / 5: a second member lands in the family's own feed (their moments, their TV).
-  joined: { photo: "newborn", tv: "Lisa’s TV on", dot: "green", meta: "25 December 2025 · 9 photos", caption: null, count: "1 / 9", author: "Sarah Johnson", members: "·  5 in the family", push: true },
-  // Row 5: asked to join from the TV's small QR. Their own Home, nothing from the family yet.
-  "f2-home": { photo: "roses", tv: "No TV yet", dot: "grey", meta: "Just now · 3 photos", caption: null, count: "1 / 3", pill: "Waiting for Sarah", dots: 3, sheet: "sent", push: true },
-  // Row 5, the admin's phone: the request opens as a sheet on Home.
-  "f3-home": { photo: "newborn", tv: "Lisa’s TV on", dot: "green", meta: "25 December 2025 · 9 photos", caption: null, count: "1 / 9", author: "Sarah Johnson", members: "·  4 in the family", sheet: "approve" },
-  // Row 7: the bulk upload stays one moment; its stories sit on the moment.
-  g1: { src: "assets/hero-photo.png", tv: "Lisa’s TV on", dot: "green", meta: "100 photos · May – Oct 2026", caption: null, captionPrompt: "Six months in one go — add a caption", count: "1 / 100", stories: true },
-};
-
 // Inside Compare, each phone is this page in a frame with ?embed=1.
 const EMBED = new URLSearchParams(location.search).has("embed");
 
 const ROUTES = [
-  "tv", "a1", "a2", "a3", "a4", "a5", "a6",
-  "b1", "b-a2", "b2", "b3", "b4", "b5", "b6", "b7", "b8",
-  "c1", "c2", "c3", "photos-off", "all-photos", "picker", "moment",
-  "d1", "d3", "d4", "d5",
-  "e1", "e2", "e4", "e5", "e6", "e7", "joined", "declined",
-  "f1", "f2", "f2-home", "f3", "f3-home", "f4",
-  "g1", "g2", "g3",
+  "tv", "a1", "a2", "a3", "b1", "b-a2", "b2", "b3", "b4", "b5", "b6",
+  "c1", "c2", "c3", "photos-off", "all-photos", "picker", "moment", "shared",
+  "e1", "e2", "e4", "e5", "e6", "e7", "declined", "f1", "f4",
+  "home", "home-connect", "home-sent", "home-approve", "g2", "g3",
+  "families", "families-add", "family", "family-edit", "family-new", "notifications", "profile",
 ];
-// Routes drawn by another screen's section: a sheet over a Home, the story player, E1 after a decline.
-const SECTION_OF = { "b-a2": "a2", d3: "d4", f2: "f2-home", f3: "f3-home", declined: "e1", g2: "story", g3: "story" };
+// Routes drawn by another screen's section: sheets over Home (D3, F2, F3), the story player, E1 after a decline.
+const SECTION_OF = { "b-a2": "a2", "home-connect": "home", "home-sent": "home", "home-approve": "home", "families-add": "families", declined: "e1", g2: "story", g3: "story" };
 // Routes that only set where the journey started, then show its first screen.
 const ENTRY = {
   ad: () => { saveSession({ path: "b", joinVia: null }); return "b1"; },      // ad, poster or app store
@@ -58,110 +36,6 @@ function buildGrids() {
   document.querySelectorAll("[data-grid]").forEach((grid) => {
     grid.innerHTML = tiles + `<button class="moments-more" type="button" data-go="all-photos">+120</button>`;
   });
-}
-
-// Sheets over a Home. No Cancel button: swipe down, tap outside or Esc does it later.
-const SHEETS = {
-  connect: (id) => `
-          <h2 id="${id}-sheet-title" class="title1">Shared. Now connect a TV</h2>
-          <p class="body-small">Your moment is saved. It plays as soon as a TV is connected.</p>
-          <span class="spacer-12"></span>
-          <button class="btn btn-primary btn-glass-edge" type="button" data-go="b3">Connect a TV</button>`,
-  sent: (id) => `
-          <h2 id="${id}-sheet-title" class="title1">Sent to Sarah</h2>
-          <p class="body-small">We’ll tell you the moment she says yes. Until then you can look around and get your photos ready.</p>
-          <span class="spacer-12"></span>
-          <button class="btn btn-primary btn-glass-edge" type="button" data-connect-close>Got it</button>`,
-  approve: (id) => `
-          <div class="sheet-who">
-            <span class="sheet-who-avatar" aria-hidden="true">T</span>
-            <span class="sheet-who-text"><span class="sheet-who-name">Tom Nguyen</span><span class="sheet-who-sub">Signed in with Google · just now</span></span>
-          </div>
-          <h2 id="${id}-sheet-title" class="title1">Tom wants to join</h2>
-          <p class="body-small">Tom Nguyen scanned the code on Lisa’s TV. Approve only if you know him — he’ll see every moment and can send to the TV.</p>
-          <span class="spacer-12"></span>
-          <button class="btn btn-primary btn-glass-edge" type="button" data-approve="yes">Approve</button>
-          <button class="btn btn-tertiary" type="button" data-approve="no">Decline</button>`,
-};
-
-function feedMarkup(id, f) {
-  const caption = f.caption
-    ? `<p class="caption">${f.caption}</p>`
-    : `<button class="caption" type="button" data-todo="Adding a caption">${f.captionPrompt || "Add a caption"}</button>`;
-  return `
-    <section class="screen feed" data-screen="${id}" hidden aria-labelledby="${id}-title">
-      <img class="feed-photo" src="${f.src || `assets/photo-${f.photo}.png`}" alt="" loading="lazy" decoding="async" data-feed-photo>
-      <div class="feed-shade"></div>
-      <div class="home-header">
-        <div class="home-title-row">
-          <h1 id="${id}-title" class="home-title" tabindex="-1">Your moments</h1>
-          <button type="button" aria-label="Switch group" data-todo="Switching groups"><img src="assets/icon-chevron-down.svg" alt=""></button>
-        </div>
-        <div class="home-status-row">
-          ${f.toWhichTv
-            ? `<button class="tv-chip" type="button" data-go="b3"><img src="assets/status-dot-${f.dot}.svg" alt=""><span data-tv-label>${f.tv}</span></button>`
-            : `<span class="tv-chip"><img src="assets/status-dot-${f.dot}.svg" alt=""><span data-tv-label>${f.tv}</span></span>`}
-          <span class="members">${f.members || "·  Just you"}</span>
-        </div>
-      </div>
-      ${f.pill === undefined ? "" : f.toWhichTv
-        ? `<button class="glass-pill left" type="button" data-go="b3" data-pill>${f.pill}</button>`
-        : `<p class="glass-pill left" data-pill>${f.pill}</p>`}
-      ${f.nudge ? `
-      <div class="nudge">
-        <span class="nudge-text"><span class="nudge-title">Invite your family</span><span class="nudge-sub">They can send photos too.</span></span>
-        <button class="nudge-btn" type="button" data-invite>Invite</button>
-      </div>` : ""}
-      <p class="glass-pill right${f.nudge ? " low" : ""}" data-count>${f.count}</p>
-      ${f.stories ? `
-      <div class="stories" aria-label="Stories from this moment">
-        <button class="story-btn" type="button" data-story="g2"><span class="story-ring"><img src="assets/story-cover-timeline.png" alt=""></span><span class="story-label">Timeline</span></button>
-        <button class="story-btn" type="button" data-story="g3"><span class="story-ring"><img src="assets/story-cover-place.png" alt=""></span><span class="story-label">Da Lat</span></button>
-      </div>` : ""}
-      <img class="pagination${f.dots === 3 ? " dots-3" : ""}" src="assets/pagination-${f.dots || 5}.svg" alt="">
-      <div class="action-rail">
-        <button type="button" data-todo="Likes"><img src="assets/icon-heart.svg" alt="">0<span class="sr-only"> likes</span></button>
-        <button type="button" aria-label="Comments" data-todo="Comments"><img src="assets/icon-message-circle.svg" alt=""></button>
-        <button type="button" data-todo="Saving to the phone"><img src="assets/icon-download.svg" alt="">Save</button>
-        <button type="button" aria-label="More" data-todo="More options"><img src="assets/icon-more-horizontal.svg" alt=""></button>
-      </div>
-      <div class="caption-panel">
-        <div class="author-row">
-          <span class="avatar-ring"><img src="assets/avatar-sarah.png" alt=""></span>
-          <span class="author"><span class="author-name"${f.author ? "" : " data-author"}>${f.author || "Sarah Johnson"}</span><span class="author-meta" data-meta>${f.meta}</span></span>
-        </div>
-        <div data-caption-slot>${caption}</div>
-      </div>
-      <nav class="nav-pill" aria-label="Main">
-        <button class="nav-item" type="button" aria-label="Home" aria-current="page"><span class="nav-icon-home" aria-hidden="true"></span></button>
-        <button class="nav-item" type="button" aria-label="Family" data-todo="Family"><img src="assets/nav-users.svg" alt=""></button>
-        <button class="nav-share" type="button" aria-label="Share a moment" data-picker><img src="assets/icon-plus.svg" alt=""></button>
-        <button class="nav-bell" type="button" aria-label="Notifications" data-todo="Notifications"><img class="bell" src="assets/icon-bell.svg" alt=""><img class="dot" src="assets/nav-active-dot.svg" alt=""></button>
-        <button class="nav-item" type="button" aria-label="Profile" data-todo="Profile"><img src="assets/nav-user.svg" alt=""></button>
-      </nav>
-      ${f.push ? `
-      <button class="push" type="button" data-push aria-label="Notification">
-        <span class="push-icon"><img src="assets/push-logo.svg" alt=""></span>
-        <span class="push-text">
-          <span class="push-title-row"><span class="push-title">TeaTime</span><span class="push-time">now</span></span>
-          <span class="push-body" data-push-body></span>
-        </span>
-      </button>` : ""}
-      ${f.sheet ? `
-      <div class="connect-layer" data-connect-sheet hidden>
-        <div class="connect-dim" data-connect-close></div>
-        <div class="connect-sheet" role="dialog" aria-modal="true" aria-labelledby="${id}-sheet-title">
-          <span class="connect-grabber" aria-hidden="true"></span>
-          <span class="spacer-10"></span>
-          ${SHEETS[f.sheet](id)}
-        </div>
-      </div>` : ""}
-    </section>`;
-}
-
-function buildFeeds() {
-  const html = Object.entries(FEEDS).map(([id, f]) => feedMarkup(id, f)).join("");
-  toastEl.insertAdjacentHTML("beforebegin", html);
 }
 
 /* ---------- Session: which path, phone number, name (kept across refreshes) ---------- */
@@ -269,14 +143,14 @@ function startSigningIn(provider) {
       return;
     }
     // Demo identities: whoever scanned the TV’s small QR is Tom, asking to join Sarah’s family.
-    saveSession(loadSession().joinVia === "tvqr" ? { first: "Tom", last: "Nguyen" } : { first: "Sarah", last: "Johnson" });
+    saveSession({ provider, ...(loadSession().joinVia === "tvqr" ? { first: "Tom", last: "Nguyen" } : { first: "Sarah", last: "Johnson" }) });
     go(afterSignIn());
   }, 1400);
 }
 
 // Swipe a sheet down to close it, like the phone’s own sheets (the connect sheet means “later”).
 function initSheetSwipe() {
-  device.querySelectorAll(".system-sheet, .connect-sheet").forEach((sheet) => {
+  device.querySelectorAll(".system-sheet, .connect-sheet, .option-sheet").forEach((sheet) => {
     let startY = null;
     sheet.addEventListener("pointerdown", (e) => { if (!e.target.closest("button")) startY = e.clientY; });
     sheet.addEventListener("pointermove", (e) => {
@@ -288,7 +162,11 @@ function initSheetSwipe() {
       const moved = e.clientY - startY;
       startY = null;
       sheet.style.transform = "";
-      if (moved > 80) sheet.classList.contains("connect-sheet") ? closeFeedSheet(sheet) : closeSheet();
+      if (moved > 80) {
+        if (!sheet.classList.contains("connect-sheet") && !sheet.classList.contains("option-sheet")) closeSheet();
+        else if (sheet.closest("[data-overlay]")) closeOverlays();
+        else go(SECTION_OF[location.hash.slice(1)] || "home", { replace: true });
+      }
     };
     sheet.addEventListener("pointerup", end);
     sheet.addEventListener("pointercancel", end);
@@ -339,7 +217,7 @@ function initPhoneForms() {
   nameForm.addEventListener("submit", (e) => {
     e.preventDefault();
     if (!nameForm.first.value.trim()) return;
-    saveSession({ first: nameForm.first.value.trim(), last: nameForm.last.value.trim() });
+    saveSession({ first: nameForm.first.value.trim(), last: nameForm.last.value.trim(), provider: null });
     go(afterSignIn());
   });
   checkName();
@@ -419,14 +297,6 @@ function openPicker() {
   go("picker");
 }
 
-// Where a shared moment lands: the empty Home asks for a TV, path B goes on to the TV, path A shows it on Home.
-function momentDestination() {
-  const { pickerFrom, path } = loadSession();
-  if (/^d\d$/.test(pickerFrom)) return "d3";
-  if (FEEDS[pickerFrom]) return pickerFrom;
-  return path === "b" ? "b3" : "a6";
-}
-
 function initMomentForm() {
   const form = document.getElementById("moment-form");
   form.caption.addEventListener("input", () => saveSession({ caption: form.caption.value }));
@@ -434,33 +304,14 @@ function initMomentForm() {
     e.preventDefault();
     const { picked = [], caption = "" } = loadSession();
     if (!picked.length) return go("picker");
-    const dest = momentDestination();
     const moment = { photos: picked, caption: caption.trim() };
     // The 4th upload asks for a subscription first; nothing is sent until they choose.
     if (needsPaywall()) {
-      saveSession({ pendingMoment: { moment, dest } });
+      saveSession({ pendingMoment: { moment } });
       return go("f4");
     }
-    finishMoment(moment, dest);
+    startMomentUpload(moment);
   });
-}
-
-function finishMoment(moment, dest) {
-  countUpload();
-  saveSession({ moment, momentOn: dest === "d3" ? "d4" : dest, picked: [], caption: "", pendingMoment: null });
-  go(dest);
-}
-
-// Show the person's own new moment on a Home screen: first photo, count, caption (or "Add a caption").
-function applyMoment(screen, m) {
-  screen.querySelector("[data-feed-photo]").src = `assets/photo-${m.photos[0]}.png`;
-  screen.querySelector("[data-meta]").textContent = `Just now · ${plural(m.photos.length, "photo")}`;
-  screen.querySelector("[data-count]").textContent = `1 / ${m.photos.length}`;
-  const p = document.createElement(m.caption ? "p" : "button");
-  p.className = "caption";
-  if (m.caption) p.textContent = m.caption;
-  else { p.type = "button"; p.dataset.todo = "Adding a caption"; p.textContent = "Add a caption"; }
-  screen.querySelector("[data-caption-slot]").replaceChildren(p);
 }
 
 /* ---------- E1 · Name your family, E2 · family PIN, E4–E7 · care community ---------- */
@@ -547,6 +398,8 @@ function initFamilyForms() {
     const name = familyForm.family.value.trim();
     if (!name) return familyForm.family.focus();
     saveSession({ family: name, familyDraft: name, community: null, resident: null });
+    // Path A started on the TV: that TV is added to the family named here (A1 note).
+    ensureOwnFamily(name, loadSession().path === "a" ? { tvs: [{ name: "Lisa’s TV", place: "Living room", state: "on" }] } : {});
     go(photoPrompt());
   });
 
@@ -580,10 +433,14 @@ function initFamilyForms() {
       pinForm.pin.select();
       return;
     }
-    saveSession({ family: "The Johnsons", joinedBy: "pin" });
+    saveSession({ family: "The Johnsons", joinedBy: "pin", inOnboarding: false });
+    joinFamily(johnsonsFamily("member"));
+    seedFamilyEvents();
+    addEvent({ kind: "person", who: "Sarah", text: "You joined <b>The Johnsons</b>" });
+    queuePush("You’ve joined The Johnsons. Their moments are playing on Lisa’s TV.");
     pinForm.pin.value = "";
     paintPin();
-    go("joined");
+    go("home");
   });
   paintPin();
 
@@ -751,52 +608,156 @@ function initStoryPlayer() {
   });
 }
 
-/* ---------- Sheets over Home, and clicks for the new screens ---------- */
+/* ---------- Flows: what each choice does to the state, then where it goes ---------- */
 
-// Close a sheet over Home (D3, F2, F3): stay on that Home.
-function closeFeedSheet(el) {
-  const home = el.closest("[data-screen]")?.dataset.screen;
-  if (home) go(home, { replace: true });
+// The family's moments and TV live in home.js; these are the onboarding steps that change them.
+function bulkFromPhotos(keptOnly) {
+  const count = photoCount();
+  addMyMoment({ kind: "bulk", photos: GRID_PHOTOS, count, meta: `${count} photos · May – Oct 2026`, caption: "" });
+  countUpload();
+}
+
+// After "Send now" / "Send N photos": path A has the TV in front of them, so they start arriving.
+function sendAll() {
+  bulkFromPhotos(false);
+  if (tvOnList(currentFamily()).length) startBulkUpload();
+  go("home");
+}
+
+// "Keep these" (path B): photos are kept for the TV, then Which TV.
+function keepAll() {
+  bulkFromPhotos(true);
+  go("b3");
+}
+
+// Where a shared moment lands. A first share with no TV asks for one (D3); path B in onboarding goes on to Which TV.
+function afterShareRoute() {
+  const s = loadSession();
+  const f = currentFamily();
+  if (f && !f.tvs.length && !s.connectSeen) {
+    saveSession({ connectSeen: true });
+    return s.path === "b" && s.inOnboarding ? "b3" : "home-connect";
+  }
+  return "shared";
+}
+
+const SHARE_STEP_MS = 420;
+let uploadTimer = null;
+
+// Share: the photos upload one by one over the preview, then the Shared screen (or D3 / B3).
+function startMomentUpload(moment) {
+  const screen = device.querySelector('[data-screen="moment"]');
+  const overlay = screen.querySelector("[data-upload-overlay]");
+  const fam = currentFamily();
+  overlay.hidden = false;
+  screen.querySelector("[data-upload-title]").textContent = `Sharing to ${fam?.name || "your family"}…`;
+  screen.querySelector("[type=submit]").hidden = true;
+  screen.querySelector("[data-upload-cancel]").hidden = false;
+  let done = 0;
+  const total = moment.photos.length;
+  const step = () => {
+    done += 1;
+    screen.querySelector("[data-upload-count]").textContent = `${Math.min(done, total)} of ${plural(total, "photo")}`;
+    if (done < total) uploadTimer = setTimeout(step, SHARE_STEP_MS);
+    else uploadTimer = setTimeout(() => finishMoment(moment), 500);
+  };
+  screen.querySelector("[data-upload-count]").textContent = `0 of ${plural(total, "photo")}`;
+  uploadTimer = setTimeout(step, SHARE_STEP_MS);
+}
+
+function resetMomentUpload() {
+  clearTimeout(uploadTimer);
+  const screen = device.querySelector('[data-screen="moment"]');
+  screen.querySelector("[data-upload-overlay]").hidden = true;
+  screen.querySelector("[type=submit]").hidden = false;
+  screen.querySelector("[data-upload-cancel]").hidden = true;
+}
+
+function finishMoment(moment) {
+  countUpload();
+  addMyMoment({ kind: "own", photos: moment.photos, count: moment.photos.length, meta: `Just now · ${plural(moment.photos.length, "photo")}`, caption: moment.caption });
+  saveSession({ picked: [], caption: "", pendingMoment: null, lastShared: moment });
+  const f = currentFamily();
+  const tv = tvOnList(f)[0];
+  if (tv) later(() => addEvent({ kind: "person", who: ownerOf(tv.name) || "Lisa", text: `<b>${ownerOf(tv.name) || "Lisa"}</b> saw your photo on the big screen`, thumb: moment.photos[0] }), 4000);
+  resetMomentUpload();
+  go(afterShareRoute(), { replace: true });
 }
 
 function handleNewClick(el) {
+  if (handleHomeClick(el)) return true;
   if (el.dataset.story) {
-    saveSession({ storyFrom: location.hash.slice(1) || "g1" });
+    saveSession({ storyFrom: location.hash.slice(1) || "home" });
     go(el.dataset.story);
   } else if (el.hasAttribute("data-story-close")) {
     closeStory();
+  } else if (el.hasAttribute("data-send-all")) {
+    sendAll();
+  } else if (el.hasAttribute("data-keep-all")) {
+    keepAll();
+  } else if (el.hasAttribute("data-skip-photos")) {
+    // Skip: Home with nothing sent (D1).
+    saveSession({ path: "d", inOnboarding: false });
+    go("home");
   } else if (el.dataset.community) {
     saveSession({ community: el.dataset.community, residentDraft: null });
     go("e5");
-  } else if (el.hasAttribute("data-resident-join")) {
-    // Joins the resident's existing family; moments appear on their TV.
-    saveSession({ family: `${possessive(careResident().first)} family` });
-    go(photoPrompt());
-  } else if (el.hasAttribute("data-care-continue")) {
-    // No match: a family is made at once and the community is told. Photos next, as in Flow 2.
-    saveSession({ family: `${possessive(careResident().first)} family` });
+  } else if (el.hasAttribute("data-resident-join") || el.hasAttribute("data-care-continue")) {
+    // Matched: joins the resident's family. No match: a family is made at once and the community is told.
+    // Photos next, as in Flow 2.
+    const r = careResident();
+    ensureOwnFamily(`${possessive(r.first)} family`, { forWhom: r.first, community: loadSession().community || DEFAULT_COMMUNITY });
+    saveSession({ family: `${possessive(r.first)} family`, path: "b" });
     go(photoPrompt());
   } else if (el.hasAttribute("data-not-family")) {
     saveSession({ joinVia: null });
     go("e1");
+  } else if (el.hasAttribute("data-ask-join")) {
+    // Their own (empty) Home while the admin decides.
+    ensureOwnFamily(familyFromSurname(loadSession().last) || "My family");
+    saveSession({ joinPending: true, joinVia: null, inOnboarding: false });
+    go("home-sent");
   } else if (el.dataset.approve) {
     const yes = el.dataset.approve === "yes";
-    go("f3-home", { replace: true });
+    if (yes) {
+      const f = currentFamily();
+      updateFamily(f.id, (fam) => ({ members: [...fam.members, { first: "Tom", last: "Nguyen", rel: "" }] }));
+      addEvent({ kind: "person", who: "Tom", text: "<b>Tom</b> joined The Johnsons" });
+    }
+    go("home", { replace: true });
     toast(yes ? "Tom is in. He’s been told “You’re in”." : "Tom has been told. Nothing else changes.");
+  } else if (el.hasAttribute("data-connect-close")) {
+    go("home", { replace: true });
+  } else if (el.hasAttribute("data-tv-later")) {
+    saveSession({ inOnboarding: false });
+    go("home");
+  } else if (el.hasAttribute("data-tv-scan")) {
+    connectTvHere();
+    saveSession({ inOnboarding: false });
+    go("home");
+  } else if (el.hasAttribute("data-shared-done")) {
+    go(loadSession().path === "b" && loadSession().inOnboarding && !currentFamily()?.tvs.length ? "b3" : "home");
+  } else if (el.hasAttribute("data-upload-cancel")) {
+    resetMomentUpload();
+    toast("Not shared");
+  } else if (el.hasAttribute("data-push")) {
+    el.classList.remove("is-shown");
+    if (el.dataset.pushGo) go(el.dataset.pushGo);
   } else if (el.hasAttribute("data-subscribe")) {
     saveSession({ subscribed: true });
     const { pendingMoment } = loadSession();
     toast("Subscribed. Demo only — no payment taken.");
-    if (pendingMoment) finishMoment(pendingMoment.moment, pendingMoment.dest);
-    else go(loadSession().pickerFrom && FEEDS[loadSession().pickerFrom] ? loadSession().pickerFrom : "g1");
+    if (pendingMoment) { saveSession({ resumeUpload: true }); go("moment", { replace: true }); }
+    else go("home");
   } else if (el.hasAttribute("data-not-now")) {
-    // Nothing is uploaded; back to Home.
-    const { pickerFrom } = loadSession();
+    // Nothing is uploaded; back to Home. The family is told what's waiting.
+    const f = currentFamily();
     saveSession({ pendingMoment: null, picked: [], caption: "" });
-    go(FEEDS[pickerFrom] ? pickerFrom : /^d\d$/.test(pickerFrom || "") ? "d1" : "g1");
+    addEvent({ kind: "plan", text: `1 moment is waiting until <b>${escapeHtml(f?.name || "your family")}</b> subscribes`, icon: "hourglass" });
+    go("home");
     toast("Not uploaded");
   } else if (el.hasAttribute("data-paywall-back")) {
-    loadSession().pendingMoment ? go("moment") : history.length > 1 ? history.back() : go("g1");
+    loadSession().pendingMoment ? go("moment") : history.length > 1 ? history.back() : go("home");
   } else {
     return false;
   }
@@ -809,8 +770,9 @@ const NEW_ENTER = {
     const input = screen.querySelector("[name=family]");
     input.value = s.familyDraft ?? s.family ?? familyFromSurname(s.last);
     screen.querySelector("[type=submit]").disabled = !input.value.trim();
+    saveSession({ inOnboarding: true });
     if (route === "declined") {
-      saveSession({ joinVia: null });
+      saveSession({ joinVia: null, joinPending: false });
       later(() => toast("The Johnsons declined your request. Name your own family, or join another way."), 300);
     }
   },
@@ -853,25 +815,23 @@ const NEW_ENTER = {
   f4(_, screen) {
     screen.querySelector("[data-paywall-back]").setAttribute("aria-label", loadSession().pendingMoment ? "Back to your moment" : "Back");
   },
-  joined(_, screen) {
-    const s = loadSession();
-    saveSession({ family: "The Johnsons" });
-    screen.querySelector("[data-push-body]").textContent = s.joinedBy === "pin"
-      ? "You’ve joined The Johnsons. Their moments are playing on Lisa’s TV."
-      : "Sarah said yes. You’re in The Johnsons.";
-    const push = screen.querySelector("[data-push]");
-    push.classList.remove("is-shown");
-    later(() => push.classList.add("is-shown"), 400);
-    later(() => push.classList.remove("is-shown"), 6500);
+  home(route, screen) {
+    // Reaching Home ends onboarding; a person without a family yet (e.g. deep link) gets an empty own family.
+    saveSession({ inOnboarding: false });
+    if (!families().length) ensureOwnFamily(familyFromSurname(loadSession().last) || "My family");
+    renderHome(route, screen);
   },
-  "f2-home"(route, screen) {
-    saveSession({ joinedBy: "approval" });
-    const push = screen.querySelector("[data-push]");
-    push.classList.remove("is-shown");
-    if (route !== "f2-home") return; // the sheet is still up
-    screen.querySelector("[data-push-body]").textContent = "Sarah said yes. You’re in The Johnsons — tap to see the family’s moments.";
-    // Stand-in for the admin approving; stays until tapped.
-    later(() => push.classList.add("is-shown"), 5000);
+  shared(_, screen) {
+    const s = loadSession();
+    const f = currentFamily();
+    const m = s.lastShared || { photos: ["dinner"] };
+    const tv = tvOnList(f)[0];
+    screen.querySelector("[data-shared-photo]").src = photoSrc(m.photos[0]);
+    screen.querySelector("[data-shared-title]").textContent = `Shared to ${f?.name || "your family"}`;
+    screen.querySelector("[data-shared-sub]").textContent = tv
+      ? (ownerOf(tv.name) && tv.name !== "Living room TV" ? `${ownerOf(tv.name)} will see it on the TV within a minute.` : "It’ll be on the TV within a minute.")
+      : tvWaiting(f) ? `It plays as soon as ${tvWaiting(f).name} is connected.` : "It plays as soon as a TV is connected.";
+    screen.querySelector("[data-last-free]").hidden = !((s.uploads || 0) === 3 && !s.subscribed && !s.community);
   },
   story(route) {
     story.id = route === "g3" ? "g3" : "g2";
@@ -882,6 +842,7 @@ const NEW_ENTER = {
     paintStory();
     storyPlay();
   },
+  ...TAB_ENTER,
 };
 
 /* ---------- Toast ---------- */
@@ -925,23 +886,22 @@ const ENTER = {
     counter.textContent = `1/${picked.length}`;
     counter.hidden = picked.length < 2;
     screen.querySelector("textarea").value = caption;
-    screen.querySelector("[data-family-name]").textContent = loadSession().family || "Your moments";
-  },
-  a4(_, screen) {
-    const pill = screen.querySelector("[data-pill]");
-    const total = photoCount();
-    let n = Math.min(38, total);
-    pill.hidden = false;
-    pill.textContent = `Adding ${n} of ${total} photos`;
-    const tick = setInterval(() => {
-      n = Math.min(total, n + 3);
-      pill.textContent = `Adding ${n} of ${total} photos`;
-      if (n === total) {
-        clearInterval(tick);
-        later(() => go("a5", { replace: true }), 900);
-      }
-    }, 110);
-    timers.push(tick);
+    // "Sharing to" shows the family named at sign-in (or the one picked on Home), and how many free uploads are left.
+    const fam = currentFamily();
+    const s = loadSession();
+    screen.querySelector("[data-family-name]").textContent = fam?.name || s.family || "Your moments";
+    const initial = screen.querySelector("[data-family-initial-share]");
+    initial.textContent = fam ? (fam.name.replace(/^The /, "")[0] || "?").toUpperCase() : "";
+    const left = Math.max(0, 3 - (s.uploads || 0));
+    screen.querySelector("[data-share-sub]").textContent = !s.subscribed && !s.community
+      ? (left ? `${plural(left, "free upload")} left` : "Subscribe to keep sending")
+      : fam && fam.members.length > 1 ? `${fam.members.length} members` : "Just you for now";
+    resetMomentUpload();
+    // Back from the paywall after subscribing: the moment they were sharing goes through now.
+    if (s.resumeUpload && s.pendingMoment) {
+      saveSession({ resumeUpload: false });
+      startMomentUpload(s.pendingMoment.moment);
+    }
   },
   b6(_, screen) {
     const t = setupText(loadSetup());
@@ -949,50 +909,22 @@ const ENTER = {
     screen.querySelector("[data-message]").innerHTML =
       `<p>${t.greeting}</p><p>${t.steps.join("<br>")}</p><p>${t.sign}</p>`;
   },
-  b7(_, screen) {
-    screen.querySelector("[data-pill]").textContent = setupText(loadSetup()).waiting;
-    // In real life this happens whenever the other TV types the code.
-    later(() => go("b8", { replace: true }), 5000);
-  },
-  d4(_, screen) {
-    const pill = screen.querySelector("[data-pill]");
-    if (loadSession().tvWaiting) {
-      pill.textContent = setupText(loadSetup()).waiting;
-      // Plays as soon as the other TV joins — stand-in timer for that moment.
-      later(() => go("d5", { replace: true }), 5000);
-    } else {
-      pill.textContent = "Waiting for a TV";
-    }
-  },
-  d5(_, screen) {
-    screen.querySelector("[data-tv-label]").textContent =
-      loadSession().tvWaiting ? setupText(loadSetup()).connectedLabel : "TV on";
-  },
-  b8(_, screen) {
-    const t = setupText(loadSetup());
-    screen.querySelector("[data-tv-label]").textContent = t.connectedLabel;
-    screen.querySelector("[data-push-body]").textContent = t.push;
-    const push = screen.querySelector("[data-push]");
-    push.classList.remove("is-shown");
-    later(() => push.classList.add("is-shown"), 150);
-    later(() => push.classList.remove("is-shown"), 6500);
-  },
 };
 
 function render() {
-  const entry = ENTRY[location.hash.slice(1)];
+  const entry = ENTRY[location.hash.slice(1)] || PRESETS[location.hash.slice(1)];
   if (entry) return go(entry(), { replace: true });
   const route = ROUTES.includes(location.hash.slice(1)) ? location.hash.slice(1) : "tv";
   const sectionId = SECTION_OF[route] || route;
 
   timers.forEach((t) => { clearTimeout(t); clearInterval(t); });
   timers = [];
+  if (sectionId !== "moment") clearTimeout(uploadTimer); // left New moment mid-upload: nothing is sent
   closeSheet();
 
   // Remember the journey so shared screens (sign in, photo prompt) continue the right way.
   if (route === "tv" || route === "a1") saveSession({ path: "a", joinVia: null });
   if (route === "b1") saveSession({ path: "b" });
-  if (route === "d1") saveSession({ path: "d", tvWaiting: false });
 
   document.body.dataset.route = route;
   let current;
@@ -1004,10 +936,6 @@ function render() {
 
   if (current.querySelector("[data-signin]")) resetSigningIn(current);
   current.querySelectorAll("[data-author]").forEach((el) => { el.textContent = fullName(); });
-  const { moment, momentOn } = loadSession();
-  if (moment && (momentOn === sectionId || (momentOn === "d4" && sectionId === "d5"))) applyMoment(current, moment);
-  // A sheet over Home shows only on its own route (D3, F2, F3); closing it lands on that Home.
-  current.querySelectorAll("[data-connect-sheet]").forEach((s) => { s.hidden = route === sectionId; });
   ENTER[sectionId]?.(route, current);
 
   document.querySelectorAll(".flow-nav a").forEach((a) => {
@@ -1022,13 +950,11 @@ function render() {
 /* ---------- Clicks ---------- */
 
 document.addEventListener("click", (e) => {
-  const el = e.target.closest("[data-go], [data-todo], [data-share], [data-push], [data-signin], [data-sheet-close], [data-sheet-confirm], [data-email-option], [data-back], [data-picker], [data-photos-found], [data-all-confirm], [data-pick-tile], [data-picker-photo], [data-picker-close], [data-picker-next], [data-tv-later], [data-tv-scan], [data-connect-close], [data-invite], [data-story], [data-story-close], [data-approve], [data-not-family], [data-resident-join], [data-care-continue], [data-subscribe], [data-not-now], [data-paywall-back], [data-community]");
+  const el = e.target.closest("[data-go], [data-todo], [data-share], [data-push], [data-signin], [data-sheet-close], [data-sheet-confirm], [data-email-option], [data-back], [data-picker], [data-photos-found], [data-all-confirm], [data-pick-tile], [data-picker-photo], [data-picker-close], [data-picker-next], [data-tv-later], [data-tv-scan], [data-connect-close], [data-invite], [data-story], [data-story-close], [data-approve], [data-not-family], [data-resident-join], [data-care-continue], [data-subscribe], [data-not-now], [data-paywall-back], [data-community], [data-nav], [data-group-toggle], [data-switch-family], [data-like], [data-save], [data-more], [data-save-item], [data-save-confirm], [data-more-action], [data-confirm-yes], [data-overlay-close], [data-dismiss-nudge], [data-open-family], [data-connect-family], [data-share-pin], [data-leave-family], [data-delete-family], [data-mark-read], [data-send-all], [data-keep-all], [data-skip-photos], [data-ask-join], [data-shared-done], [data-upload-cancel]");
   if (!el) return;
   if (handleNewClick(el)) return;
   if (el.dataset.go) {
-    // "Send now" / "Keep these" send the whole batch: that is upload 1.
-    const from = location.hash.slice(1);
-    if ((from === "a3" && el.dataset.go === "a4") || (from === "b2" && el.dataset.go === "b3")) countUpload();
+    closeOverlays();
     go(el.dataset.go);
   }
   else if (el.hasAttribute("data-picker")) openPicker();
@@ -1040,16 +966,12 @@ document.addEventListener("click", (e) => {
   }
   else if (el.hasAttribute("data-all-confirm")) {
     saveSession({ excluded: [...excludedDraft] });
-    countUpload();
-    go(loadSession().path === "b" ? "b3" : "a4");
+    loadSession().path === "b" ? keepAll() : sendAll();
   }
   else if (el.dataset.pickerPhoto) togglePickerPhoto(el.dataset.pickerPhoto);
   else if (el.hasAttribute("data-picker-close")) { saveSession({ picked: [] }); go(loadSession().pickerFrom || photosFound()); }
   else if (el.hasAttribute("data-picker-next")) go("moment");
   // Which TV / connect steps are shared by path B and row D; only where they finish differs.
-  else if (el.hasAttribute("data-tv-later")) go(loadSession().path === "d" ? "d4" : "b7");
-  else if (el.hasAttribute("data-tv-scan")) go(loadSession().path === "d" ? "d5" : "a4");
-  else if (el.hasAttribute("data-connect-close")) closeFeedSheet(el);
   else if (el.hasAttribute("data-invite")) shareInvite();
   else if (el.dataset.signin) openSheet(el.dataset.signin);
   else if (el.hasAttribute("data-sheet-close")) closeSheet();
@@ -1058,11 +980,7 @@ document.addEventListener("click", (e) => {
   else if (el.hasAttribute("data-email-option")) {
     el.parentElement.querySelectorAll("[data-email-option]").forEach((o) => o.setAttribute("aria-checked", String(o === el)));
   }
-  else if (el.dataset.todo) toast(`Not in this build yet: ${el.dataset.todo}`);
-  else if (el.hasAttribute("data-push")) {
-    el.classList.remove("is-shown");
-    if (location.hash === "#f2-home") go("joined"); // "Sarah said yes" opens the family's Home
-  }
+  else if (el.dataset.todo) { closeOverlays(); toast(`Not in this build yet: ${el.dataset.todo}`); }
   else if (el.hasAttribute("data-share")) shareSetup();
 });
 
@@ -1090,12 +1008,9 @@ async function shareSetup() {
   const t = setupText(loadSetup());
   const sent = await shareText(`${t.greeting}\n\n${t.steps.join("\n")}\n\n${t.sign}`, "Message copied. Paste it into WhatsApp or Messages.");
   if (!sent) return;
-  if (loadSession().path === "d") {
-    saveSession({ tvWaiting: true });
-    go("d4");
-  } else {
-    go("b7");
-  }
+  tvSetupSent();
+  saveSession({ inOnboarding: false });
+  go("home");
 }
 
 async function shareInvite() {
@@ -1375,18 +1290,22 @@ document.addEventListener("keydown", (e) => {
   if (closeCompare()) return;
   if (closePalettePanel()) return;
   closeSheet();
-  if (SECTION_OF[location.hash.slice(1)] && /^#(d3|f2|f3)$/.test(location.hash)) go(SECTION_OF[location.hash.slice(1)], { replace: true });
+  const openOverlay = device.querySelector("[data-overlay]:not([hidden])");
+  if (openOverlay) return closeOverlays();
+  const menu = device.querySelector("[data-group-menu]:not([hidden])");
+  if (menu) { menu.hidden = true; return; }
+  if (/^#(home-connect|home-sent|home-approve|families-add)$/.test(location.hash)) go(SECTION_OF[location.hash.slice(1)], { replace: true });
   if (/^#g[23]$/.test(location.hash)) closeStory();
 });
 
 buildGrids();
-buildFeeds();
 buildAllPhotos();
 buildPicker();
 initSetupForm();
 initPhoneForms();
 initMomentForm();
 initFamilyForms();
+initTabForms();
 initStoryPlayer();
 initSheetSwipe();
 if (EMBED) initEmbed();
