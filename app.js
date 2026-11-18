@@ -810,6 +810,11 @@ const NEW_ENTER = {
     const p = pron(r);
     screen.querySelector("[data-e7-sub]").textContent = `We couldn’t find ${r.first} yet, so we made ${p.pos} family for you and told ${community}.`;
     screen.querySelector("[data-e7-tv]").textContent = `Then ${possessive(r.first)} TV joins`;
+    // The three steps appear one after another each time the screen opens.
+    const rows = screen.querySelector(".info-rows");
+    rows.classList.remove("is-revealing");
+    void rows.offsetWidth;
+    rows.classList.add("is-revealing");
     screen.querySelector("[data-e7-tv]").nextElementSibling.textContent = `${p.pos[0].toUpperCase() + p.pos.slice(1)} room TV and the community posts unlock.`;
   },
   f4(_, screen) {
