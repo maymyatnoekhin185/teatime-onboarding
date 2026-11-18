@@ -144,7 +144,7 @@ All four share the same secondary button (2px white outline at 30%, as on the A1
 **When the client picks:** copy that option's values into `:root` in `styles.css`, then delete the other `[data-palette]` blocks, the switcher and Compare styles, the "Colour options" and "Compare" blocks in `app.js` (plus `EMBED`) and the head script in `index.html`. Or go back to the old palette with the `before-palettes` tag.
 
 ### Shortcuts and choices to confirm
-- On screen the auto-made clips are called **Memories** ("Made for you from your photos, by date and place."), not "Stories": Stories suggests something you post yourself, as on Instagram / Facebook. Figma’s working name was Stories, with Albums / Collections as alternatives — to confirm.
+- On screen the auto-made clips are called **Memories**, not "Stories": Stories suggests something you post yourself, as on Instagram / Facebook. Figma’s working name was Stories, with Albums / Collections as alternatives — to confirm.
 - A known Apple / Google account or phone number would go straight to Home; this build treats every sign-in as new.
 - B4's "Scan the TV's code" skips the camera (A0, not drawn in this section).
 - B7 → B8 and D4 → D5 run on a 5 s timer to show the moment the other TV joins.
