@@ -1026,10 +1026,10 @@ async function shareInvite() {
    the head script in index.html and the palette CSS once one is chosen. */
 
 const PALETTES = [
-  { id: "1", name: "Brand gradient", sub: "Magenta to gold", theme: "#1a1226" },
+  { id: "1", name: "Brand gradient", sub: "Magenta to gold", theme: "#0e0c12" },
   { id: "2", name: "Strong blue", sub: "Blue actions, gradient for brand moments", theme: "#0e0c12" },
-  { id: "3", name: "Analogous", sub: "Violet to pink", theme: "#1a1226" },
-  { id: "4", name: "Logo gold", sub: "Gold actions, dark labels", theme: "#1a1226" },
+  { id: "3", name: "Analogous", sub: "Violet to pink", theme: "#0e0c12" },
+  { id: "4", name: "Logo gold", sub: "Gold actions, dark labels", theme: "#0e0c12" },
 ];
 let paletteSwitch;
 

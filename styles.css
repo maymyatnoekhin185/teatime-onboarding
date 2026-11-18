@@ -1,5 +1,6 @@
 :root {
-  --tt-bg-app: #1a1226;
+  /* Same in every colour option (was option 2 only): near-black background, softer glow. */
+  --tt-bg-app: #0e0c12;
   --tt-bg-surface: #1c1c1e;
   --tt-bg-surface-2: #2c2c2e;
   --tt-text-primary: #fff;
@@ -18,7 +19,7 @@
   --select-bg: linear-gradient(117deg, #d20661 1%, #f2b53b 98%);
   --select-fg: #fff;
   --brand-grad: linear-gradient(132deg, #d20661 6%, #f2b53b 83%);
-  --glow-opacity: 1;
+  --glow-opacity: .45;
   --unread-tint: rgba(210, 6, 97, .16);
   --nav-active: var(--accent);
   --nav-active-icon: url("assets/nav-home.svg");

@@ -114,12 +114,12 @@ Bottom nav on Home and every tab: Home · Families · + (share) · Notifications
 Each fills in the choices a person would have made and opens Home (or its sheet): uploaded everything + TV on · uploading · chose 6 photos + TV on · kept photos, waiting for Mum's TV · skipped everything · shared, no TV · TV on, invite family · joined by PIN · asked to join, waiting · admin with a request · two families, two TVs · 3 free uploads used. Everything else is reached by clicking through.
 
 ### Colour options (temporary, for the client to choose)
-Source: Figma `13960:30674` ("CTA colour options"). The original pink-orange palette has been removed, leaving four options. Only buttons, links and selected states change; the background stays the same except in option 2.
+Source: Figma `13960:30674` ("CTA colour options"). The original pink-orange palette has been removed, leaving four options. Only buttons, links and selected states change. All four share option 2’s background: near-black #0E0C12 with the purple / pink glow at 45%.
 
 | # | Option | Primary button | Text buttons / links | Selected (ticks, badges, chips) | Brand moments ("+", avatar ring) |
 |---|---|---|---|---|---|
 | 1 | Brand gradient (default) | Magenta → gold, white label | Gold | Magenta → gold | Magenta → gold |
-| 2 | Strong blue | #2F6BFF, white label | White / links #5B8CFF | Blue | Magenta → gold. Background #0E0C12, softer glow |
+| 2 | Strong blue | #2F6BFF, white label | White / links #5B8CFF | Blue | Magenta → gold |
 | 3 | Analogous | Violet → pink, white label | White / links pink | Violet → pink | Violet → pink |
 | 4 | Logo gold | #F2B53B, dark label #1A1226 | Gold | Gold, dark tick | Magenta → gold |
 
