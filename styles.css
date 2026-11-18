@@ -402,9 +402,11 @@ select.field-box {
 .picker-tile[aria-pressed="true"] .picker-badge { z-index: 1; background: #fff; color: #1a1226; border-color: #fff; }
 .picker-next {
   position: absolute; left: 16px; right: 16px; width: auto;
-  bottom: calc(var(--bottom) + 26px);
+  bottom: calc(var(--bottom) + 26px); z-index: 4;
   filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .35));
 }
+/* Nothing picked yet: a solid dimmed button that sits in front of the photos (not see-through). */
+.btn-primary.picker-next:disabled { opacity: 1; background: #2f2a37; color: rgba(255, 255, 255, .45); }
 
 /* ---------- 2 · New moment ---------- */
 .moment-main { gap: 20px; }
