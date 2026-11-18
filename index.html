@@ -1009,10 +1009,17 @@
           <label class="field"><span class="field-label">Family name</span><input class="field-box is-glass" name="name" type="text" maxlength="40" autocapitalize="words" data-autofocus></label>
           <label class="field"><span class="field-label">Who is it for</span><input class="field-box is-glass" name="forWhom" type="text" maxlength="30" autocapitalize="words"></label>
           <p class="form-hint" data-for-hint></p>
-          <div class="family-actions">
-            <button class="text-link" type="button" data-leave-family>Leave this family</button>
-            <button class="text-link is-danger" type="button" data-delete-family data-delete-block>Delete this family</button>
+          <div class="group-card action-card">
+            <button class="action-row" type="button" data-leave-family>
+              <span class="action-icon"><img src="assets/icon-users-white.svg" alt="" width="20" height="20"></span>
+              <span class="action-label">Leave this family</span>
+            </button>
+            <button class="action-row is-danger" type="button" data-delete-family data-delete-block>
+              <span class="action-icon"><img src="assets/icon-trash.svg" alt="" width="20" height="20"></span>
+              <span class="action-label">Delete this family</span>
+            </button>
           </div>
+          <p class="form-hint">Both ask before anything changes.</p>
         </div>
       </form>
     </section>

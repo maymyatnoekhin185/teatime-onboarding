@@ -1139,7 +1139,15 @@ button.group-row:active { background: rgba(255, 255, 255, .06); }
 .form-card input:focus { outline: none; }
 .form-card .form-row:focus-within { background: rgba(255, 255, 255, .04); }
 .form-hint { margin: 2px 4px 0; font: 400 13px/18px var(--font-body); color: var(--tt-text-secondary); }
-.family-actions { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: auto; padding-top: 32px; flex-shrink: 0; }
+/* Edit family actions: a settings-style card of tappable rows (a pattern people recognise as buttons). */
+.action-card { margin-top: 28px; }
+.action-row { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 56px; padding: 8px 16px; text-align: left; }
+.action-row + .action-row { border-top: 1px solid rgba(255, 255, 255, .08); }
+.action-row:active { background: rgba(255, 255, 255, .06); }
+.action-icon { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px; background: rgba(255, 255, 255, .1); }
+.action-row.is-danger .action-icon { background: rgba(255, 69, 58, .14); }
+.action-label { font: 600 16px/20px var(--font-title); }
+.action-row.is-danger .action-label { color: #ff6961; }
 .text-link { min-height: 44px; padding: 0 16px; font: 600 16px/20px var(--font-title); color: #fff; }
 .text-link.is-danger { color: #ff6961; }
 .text-link:active { opacity: .6; }
