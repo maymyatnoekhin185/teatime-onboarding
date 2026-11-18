@@ -541,7 +541,8 @@ const TAB_ENTER = {
           <span class="family-chip-text"><span>${escapeHtml(f.name)}</span><small class="${f.role === "admin" ? "is-owner" : ""}">${f.role === "admin" ? "Owner" : "Member"}</small></span>
         </button>`).join("")
       : `<p class="empty-note">No family yet.</p>`;
-    const hasStories = mine.some((m) => m.kind === "bulk");
+    // Memories appear once they have uploaded anything (everything at once or their own pick).
+    const hasStories = mine.length > 0;
     screen.querySelector("[data-profile-stories]").hidden = !hasStories;
     const photos = mine.flatMap((m) => (m.photos.length >= (m.count || 0) ? m.photos : cycle(m.photos, Math.min(m.count || m.photos.length, 9))));
     screen.querySelector("[data-profile-moments-count]").textContent = mine.reduce((n, m) => n + (m.count || m.photos.length), 0);
