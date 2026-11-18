@@ -919,6 +919,13 @@ const ENTER = {
       : fam && fam.members.length > 1 ? `${fam.members.length} members` : "Just you for now";
     resetMomentUpload();
   },
+  b3(_, screen) {
+    // The two cards rise in, then their little scenes start playing.
+    const cards = screen.querySelector("[data-choice-cards]");
+    cards.classList.remove("is-revealing");
+    void cards.offsetWidth;
+    cards.classList.add("is-revealing");
+  },
   b4(_, screen) {
     // The steps play in order: number, text, then the line down to the next number.
     const list = screen.querySelector("[data-stepper]");

@@ -1585,3 +1585,44 @@ body.is-comparing .palette-switch { display: none; }
 }
 .choice-meta .mask-icon { width: 16px; height: 16px; opacity: .8; }
 @media (prefers-reduced-motion: reduce) { .choice-card { transition: none; } }
+
+/* B3 fun: little animated scenes in the card icons (TV being scanned · a plane flying the message). */
+.choice-icon.is-art { width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(145deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .04)); overflow: hidden; }
+.choice-art { width: 56px; height: 56px; overflow: visible; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.art-qr rect { fill: #fff; stroke: none; opacity: .9; }
+.art-scan { fill: var(--accent); stroke: none; filter: drop-shadow(0 0 4px var(--accent)); animation: art-scan 2.4s ease-in-out infinite; }
+.art-tick circle { fill: #34c759; stroke: none; }
+.art-tick path { stroke: #fff; stroke-width: 2.2; }
+.art-tick { transform-origin: 50px 16px; animation: art-tick 2.4s ease-in-out infinite; }
+.art-antenna { animation: art-wiggle 2.4s ease-in-out infinite; transform-origin: 32px 16px; }
+@keyframes art-scan { 0%, 8% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 55% { transform: translateY(24px); opacity: 1; } 62%, 100% { transform: translateY(24px); opacity: 0; } }
+@keyframes art-tick { 0%, 58% { transform: scale(0); } 66% { transform: scale(1.2); } 72%, 92% { transform: scale(1); } 100% { transform: scale(0); } }
+@keyframes art-wiggle { 0%, 60%, 100% { transform: rotate(0); } 66% { transform: rotate(-8deg); } 72% { transform: rotate(6deg); } 78% { transform: rotate(0); } }
+
+.art-trail { stroke: rgba(255, 255, 255, .45); stroke-width: 2; stroke-dasharray: 1 5; animation: art-trail 1.2s linear infinite; }
+.art-plane-body { fill: rgba(255, 255, 255, .12); }
+.art-glider { animation: art-glide 3s ease-in-out infinite; transform-origin: 41px 20px; }
+.art-bubble rect { fill: var(--accent); stroke: none; }
+.art-bubble circle { fill: #fff; stroke: none; animation: art-dot 1.2s ease-in-out infinite; }
+.art-bubble circle:nth-of-type(2) { animation-delay: .15s; }
+.art-bubble circle:nth-of-type(3) { animation-delay: .3s; }
+.art-bubble { transform-origin: 16px 23px; animation: art-pop 3s ease-in-out infinite; }
+@keyframes art-trail { to { stroke-dashoffset: -12; } }
+@keyframes art-glide { 0%, 100% { transform: translate(0, 0) rotate(0); } 50% { transform: translate(3px, -4px) rotate(-6deg); } }
+@keyframes art-dot { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-2px); } }
+@keyframes art-pop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+/* Pressing a card: its scene does a little hop. */
+.choice-card:active .choice-icon.is-art { transform: scale(.92) rotate(-3deg); }
+.choice-icon.is-art { transition: transform .15s cubic-bezier(.3, 1.6, .5, 1); }
+
+/* The cards rise in one after the other when the screen opens. */
+.choice-cards.is-revealing .choice-card { animation: step-in .55s cubic-bezier(.2, .8, .2, 1) both; }
+.choice-cards.is-revealing .choice-card:nth-child(1) { animation-delay: .15s; }
+.choice-cards.is-revealing .choice-card:nth-child(2) { animation-delay: .3s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .art-scan, .art-tick, .art-antenna, .art-trail, .art-glider, .art-bubble, .art-bubble circle, .choice-cards.is-revealing .choice-card { animation: none; }
+  .art-scan { opacity: 0; }
+  .art-tick { transform: scale(1); }
+}

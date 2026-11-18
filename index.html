@@ -624,10 +624,20 @@
           <h1 id="b3-title" class="title1" tabindex="-1">Where should they play?</h1>
           <p class="body-small">Pick where the TV is. You can add more TVs later.</p>
           <span class="spacer spacer-16"></span>
-          <div class="choice-cards">
+          <div class="choice-cards" data-choice-cards>
             <button class="choice-card" type="button" data-go="b4">
               <span class="choice-card-top">
-                <span class="choice-icon"><span class="mask-icon" style="--icon:url(assets/icon-tv-line.svg)"></span></span>
+                <span class="choice-icon is-art"><svg class="choice-art art-tv" viewBox="0 0 64 64" aria-hidden="true">
+                  <path class="art-antenna" d="M25 9l7 7 7-7" />
+                  <rect class="art-frame" x="8" y="16" width="48" height="34" rx="6" />
+                  <g class="art-qr">
+                    <rect x="17" y="22" width="7" height="7" rx="1.5" /><rect x="40" y="22" width="7" height="7" rx="1.5" /><rect x="17" y="37" width="7" height="7" rx="1.5" />
+                    <rect x="28" y="23" width="3" height="3" /><rect x="33" y="27" width="3" height="3" /><rect x="28" y="31" width="3" height="3" /><rect x="35" y="35" width="3" height="3" /><rect x="29" y="39" width="3" height="3" /><rect x="40" y="39" width="3" height="3" /><rect x="44" y="34" width="3" height="3" />
+                  </g>
+                  <rect class="art-scan" x="13" y="21" width="38" height="2.5" rx="1.25" />
+                  <path class="art-stand" d="M24 56h16" />
+                  <g class="art-tick"><circle cx="50" cy="16" r="8" /><path d="M46.5 16.2l2.4 2.3 4.6-4.8" /></g>
+                </svg></span>
                 <img class="choice-chevron" src="assets/icon-chevron-right.svg" alt="" width="22" height="22">
               </span>
               <span class="choice-title">A TV in front of me</span>
@@ -636,7 +646,11 @@
             </button>
             <button class="choice-card" type="button" data-go="b5">
               <span class="choice-card-top">
-                <span class="choice-icon"><span class="mask-icon" style="--icon:url(assets/icon-send-line.svg)"></span></span>
+                <span class="choice-icon is-art"><svg class="choice-art art-plane" viewBox="0 0 64 64" aria-hidden="true">
+                  <path class="art-trail" d="M6 50c10-2 14-14 24-16s14 6 22-4" />
+                  <g class="art-glider"><path class="art-plane-body" d="M30 18l22-8-8 22-5-9z" /><path class="art-plane-fold" d="M39 23l13-13" /></g>
+                  <g class="art-bubble"><rect x="6" y="10" width="20" height="13" rx="6.5" /><circle cx="11.5" cy="16.5" r="1.4" /><circle cx="16" cy="16.5" r="1.4" /><circle cx="20.5" cy="16.5" r="1.4" /></g>
+                </svg></span>
                 <img class="choice-chevron" src="assets/icon-chevron-right.svg" alt="" width="22" height="22">
               </span>
               <span class="choice-title">A TV somewhere else</span>
