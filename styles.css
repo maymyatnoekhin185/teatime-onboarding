@@ -1128,10 +1128,13 @@ button.list-row:active { background: rgba(255, 255, 255, .12); }
 .manage-card { border: 1px solid var(--tt-border-glass-soft); border-radius: 16px; background: var(--tt-glass-light-8); overflow: hidden; flex-shrink: 0; }
 .manage-row { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px 16px; text-align: left; }
 .manage-row + .manage-row { border-top: 1px solid var(--tt-border-default); }
-.add-sheet { align-items: stretch; gap: 10px; padding-left: 16px; padding-right: 16px; }
-.add-sheet .connect-grabber { align-self: center; }
-.add-title { margin: 8px 0 0; text-align: center; font: 600 17px/22px var(--font-title); }
-.add-sub { font: 400 13px/18px var(--font-body); text-align: center; padding: 0 12px 6px; }
+/* Add a family: clear title / body hierarchy, roomier spacing, medium (44px) buttons so they don't shout. */
+.add-sheet { align-items: stretch; gap: 0; padding: 10px 20px max(32px, calc(var(--bottom) + 12px)); }
+.add-sheet .connect-grabber { align-self: center; margin-bottom: 20px; }
+.add-title { margin: 0; text-align: center; font: 700 22px/28px var(--font-title); color: #fff; }
+.add-sub { margin: 8px 0 24px; padding: 0 8px; text-align: center; font: 400 15px/20px var(--font-body); color: var(--tt-text-secondary); }
+.add-sheet .btn { height: 44px; font-size: 16px; line-height: 20px; }
+.add-sheet .btn + .btn { margin-top: 8px; }
 
 /* Notifications */
 .count-badge { padding: 2px 8px; border-radius: 10px; background: #fff; color: #1a1226; font: 600 11px/13px var(--font-body); }
