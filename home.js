@@ -547,7 +547,7 @@ const TAB_ENTER = {
     screen.querySelector("[data-profile-moments-count]").textContent = mine.reduce((n, m) => n + (m.count || m.photos.length), 0);
     screen.querySelector("[data-profile-grid]").innerHTML = photos.length
       ? photos.slice(0, 9).map((p) => `<img src="${photoSrc(p)}" alt="" loading="lazy" decoding="async">`).join("")
-      : `<p class="empty-note">Moments you share show here.</p>`;
+      : `<div class="moments-empty"><p>Moments you share show here.</p><button class="btn btn-primary" type="button" data-picker>Share a moment</button></div>`;
     paintNav(screen, "profile");
   },
 };
