@@ -518,8 +518,10 @@ button.glass-pill { color: #fff; }
   padding: 12px 16px;
 }
 .author-row { display: flex; align-items: center; gap: 12px; }
-/* Person rings (author, profile): solid logo gold, calmer than the gradient. Story circles keep the gradient = tap to play. */
-.avatar-ring { display: flex; padding: 2px; border-radius: 22px; background: #f2b53b; flex-shrink: 0; }
+/* Person rings (author, profile): a thin white ring with a small dark gap. Neutral on photos and on dark; no extra colour.
+   Story circles keep the gradient = tap to play. */
+.avatar-ring { display: flex; padding: 2px; border: 1.5px solid #fff; border-radius: 50%; background: none; flex-shrink: 0; }
+.avatar-ring img, .avatar-ring .avatar-initial { border-radius: 50%; }
 .avatar-ring img { width: 36px; height: 36px; }
 .author { display: flex; flex-direction: column; gap: 2px; min-width: 0; white-space: nowrap; }
 .author-name { font: 600 17px/22px var(--font-title); }
@@ -1209,7 +1211,8 @@ button.group-row:active { background: rgba(255, 255, 255, .06); }
 /* The profile header is its own zone: a hairline under it separates you from your families and moments. */
 .profile-who { position: relative; display: flex; align-items: center; gap: 14px; padding: 4px 16px 24px; }
 .profile-who::after { content: ""; position: absolute; left: 16px; right: 16px; bottom: 0; height: 1px; background: rgba(255, 255, 255, .1); }
-.profile-ring { position: relative; display: grid; place-items: center; width: 76px; height: 76px; flex-shrink: 0; border-radius: 38px; background: #f2b53b; }
+.profile-ring { position: relative; display: grid; place-items: center; width: 76px; height: 76px; flex-shrink: 0; border: 2px solid #fff; border-radius: 38px; background: none; }
+.profile-ring .profile-avatar { width: 66px; height: 66px; }
 .profile-avatar { display: grid; place-items: center; width: 68px; height: 68px; border-radius: 34px; overflow: hidden; background: #1a1226; }
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .edit-badge { position: absolute; right: -4px; bottom: -4px; display: grid; place-items: center; width: 28px; height: 28px; border: 2px solid #1a1226; border-radius: 14px; background: #fff; }
