@@ -198,7 +198,8 @@ function renderHome(route, screen) {
   const chip = tvChip(f);
   const chipEl = screen.querySelector("[data-tv-chip]");
   chipEl.innerHTML = `<img src="assets/status-dot-${chip.on ? "green" : "grey"}.svg" alt="">${escapeHtml(chip.label)}`;
-  chipEl.disabled = !chip.toTv;
+  // Tappable in every state: no TV → Which TV; otherwise the family screen with its TVs.
+  chipEl.setAttribute("aria-label", f && f.tvs.length ? `${chip.label}. See your TVs` : "No TV yet. Connect a TV");
   screen.querySelector("[data-members]").textContent = multi ? `·  ${f.members.length} members` : "·  Just you";
   screen.querySelector("[data-group-toggle]").hidden = false;
 
@@ -562,7 +563,11 @@ function timeAgo(at) {
 
 function handleHomeClick(el, e) {
   const screen = el.closest("[data-screen]");
-  if (el.dataset.nav) {
+  if (el.hasAttribute("data-tv-chip")) {
+    const f = currentFamily();
+    if (!f || !f.tvs.length) { saveSession({ path: loadSession().path || "d" }); go("b3"); }
+    else { saveSession({ familyView: f.id }); go("family"); }
+  } else if (el.dataset.nav) {
     if (location.hash.slice(1) === "notifications" && el.dataset.nav !== "notifications") markAllRead();
     go(el.dataset.nav);
   } else if (el.hasAttribute("data-group-toggle")) {

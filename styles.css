@@ -1031,7 +1031,8 @@ button.glass-pill { color: #fff; }
 .home-header > * { pointer-events: auto; }
 .home-title-row button[aria-expanded="true"] img { transform: rotate(180deg); }
 .home .glass-pill.left:disabled { color: #fff; opacity: 1; cursor: default; }
-.tv-chip:disabled { opacity: 1; color: #fff; cursor: default; }
+.tv-chip { cursor: pointer; }
+.tv-chip:active { opacity: .7; }
 .moment-slide .pagination { display: block; }
 .avatar-initial { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 18px; background: #2c2c2e; font: 600 16px/20px var(--font-title); }
 .seen-on { display: flex; align-items: center; gap: 6px; opacity: .72; font: 400 11px/13px var(--font-body); }
