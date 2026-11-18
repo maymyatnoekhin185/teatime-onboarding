@@ -1161,7 +1161,8 @@ button.group-row:active { background: rgba(255, 255, 255, .06); }
 .avatar-stack { display: flex; justify-content: center; padding-left: 14px; }
 .member-disc { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; color: #1a1226; font: 600 16px/20px var(--font-title); }
 .member-disc.is-stack { width: 64px; height: 64px; margin-left: -14px; border: 3px solid var(--tt-bg-app); font-size: 24px; }
-.member-disc.is-more { background: rgba(255, 255, 255, .14); color: #fff; font-size: 18px; }
+/* Solid (not see-through) so the face it overlaps doesn’t show through. */
+.member-disc.is-more { background: #2f2a37; color: #fff; font-size: 18px; }
 .family-name { margin: 4px 0 0; font: 700 26px/32px var(--font-title); text-align: center; }
 .family-name:focus { outline: none; }
 .member-avatar { position: relative; flex-shrink: 0; }
