@@ -74,7 +74,7 @@ Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined fam
 | Part | Rule |
 |---|---|
 | Title | "Your moments" while it's just you; the family name once the family has other members. Chevron opens the family menu (all your families, a tick on the current one, "+ Create a family group"); picking one switches Home to that family. |
-| TV chip | No TV → "No TV yet" (opens Which TV). One TV on → "{name} on" ("TV on" for an unnamed TV and while photos are still arriving). Two or more → "2 TVs on". |
+| TV chip | Tappable in every state. No TV → "No TV yet" (opens Which TV); a TV on or waiting → opens the family screen with its TVs (On / Waiting, Add another TV). One TV on → "{name} on" ("TV on" for an unnamed TV and while photos are still arriving). Two or more → "2 TVs on". |
 | Members | "Just you" or "N members". |
 | Feed | Every moment in the current family, newest first. Swipe up/down between moments, sideways through a moment's photos; "k / N" and the dots follow. Empty → "Share your first moment" (D1). |
 | What you uploaded | **Send now / Keep these** → one bulk moment: "128 photos · May – Oct 2026" (or the count left after unticking), with the Timeline and Da Lat memories on it, caption prompt "Six months in one go — add a caption". **Choose my own** → a moment with exactly the photos picked ("Just now · 3 photos") and the caption typed; no memories. **Skip** → nothing. Later "+" shares stack on top. |
