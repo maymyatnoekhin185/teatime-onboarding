@@ -908,6 +908,13 @@ const ENTER = {
       startMomentUpload(s.pendingMoment.moment);
     }
   },
+  b4(_, screen) {
+    // The steps play in order: number, text, then the line down to the next number.
+    const list = screen.querySelector("[data-stepper]");
+    list.classList.remove("is-playing");
+    void list.offsetWidth;
+    list.classList.add("is-playing");
+  },
   b6(_, screen) {
     const t = setupText(loadSetup());
     screen.querySelector("[data-b6-title]").textContent = t.title;

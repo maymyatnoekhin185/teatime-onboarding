@@ -43,7 +43,7 @@ Every frame in the section is built, except the old TV QR screen (kept in Figma 
 | `#picker` | Choose my own · picker | Tap to number photos (max 10, toast past that); preview shows the last tapped; Next · N → New moment. X → where it was opened from |
 | `#moment` | New moment | Caption optional; "Sharing to" = current family + free uploads left. Share → uploads over the preview → Shared → Home (D3 sheet on the first share with no TV; B3 during path B onboarding) |
 | `#b3` | Where should they play? | Row 1 → B4 · row 2 → B5 · Later → Home (moments waiting for a TV) |
-| `#b4` | Open TeaTime on the TV | Scan the TV's code → TV on → Home (kept photos arrive) · Later as B3 |
+| `#b4` | Open TeaTime on the TV | Three steps as a vertical stepper (number, title, line). Each time it opens they play in order: number pops in, its text slides in, the line draws down to the next number (reduced motion: shown at once). Scan the TV’s code → TV on → Home (kept photos arrive) · Later as B3 |
 | `#b5` | Add another TV | Send set-up → B6 |
 | `#b6` | Send this to Mum | Share message → Home "Waiting for Mum's TV" → 5 s → connected + push |
 
