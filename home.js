@@ -548,8 +548,8 @@ const TAB_ENTER = {
     screen.querySelector("[data-family-tvs]").innerHTML = f.tvs.map((t) => `
         <div class="group-row">
           <span class="row-icon is-glass"><img src="assets/icon-tv.svg" alt="" width="20" height="20"></span>
-          <span class="row-text"><span class="row-title">${escapeHtml(t.name)}</span><span class="row-sub">${t.state === "on" ? (t.place ? escapeHtml(t.place) : "Playing now") : "Waiting for the code"}</span></span>
-          <span class="state-pill ${t.state === "on" ? "is-on" : "is-waiting"}">${t.state === "on" ? "On" : "Waiting"}</span>
+          <span class="row-text"><span class="row-title">${escapeHtml(t.name)}</span><span class="row-sub">${t.state === "on" ? (t.place ? escapeHtml(t.place) : "Playing now") : t.state === "off" ? `Off · ${escapeHtml(t.seen || "last seen yesterday")}` : "Waiting for the code"}</span></span>
+          <span class="state-pill ${t.state === "on" ? "is-on" : "is-waiting"}">${t.state === "on" ? "On" : t.state === "off" ? "Off" : "Waiting"}</span>
         </div>`).join("") + `
         <button class="group-row group-add" type="button" data-connect-family="${f.id}">
           <span class="row-icon is-add"><img src="assets/icon-plus.svg" alt="" width="18" height="18"></span>
