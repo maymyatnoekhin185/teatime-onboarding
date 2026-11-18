@@ -180,7 +180,7 @@ function slideMarkup(m, i, f) {
       </div>
       <div class="caption-panel">
         <div class="author-row">
-          <span class="avatar-ring">${mine && loadSession().provider ? `<img src="assets/avatar-sarah.png" alt="">` : `<span class="avatar-initial">${escapeHtml(m.author[0] || "?")}</span>`}</span>
+          <span class="avatar-ring">${mine && loadSession().provider ? `<img src="assets/avatar-me.png" alt="">` : `<span class="avatar-initial">${escapeHtml(m.author[0] || "?")}</span>`}</span>
           <span class="author"><span class="author-name">${escapeHtml(m.author)}</span><span class="author-meta">${escapeHtml(m.meta)}</span></span>
         </div>
         ${caption}
@@ -531,7 +531,7 @@ const TAB_ENTER = {
     const mine = list.flatMap((f) => f.moments.filter(isMineMoment));
     screen.querySelector("[data-profile-name]").textContent = meName();
     screen.querySelector("[data-profile-avatar]").innerHTML = s.provider
-      ? `<img src="assets/avatar-sarah.png" alt="">`
+      ? `<img src="assets/avatar-me.png" alt="">`
       : `<span class="avatar-disc avatar-disc-lg">${escapeHtml(me().first[0] || "?")}</span>`;
     screen.querySelector("[data-profile-families-count]").textContent = list.length;
     screen.querySelector("[data-profile-families]").innerHTML = list.length
