@@ -403,7 +403,7 @@ function initFamilyForms() {
     if (!name) return familyForm.family.focus();
     saveSession({ family: name, familyDraft: name, community: null, resident: null });
     // Path A started on the TV: that TV is added to the family named here (A1 note).
-    ensureOwnFamily(name, loadSession().path === "a" ? { tvs: [{ name: "Lisa’s TV", place: "Living room", state: "on" }] } : {});
+    ensureOwnFamily(name, loadSession().path === "a" ? { tvs: [{ name: "Lisa’s TV", place: "Lounge room", state: "on" }] } : {});
     go(photoPrompt());
   });
 
@@ -513,7 +513,7 @@ const STORY_MS = 3000;
 const MONTHS = ["May", "June", "July", "August", "September", "October"];
 const STORY_PHOTOS = ["beach", "birthday", "newborn", "dog", "roses", "dinner", "trophy", "drawing"];
 const STORY_CAPTIONS = { beach: "Beach day", birthday: "Lily’s birthday", newborn: "Welcome home", dog: "Walk with Biscuit", roses: "Tree night", dinner: "Sunday dinner", trophy: "Footy final", drawing: "Fridge art", hero: "Park walk" };
-const DA_LAT_SPOTS = ["Xuan Huong Lake", "Langbiang Mountain", "Da Lat Market", "Crazy House", "Valley of Love", "Datanla Falls", "Truc Lam Pagoda"];
+const PLACE_SPOTS = ["Lake Daylesford", "Wombat Hill Botanic Gardens", "Daylesford Sunday Market", "Hepburn Springs", "Jubilee Lake", "The Convent Gallery", "Lavandula Swiss Italian Farm"];
 
 // Timeline = 2–3 photos a month over 6 months; a place = photos taken in the same spot.
 const STORIES = {
@@ -526,12 +526,12 @@ const STORIES = {
     caption: (i, p) => `${STORY_CAPTIONS[p]} · ${3 + ((i * 7) % 25)} ${MONTHS[Math.min(5, Math.floor((i * 6) / 20))]} 2026 · from Sarah’s upload`,
   },
   g3: {
-    title: "Moments in Da Lat",
+    title: "Moments in Daylesford",
     sub: "August 2026 · 14 photos",
     count: 14,
     photo: (i) => ["hero", "roses", "dog", "dinner", "beach", "trophy", "drawing"][i % 7],
-    chip: () => "Da Lat, Vietnam",
-    caption: (i) => `${DA_LAT_SPOTS[i % DA_LAT_SPOTS.length]} · ${2 + i} August 2026`,
+    chip: () => "Daylesford, VIC",
+    caption: (i) => `${PLACE_SPOTS[i % PLACE_SPOTS.length]} · ${2 + i} August 2026`,
   },
 };
 
@@ -745,7 +745,7 @@ function handleNewClick(el) {
       addEvent({ kind: "person", who: "Tom", text: "<b>Tom</b> joined The Johnsons" });
     }
     go("home", { replace: true });
-    toast(yes ? "Tom is in. He’s been told “You’re in”." : "Tom has been told. Nothing else changes.");
+    toast(yes ? "Tom is in. He’s been told ‘You’re in’." : "Tom has been told. Nothing else changes.");
   } else if (el.hasAttribute("data-connect-close")) {
     go("home", { replace: true });
   } else if (el.hasAttribute("data-tv-later")) {
@@ -850,7 +850,7 @@ const NEW_ENTER = {
     screen.querySelector("[data-shared-photo]").src = photoSrc(m.photos[0]);
     screen.querySelector("[data-shared-title]").textContent = `Shared to ${f?.name || "your family"}`;
     screen.querySelector("[data-shared-sub]").textContent = tv
-      ? (ownerOf(tv.name) && tv.name !== "Living room TV" ? `${ownerOf(tv.name)} will see it on the TV within a minute.` : "It’ll be on the TV within a minute.")
+      ? (ownerOf(tv.name) && tv.name !== "Lounge room TV" ? `${ownerOf(tv.name)} will see it on the TV within a minute.` : "It’ll be on the TV within a minute.")
       : tvWaiting(f) ? `It plays as soon as ${tvWaiting(f).name} is connected.` : "It plays as soon as a TV is connected.";
     screen.querySelector("[data-last-free]").hidden = !(needsPaywall() && !lockedCount());
   },

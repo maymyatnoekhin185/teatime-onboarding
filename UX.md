@@ -67,6 +67,9 @@ Every frame in the section is built, except the old TV QR screen (kept in Figma 
 | Keyboard / screen reader | Each screen moves focus to its heading, forms to their first field. Sheets close with Esc. Visible focus ring. |
 | Reduced motion | Sheets, notification and press feedback don't animate. |
 
+## Language
+All wording uses **Australian English**: -ise spellings and colour/favourite, Mum and Nan, mobile number, suburb and postcode, lounge room, footy, afternoon tea; dates as 25 December 2026; times as 6:40 pm; single quotation marks (‘You’re in’). Demo people and places are Australian (Victorian suburbs, +61 numbers, Daylesford). Apple and Google system sheets keep their own wording.
+
 ## Home and the tabs (one Home, built from what the person did)
 Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined family, two TVs, family dropdown…). They are states of **one** Home (`#home`), worked out in `home.js` from what the person actually did. Sources: onboarding section `13871:2156` and "Other key screens" `13880:4501`.
 
@@ -78,7 +81,7 @@ Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined fam
 | Care community | Once they joined through a care community (E6/E7), the title row is replaced by a **My Families / Community** switch (Figma 14138:6051); the chip row stays under it with the family name. **My Families** = the normal Home. **Community** = the community's posts (activities, kitchen…) as moments; while the resident isn't confirmed yet (E7) it shows "Waiting for {community}" with a Pending pill instead. The family menu chevron isn't shown in this mode (switch families from the Families tab). |
 | Members | "Just you" or "N members". |
 | Feed | Every moment in the current family, newest first. Swipe up/down between moments, sideways through a moment's photos; "k / N" and the dots follow. Empty → "Share your first moment" (D1). |
-| What you uploaded | **Send now / Keep these** → one bulk moment: "128 photos · May – Oct 2026" (or the count left after unticking), with the Timeline and Da Lat memories on it, caption prompt "Six months in one go — add a caption". **Choose my own** → a moment with exactly the photos picked ("Just now · 3 photos") and the caption typed; no memories. **Skip** → nothing. Later "+" shares stack on top. |
+| What you uploaded | **Send now / Keep these** → one bulk moment: "128 photos · May – Oct 2026" (or the count left after unticking), with the Timeline and Daylesford memories on it, caption prompt "Six months in one go — add a caption". **Choose my own** → a moment with exactly the photos picked ("Just now · 3 photos") and the caption typed; no memories. **Skip** → nothing. Later "+" shares stack on top. |
 | Status pill | "Adding n of N photos" while a bulk upload arrives; "Waiting for Mum's TV" after a set-up message; "Waiting for a TV" when moments exist and there's no TV (opens Which TV); "Waiting for Sarah" while a join request is pending; nothing once it's all playing. |
 | Invite nudge | Only after a TV joins **after** they shared (D5) and it's still just them. Not on the bulk-upload Home. |
 | Sheets over Home | D3 "Shared. Now connect a TV" (first share with no TV, once) · F2 "Sent to Sarah" · F3 "Tom wants to join" (admin). Swipe down, tap outside or Esc closes to Home. |

@@ -22,7 +22,7 @@ function johnsonsFamily(role = "member") {
       { first: "Ed", last: "Johnson", rel: "Son", moments: 9 },
       { first: "Priya", last: "Johnson", rel: "Daughter-in-law", moments: 9 },
     ],
-    tvs: [{ name: "Lisa’s TV", place: "Living room", state: "on" }],
+    tvs: [{ name: "Lisa’s TV", place: "Lounge room", state: "on" }],
     moments: [
       { id: "j1", kind: "family", author: "Sarah Johnson", photos: cycle(PHOTO_SET, 9), meta: "25 December 2025 · 9 photos", caption: "", likes: 3, seen: "Seen on Lisa’s TV · 2h" },
       { id: "j2", kind: "family", author: "Ed Johnson", photos: ["dinner", "roses", "trophy"], meta: "24 December 2025 · 3 photos", caption: "Sunday lunch with everyone 🥂", likes: 1 },
@@ -124,8 +124,8 @@ function startBulkUpload() {
 function connectTvHere() {
   const f = currentFamily();
   if (!f) return;
-  const name = loadSession().path === "a" ? "Lisa’s TV" : "Living room TV";
-  updateFamily(f.id, { tvs: [{ name, place: "Living room", state: "on" }] });
+  const name = loadSession().path === "a" ? "Lisa’s TV" : "Lounge room TV";
+  updateFamily(f.id, { tvs: [{ name, place: "Lounge room", state: "on" }] });
   addEvent({ kind: "tv", text: `<b>${name}</b> is connected`, icon: "tv" });
   if (f.moments.some((m) => m.kind === "bulk")) startBulkUpload();
   else if (f.moments.length) saveSession({ inviteNudge: true });
@@ -161,7 +161,7 @@ function tvChip(f) {
   if (s.uploading && on.length) return { label: "TV on", on: true };
   if (paired.length > 1 && on.length < paired.length) return { label: `${on.length} of ${paired.length} TVs on`, on: on.length > 0 };
   if (on.length > 1) return { label: `${on.length} TVs on`, on: true };
-  if (on.length === 1) return { label: on[0].name === "Living room TV" ? "TV on" : `${on[0].name} on`, on: true };
+  if (on.length === 1) return { label: on[0].name === "Lounge room TV" ? "TV on" : `${on[0].name} on`, on: true };
   if (paired.length) return { label: paired.length > 1 ? "TVs off" : "TV off", on: false };
   return { label: "No TV yet", on: false, toTv: true };
 }
@@ -226,7 +226,7 @@ function slideMarkup(m, i, f) {
       ${m.kind === "bulk" ? `
       <div class="stories" aria-label="Memories made from this moment">
         <button class="story-btn" type="button" data-story="g2"><span class="story-ring"><img src="assets/story-cover-timeline.png" alt=""></span><span class="story-label">Timeline</span></button>
-        <button class="story-btn" type="button" data-story="g3"><span class="story-ring"><img src="assets/story-cover-place.png" alt=""></span><span class="story-label">Da Lat</span></button>
+        <button class="story-btn" type="button" data-story="g3"><span class="story-ring"><img src="assets/story-cover-place.png" alt=""></span><span class="story-label">Daylesford</span></button>
       </div>` : ""}
       ${n > 1 ? `<span class="pagination${n <= 3 ? " dots-3" : ""}" data-dots aria-hidden="true"></span>` : ""}
       <div class="action-rail">
@@ -250,7 +250,7 @@ function slideMarkup(m, i, f) {
 function communityPosts(fam) {
   const c = fam.community;
   return [
-    { id: "c1", kind: "community", author: c, meta: "Activities team · 2 h ago", photos: ["roses", "drawing"], count: 2, caption: "Garden club planted the spring roses this morning 🌹", likes: 12 },
+    { id: "c1", kind: "community", author: c, meta: "Activities team · 2 hrs ago", photos: ["roses", "drawing"], count: 2, caption: "Garden club planted the spring roses this morning 🌹", likes: 12 },
     { id: "c2", kind: "community", author: c, meta: "Kitchen · Yesterday", photos: ["dinner"], count: 1, caption: "Sunday roast in the dining room. Thank you to everyone who joined!", likes: 18 },
     { id: "c3", kind: "community", author: c, meta: "Activities team · 3 days ago", photos: ["birthday", "trophy"], count: 2, caption: "Happy 90th, Joan! Cake and a quiz trophy for the winners.", likes: 25 },
   ];
@@ -406,7 +406,7 @@ function seedFamilyEvents() {
   [
     { kind: "person", who: "Ed", text: "<b>Ed</b> joined The Johnsons", ago: "Yesterday, 6:40 pm", unread: false },
     { kind: "person", who: "Tom", text: "<b>Tom</b> shared 3 new photos to The Johnsons", ago: "Yesterday, 2:15 pm", thumb: "dinner", unread: false },
-    { kind: "person", who: "Priya", text: "<b>Priya</b> commented: “Lovely day for it!”", ago: "3 hr ago", thumb: "roses" },
+    { kind: "person", who: "Priya", text: "<b>Priya</b> commented: ‘Lovely day for it!’", ago: "3 hrs ago", thumb: "roses" },
   ].reverse().forEach(addEvent);
 }
 
@@ -580,7 +580,7 @@ const TAB_ENTER = {
     form.name.value = f.name;
     form.forWhom.value = f.forWhom || "";
     screen.querySelector("[data-edit-initial]").textContent = familyInitial(f);
-    screen.querySelector("[data-for-hint]").textContent = `Shown as “For ${f.forWhom || "…"}” on the family screen and in the TV greeting.`;
+    screen.querySelector("[data-for-hint]").textContent = `Shown as ‘For ${f.forWhom || "…"}’ on the family screen and in the TV greeting.`;
     const deleteSub = screen.querySelector("[data-delete-sub]");
     if (deleteSub) deleteSub.textContent = f.tvs.length ? `Removes it for all ${plural(f.members.length, "member")} and unpairs ${f.tvs.map((t) => t.name).join(" and ")}. This can’t be undone.` : `Removes it for all ${plural(f.members.length, "member")}. This can’t be undone.`;
     screen.querySelector("[data-delete-block]").hidden = f.role !== "admin";
@@ -644,7 +644,7 @@ const TAB_ENTER = {
 
 function timeAgo(at) {
   const min = Math.round((Date.now() - (at || Date.now())) / 60000);
-  return min < 1 ? "Just now" : min < 60 ? `${min} min ago` : `${Math.round(min / 60)} hr ago`;
+  return min < 1 ? "Just now" : min < 60 ? `${min} min ago` : `${Math.round(min / 60)} ${Math.round(min / 60) === 1 ? "hr" : "hrs"} ago`;
 }
 
 /* ---------- Clicks on Home and the tabs ---------- */
@@ -664,7 +664,8 @@ function handleHomeClick(el, e) {
     el.setAttribute("aria-expanded", String(!menu.hidden));
   } else if (el.hasAttribute("data-tv-add")) {
     const f = currentFamily();
-    saveSession({ familyId: f.id, path: loadSession().path || "d" });
+    if (f) saveSession({ familyId: f.id });
+    saveSession({ path: loadSession().path || "d" });
     go("b3");
   } else if (el.dataset.feedTab) {
     saveSession({ homeFeed: el.dataset.feedTab });
@@ -684,10 +685,13 @@ function handleHomeClick(el, e) {
   } else if (el.hasAttribute("data-like")) {
     const id = el.closest("[data-moment]").dataset.moment;
     const f = currentFamily();
-    updateFamily(f.id, (fam) => ({ moments: fam.moments.map((m) => (m.id === id ? { ...m, liked: !m.liked } : m)) }));
+    if (f) updateFamily(f.id, (fam) => ({ moments: fam.moments.map((m) => (m.id === id ? { ...m, liked: !m.liked } : m)) }));
+    // Community posts aren't stored in the family: the heart just toggles on screen.
     const m = momentById(id);
-    el.setAttribute("aria-pressed", String(!!m.liked));
-    el.querySelector("[data-like-count]").textContent = (m.likes || 0) + (m.liked ? 1 : 0);
+    const liked = m ? !!m.liked : el.getAttribute("aria-pressed") !== "true";
+    const base = m ? m.likes || 0 : Number(el.querySelector("[data-like-count]").textContent) - (el.getAttribute("aria-pressed") === "true" ? 1 : 0);
+    el.setAttribute("aria-pressed", String(liked));
+    el.querySelector("[data-like-count]").textContent = base + (liked ? 1 : 0);
   } else if (el.hasAttribute("data-save")) {
     openSaveSheet(el.closest("[data-moment]").dataset.moment);
   } else if (el.hasAttribute("data-more")) {
@@ -780,7 +784,7 @@ function initTabForms() {
   edit.addEventListener("input", () => {
     const changed = JSON.stringify([edit.name.value.trim(), edit.forWhom.value.trim()]) !== edit.dataset.original;
     edit.querySelector("[type=submit]").disabled = !changed || !edit.name.value.trim();
-    device.querySelector("[data-for-hint]").textContent = `Shown as “For ${edit.forWhom.value.trim() || "…"}” on the family screen and in the TV greeting.`;
+    device.querySelector("[data-for-hint]").textContent = `Shown as ‘For ${edit.forWhom.value.trim() || "…"}’ on the family screen and in the TV greeting.`;
     device.querySelector("[data-edit-initial]").textContent = (edit.name.value.replace(/^The /, "")[0] || "?").toUpperCase();
   });
   edit.addEventListener("submit", (e) => {
@@ -821,13 +825,13 @@ function bulkMoment() {
   return { kind: "bulk", photos: cycle(PHOTO_SET, 8), count: TOTAL_FOUND, meta: `${TOTAL_FOUND} photos · May – Oct 2026`, caption: "" };
 }
 const PRESETS = {
-  "p-bulk": () => { freshState(); ensureOwnFamily("The Johnsons", { tvs: [{ name: "Lisa’s TV", place: "Living room", state: "on" }] }); addMyMoment(bulkMoment()); saveSession({ uploads: 1 }); return "home"; },
+  "p-bulk": () => { freshState(); ensureOwnFamily("The Johnsons", { tvs: [{ name: "Lisa’s TV", place: "Lounge room", state: "on" }] }); addMyMoment(bulkMoment()); saveSession({ uploads: 1 }); return "home"; },
   "p-arriving": () => { PRESETS["p-bulk"](); startBulkUpload(); return "home"; },
-  "p-own": () => { freshState(); ensureOwnFamily("The Johnsons", { tvs: [{ name: "Lisa’s TV", place: "Living room", state: "on" }] }); addMyMoment({ kind: "own", photos: ["birthday", "beach", "dog", "dinner", "trophy", "drawing"], count: 6, meta: "Just now · 6 photos", caption: "Lily’s 6th birthday 🎂" }); saveSession({ uploads: 1 }); return "home"; },
+  "p-own": () => { freshState(); ensureOwnFamily("The Johnsons", { tvs: [{ name: "Lisa’s TV", place: "Lounge room", state: "on" }] }); addMyMoment({ kind: "own", photos: ["birthday", "beach", "dog", "dinner", "trophy", "drawing"], count: 6, meta: "Just now · 6 photos", caption: "Lily’s 6th birthday 🎂" }); saveSession({ uploads: 1 }); return "home"; },
   "p-waiting-mum": () => { freshState({ path: "b" }); saveSetup({ who: "Mum", tv: "Google TV" }); ensureOwnFamily("The Johnsons"); addMyMoment(bulkMoment()); tvSetupSent(); saveSession({ uploads: 1 }); return "home"; },
   "p-skipped": () => { freshState({ path: "d" }); ensureOwnFamily("The Johnsons"); return "home"; },
   "p-no-tv": () => { freshState({ path: "d" }); ensureOwnFamily("The Johnsons"); addMyMoment({ kind: "own", photos: ["roses", "dinner", "dog"], count: 3, meta: "Just now · 3 photos", caption: "" }); saveSession({ uploads: 1, connectSeen: true }); return "home"; },
-  "p-invite": () => { PRESETS["p-no-tv"](); updateFamily("own", { tvs: [{ name: "Living room TV", place: "Living room", state: "on" }] }); saveSession({ inviteNudge: true }); return "home"; },
+  "p-invite": () => { PRESETS["p-no-tv"](); updateFamily("own", { tvs: [{ name: "Lounge room TV", place: "Lounge room", state: "on" }] }); saveSession({ inviteNudge: true }); return "home"; },
   "p-joined": () => { freshState({ path: "b", first: "Tom", last: "Nguyen" }); joinFamily(johnsonsFamily("member")); seedFamilyEvents(); queuePush("You’ve joined The Johnsons. Their moments are playing on Lisa’s TV."); return "home"; },
   "p-asked": () => { freshState({ path: "b", first: "Tom", last: "Nguyen", joinVia: "tvqr" }); ensureOwnFamily("The Nguyens"); saveSession({ joinPending: true }); return "home-sent"; },
   "p-admin": () => {
@@ -842,7 +846,7 @@ const PRESETS = {
     freshState();
     const j = johnsonsFamily("admin");
     j.members = [{ ...me(), rel: "Daughter", admin: true, isMe: true, moments: 14 }, ...j.members.filter((m) => m.first !== "Sarah")];
-    j.tvs = [{ name: "Lisa’s TV", place: "Living room", state: "on", seen: "seen 2 min ago" }, { name: "Mum’s TV", place: "Bedroom", state: "off", seen: "last seen yesterday" }];
+    j.tvs = [{ name: "Lisa’s TV", place: "Lounge room", state: "on", seen: "seen 2 min ago" }, { name: "Mum’s TV", place: "Bedroom", state: "off", seen: "last seen yesterday" }];
     const nan = nanFamily();
     nan.members.push({ ...me(), rel: "Granddaughter", isMe: true });
     saveFamilies([j, nan], "johnsons");
