@@ -83,6 +83,18 @@ const tvWaiting = (f) => (f?.tvs || []).find((t) => t.state === "waiting");
 const ownerOf = (tvName) => (tvName || "").replace(/’s TV$/, "");
 
 // Add a moment the person made to the current family (newest first).
+// Locked moments: uploaded after the 3 free ones, waiting for a subscription.
+const lockedCount = () => families().reduce((n, f) => n + f.moments.filter((m) => m.locked).length, 0);
+function unlockAll() {
+  const n = lockedCount();
+  saveFamilies(families().map((f) => ({ ...f, moments: f.moments.map((m) => (m.locked ? { ...m, locked: false } : m)) })), loadSession().familyId);
+  return n;
+}
+function openPaywall() {
+  saveSession({ paywallFrom: (location.hash.slice(1) || "home").replace(/^p-.*/, "home") });
+  go("f4");
+}
+
 function addMyMoment(m) {
   const f = currentFamily();
   if (!f) return;
@@ -172,7 +184,31 @@ function tvMenuMarkup(f) {
     </div>`;
 }
 
+// A locked moment: blurred cover, a lock to tap (→ paywall), who and when — nothing else until they subscribe.
+function lockedSlideMarkup(m) {
+  const n = m.count || m.photos.length;
+  return `
+    <article class="moment-slide is-locked" data-moment="${m.id}" aria-label="Locked moment, ${n} photos" aria-roledescription="moment">
+      <img class="feed-photo locked-photo" src="${photoSrc(m.photos[0])}" alt="" decoding="async">
+      <div class="feed-shade"></div>
+      <div class="locked-center">
+        <button class="lock-btn" type="button" data-unlock aria-label="Unlock this moment"><span class="lock-icon" aria-hidden="true"></span></button>
+        <p class="locked-title">Locked moment</p>
+        <p class="locked-sub">You’ve used your 3 free uploads. Subscribe to see it and send it to the TV.</p>
+        <button class="btn btn-white locked-cta" type="button" data-unlock>Unlock</button>
+      </div>
+      <div class="caption-panel">
+        <div class="author-row">
+          <span class="avatar-ring">${loadSession().provider ? `<img src="assets/avatar-me.png" alt="">` : `<span class="avatar-initial">${escapeHtml(m.author[0] || "?")}</span>`}</span>
+          <span class="author"><span class="author-name">${escapeHtml(m.author)}</span><span class="author-meta">${escapeHtml(m.meta)}</span></span>
+        </div>
+        <p class="seen-on locked-note"><span class="lock-icon is-small" aria-hidden="true"></span>Not on the TV yet</p>
+      </div>
+    </article>`;
+}
+
 function slideMarkup(m, i, f) {
+  if (m.locked) return lockedSlideMarkup(m);
   const n = m.count || m.photos.length;
   const photos = m.photos.length >= n ? m.photos.slice(0, n) : cycle(m.photos, Math.min(n, 12));
   const mine = isMineMoment(m);
@@ -569,7 +605,7 @@ const TAB_ENTER = {
     screen.querySelector("[data-notifications-list]").innerHTML = groups.filter(([, l]) => l.length).map(([label, l]) => `
       <p class="list-label">${label}</p>
       ${l.map((e) => `
-        <div class="note-row${e.unread ? " is-unread" : ""}">
+        <div class="note-row${e.unread ? " is-unread" : ""}"${e.go === "f4" && lockedCount() ? " data-unlock role=\"button\" tabindex=\"0\"" : ""}>
           ${e.icon ? `<span class="note-icon"><span class="mask-icon" style="--icon:url(assets/icon-${e.icon}.svg)"></span></span>` : `<span class="avatar-disc">${escapeHtml((e.who || "T")[0])}</span>`}
           <span class="note-text"><span class="note-body">${e.text}</span><span class="note-time">${e.ago || timeAgo(e.at)}</span></span>
           ${e.thumb ? `<img class="note-thumb" src="${photoSrc(e.thumb)}" alt="">` : ""}
@@ -595,10 +631,12 @@ const TAB_ENTER = {
     // Memories appear once they have uploaded anything (everything at once or their own pick).
     const hasStories = mine.length > 0;
     screen.querySelector("[data-profile-stories]").hidden = !hasStories;
-    const photos = mine.flatMap((m) => (m.photos.length >= (m.count || 0) ? m.photos : cycle(m.photos, Math.min(m.count || m.photos.length, 9))));
+    const photos = mine.flatMap((m) => (m.photos.length >= (m.count || 0) ? m.photos : cycle(m.photos, Math.min(m.count || m.photos.length, 9))).map((p) => ({ p, locked: !!m.locked })));
     screen.querySelector("[data-profile-moments-count]").textContent = mine.reduce((n, m) => n + (m.count || m.photos.length), 0);
     screen.querySelector("[data-profile-grid]").innerHTML = photos.length
-      ? photos.slice(0, 9).map((p) => `<img src="${photoSrc(p)}" alt="" loading="lazy" decoding="async">`).join("")
+      ? photos.slice(0, 9).map(({ p, locked }) => locked
+        ? `<button class="grid-locked" type="button" data-unlock aria-label="Locked photo. Unlock"><img src="${photoSrc(p)}" alt="" loading="lazy" decoding="async"><span class="lock-icon is-small" aria-hidden="true"></span></button>`
+        : `<img src="${photoSrc(p)}" alt="" loading="lazy" decoding="async">`).join("")
       : `<div class="moments-empty"><p>Moments you share show here.</p><button class="btn btn-white" type="button" data-picker>Share a moment</button></div>`;
     paintNav(screen, "profile");
   },
@@ -613,7 +651,9 @@ function timeAgo(at) {
 
 function handleHomeClick(el, e) {
   const screen = el.closest("[data-screen]");
-  if (el.hasAttribute("data-tv-chip")) {
+  if (el.hasAttribute("data-unlock")) {
+    openPaywall();
+  } else if (el.hasAttribute("data-tv-chip")) {
     // The chip opens the TV list (or Which TV when there is none yet).
     const f = currentFamily();
     if (!f || !f.tvs.length) { saveSession({ path: loadSession().path || "d" }); return go("b3"), true; }
@@ -824,6 +864,13 @@ const PRESETS = {
     return "home";
   },
   "p-paywall": () => { PRESETS["p-bulk"](); saveSession({ uploads: 3 }); return "home"; },
+  "p-locked": () => {
+    PRESETS["p-bulk"]();
+    addMyMoment({ kind: "own", photos: ["beach", "dog", "drawing"], count: 3, meta: "Just now · 3 photos", caption: "Beach day with the kids", locked: true });
+    saveSession({ uploads: 4 });
+    addEvent({ kind: "plan", text: "1 moment is locked in <b>The Johnsons</b>. Subscribe to see it and send it to the TV.", icon: "lock", go: "f4" });
+    return "home";
+  },
 };
 
 // The TV list closes on a tap anywhere outside it (the chip itself toggles it).

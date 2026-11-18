@@ -11,7 +11,7 @@ Seven journeys (one row each in Figma) plus the detail screens they share:
 4. **Second member, family PIN.** Sign in → E1 → Join a family → E2 Enter the PIN → the family's Home. No approval.
 5. **Second member, scanned the TV's small QR.** Sign in → F1 Join The Johnsons? → Ask to join → F2 Sent to Sarah → their own Home, waiting → (admin approves on F3) → the family's Home. Declined → E1 again.
 6. **Care community.** Sign in → E1 → Care community → E4 Find their community → E5 Who lives there → E6 Is this them? (matched) or E7 You're set up (no match, not blocked) → Photo access → Keep these.
-7. **After onboarding.** G1 Home with the moment's Memories → G2 / G3 a story playing · F4 paywall on the 4th upload.
+7. **After onboarding.** G1 Home with the moment's Memories → G2 / G3 a story playing · Locked moments from the 4th upload → F4 paywall when the lock is tapped.
 
 Every frame in the section is built, except the old TV QR screen (kept in Figma only as "current design" for comparison).
 
@@ -34,7 +34,7 @@ Every frame in the section is built, except the old TV QR screen (kept in Figma 
 | `#e7` | E7 · You're set up | Family made, community told, nothing blocked. Go to Home → photo prompt (flowchart: photos as in Flow 2) |
 | `#f1` | F1 · Join The Johnsons? | Ask to join → F2 · Not this family → E1. Back → sign in |
 | `#declined` | E1 after a decline | Toast "The Johnsons declined your request…", then the normal E1 |
-| `#f4` | F4 · Paywall | Shown instead of sending the 4th upload. Subscribe → the upload goes through (demo toast, no payment) · Not now → nothing uploaded, back to Home · Back → the New moment screen, caption kept |
+| `#f4` | F4 · Paywall | Opened from a locked moment (its lock or Unlock button, the locked photo on Profile, or the "moment is locked" notification), or "See plans". Shows "N moments are waiting" when any are locked. Subscribe → every locked moment unlocks and plays on the TV (demo toast, no payment), back where they came from · Not now / Back → nothing changes, back where they came from |
 | `#g2` / `#g3` | A story playing | ~3 s per photo, auto-advancing; segmented progress; chip shows the month (timeline) or the place. Tap the right ⅔ → next, left ⅓ → back, hold → pause; ← → keys, Space pauses; X, Esc or the last photo → back to where it opened. Switching away from the app pauses it |
 | `#a2` / `#b-a2` | Photo access (system prompt) | Allow → A3 / B2 · Limit Access or Don't Allow → limited screen |
 | `#photos-off` | We can't see your photos yet | Allow photo access → A3 / B2 · Pick photos myself → picker · Skip → empty Home |
@@ -55,7 +55,7 @@ Every frame in the section is built, except the old TV QR screen (kept in Figma 
 | Refresh / switch away and back | Each screen has its own URL; path, phone number, name, picked photos, caption and B5 details are kept for the session, so a refresh lands in the same place with nothing lost. |
 | Shared screens | The app remembers the journey (A, B, D, the small QR), so sign-in, the photo prompt, Which TV and the set-up message each continue the right way. |
 | Family name | Whatever is chosen on E1 (or the joined / care family) shows as "Sharing to" on New moment, in the invite text and in the timeline story's title. |
-| Uploads | Bulk "Send now" / "Keep these" = upload 1; each moment shared after that is one more. The 4th asks for a subscription first; after subscribing nothing is asked again. Care-community families skip the paywall. |
+| Uploads | Bulk "Send now" / "Keep these" = upload 1; each moment shared after that is one more. Uploading is never blocked: from the 4th upload without a subscription the moment still uploads but arrives **locked** (blurred on Home with a lock, not on the TV, not opened). Tapping the lock opens the paywall. After subscribing nothing is locked again. Care-community families skip the paywall. |
 | Sign-in fails | Offline when signing in → toast "Couldn't sign in with Apple/Google. Try again."; buttons are ready again. |
 | Closing a system sheet | Returns to sign in with nothing shown (per design note). |
 | Name left empty (B5) | Wording falls back: "Send the set-up", "Waiting for their TV". |
@@ -94,7 +94,7 @@ Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined fam
 | B4 Scan the TV's code | TV on; kept photos start arriving. |
 | B5/B6 Share message | That TV waits; 5 s later it's on (push), kept photos arrive. |
 | New moment Share | Photos upload one by one over the preview ("Sharing to {family}… 2 of 3 photos", Cancel stops it), then **Shared** ("Mum will see it on the TV within a minute" / "It plays as soon as a TV is connected"), or D3 for the first share with no TV, or Which TV during path B onboarding. Leaving mid-upload sends nothing. |
-| 4th upload | Paywall first. Subscribe → the same moment uploads. Not now → nothing sent, a notification says it's waiting. "N free uploads left" shows under "Sharing to". |
+| 4th upload onwards | Uploads as normal, then Home with that moment locked + toast "Uploaded and locked" + a notification (tap → paywall). "Sharing to" says "Free uploads used — this one arrives locked". Profile shows its photos blurred with a lock. Subscribe unlocks all of them at once. |
 | E2 right PIN | Joins The Johnsons (their moments, Lisa's TV, 5 members) and opens Home. |
 | F1 Ask to join | Their own empty Home + F2 sheet; 5 s later Sarah approves → Home switches to The Johnsons. |
 | E6 / E7 | Family made for the resident ("Margaret's family", for Margaret), linked to the community; no paywall. E6 (matched) → community posts show at once; E7 (no match) → Community tab waits until the community confirms. |
@@ -112,7 +112,7 @@ Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined fam
 Bottom nav on Home and every tab: Home · Families · + (share) · Notifications · Profile. Same in every colour option: the selected tab is a filled white icon with a white dot, the others are white at 60%, and the gradient "+" is the only colour.
 
 ### Review list: "Start as…" presets
-Each fills in the choices a person would have made and opens Home (or its sheet): uploaded everything + TV on · uploading · chose 6 photos + TV on · kept photos, waiting for Mum's TV · skipped everything · shared, no TV · TV on, invite family · joined by PIN · asked to join, waiting · admin with a request · two families, two TVs (one off) · care community, linked · care community, waiting to confirm · 3 free uploads used. Everything else is reached by clicking through.
+Each fills in the choices a person would have made and opens Home (or its sheet): uploaded everything + TV on · uploading · chose 6 photos + TV on · kept photos, waiting for Mum's TV · skipped everything · shared, no TV · TV on, invite family · joined by PIN · asked to join, waiting · admin with a request · two families, two TVs (one off) · care community, linked · care community, waiting to confirm · 3 free uploads used · 4th upload, locked moment. Everything else is reached by clicking through.
 
 ### Colour options (temporary, for the client to choose)
 Source: Figma `13960:30674` ("CTA colour options"). The original pink-orange palette has been removed, leaving four options. Only buttons, links and selected states change. All four share option 2’s background: near-black #0E0C12 with the purple / pink glow at 45%.

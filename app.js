@@ -304,13 +304,8 @@ function initMomentForm() {
     e.preventDefault();
     const { picked = [], caption = "" } = loadSession();
     if (!picked.length) return go("picker");
-    const moment = { photos: picked, caption: caption.trim() };
-    // The 4th upload asks for a subscription first; nothing is sent until they choose.
-    if (needsPaywall()) {
-      saveSession({ pendingMoment: { moment } });
-      return go("f4");
-    }
-    startMomentUpload(moment);
+    // Never blocked: past the 3 free uploads the moment still uploads, but arrives locked (finishMoment).
+    startMomentUpload({ photos: picked, caption: caption.trim() });
   });
 }
 
@@ -490,6 +485,12 @@ function initFamilyForms() {
 function countUpload() {
   const s = loadSession();
   saveSession({ uploads: (s.uploads || 0) + 1 });
+}
+// Back to wherever the paywall was opened from (the lock on Home, Profile or a notification).
+function leavePaywall() {
+  const from = loadSession().paywallFrom || "home";
+  saveSession({ paywallFrom: null });
+  go(from, { replace: true });
 }
 const needsPaywall = () => {
   const s = loadSession();
@@ -674,13 +675,21 @@ function resetMomentUpload() {
 }
 
 function finishMoment(moment) {
+  // 4th upload onwards without a subscription: uploaded, but locked — it doesn't open or play on the TV until they subscribe.
+  const locked = needsPaywall();
   countUpload();
-  addMyMoment({ kind: "own", photos: moment.photos, count: moment.photos.length, meta: `Just now · ${plural(moment.photos.length, "photo")}`, caption: moment.caption });
+  addMyMoment({ kind: "own", photos: moment.photos, count: moment.photos.length, meta: `Just now · ${plural(moment.photos.length, "photo")}`, caption: moment.caption, locked });
   saveSession({ picked: [], caption: "", pendingMoment: null, lastShared: moment });
   const f = currentFamily();
+  resetMomentUpload();
+  if (locked) {
+    const n = lockedCount();
+    addEvent({ kind: "plan", text: `${n === 1 ? "1 moment is" : `${n} moments are`} locked in <b>${escapeHtml(f?.name || "your family")}</b>. Subscribe to see ${n === 1 ? "it" : "them"} and send ${n === 1 ? "it" : "them"} to the TV.`, icon: "lock", go: "f4" });
+    go("home", { replace: true });
+    return toast("Uploaded and locked. Tap the lock to unlock it.");
+  }
   const tv = tvOnList(f)[0];
   if (tv) later(() => addEvent({ kind: "person", who: ownerOf(tv.name) || "Lisa", text: `<b>${ownerOf(tv.name) || "Lisa"}</b> saw your photo on the big screen`, thumb: moment.photos[0] }), 4000);
-  resetMomentUpload();
   go(afterShareRoute(), { replace: true });
 }
 
@@ -745,20 +754,14 @@ function handleNewClick(el) {
     el.classList.remove("is-shown");
     if (el.dataset.pushGo) go(el.dataset.pushGo);
   } else if (el.hasAttribute("data-subscribe")) {
+    // Every locked moment opens and starts playing on the TV.
+    const n = unlockAll();
     saveSession({ subscribed: true });
-    const { pendingMoment } = loadSession();
-    toast("Subscribed. Demo only — no payment taken.");
-    if (pendingMoment) { saveSession({ resumeUpload: true }); go("moment", { replace: true }); }
-    else go("home");
-  } else if (el.hasAttribute("data-not-now")) {
-    // Nothing is uploaded; back to Home. The family is told what's waiting.
-    const f = currentFamily();
-    saveSession({ pendingMoment: null, picked: [], caption: "" });
-    addEvent({ kind: "plan", text: `1 moment is waiting until <b>${escapeHtml(f?.name || "your family")}</b> subscribes`, icon: "hourglass" });
-    go("home");
-    toast("Not uploaded");
-  } else if (el.hasAttribute("data-paywall-back")) {
-    loadSession().pendingMoment ? go("moment") : history.length > 1 ? history.back() : go("home");
+    leavePaywall();
+    toast(n ? `Subscribed. ${n === 1 ? "Your moment is" : `${n} moments are`} unlocked — demo only, no payment taken.` : "Subscribed. Demo only — no payment taken.");
+  } else if (el.hasAttribute("data-not-now") || el.hasAttribute("data-paywall-back")) {
+    // Nothing changes: locked moments stay locked, back where they were.
+    leavePaywall();
   } else {
     return false;
   }
@@ -819,7 +822,9 @@ const NEW_ENTER = {
     screen.querySelector("[data-e7-tv]").nextElementSibling.textContent = `${p.pos[0].toUpperCase() + p.pos.slice(1)} room TV and the community posts unlock.`;
   },
   f4(_, screen) {
-    screen.querySelector("[data-paywall-back]").setAttribute("aria-label", loadSession().pendingMoment ? "Back to your moment" : "Back");
+    const n = lockedCount();
+    screen.querySelector("[data-paywall-locked]").hidden = !n;
+    screen.querySelector("[data-paywall-locked-text]").textContent = `${n === 1 ? "1 moment is" : `${n} moments are`} waiting. Subscribe to see ${n === 1 ? "it" : "them"} and send ${n === 1 ? "it" : "them"} to the TV.`;
   },
   home(route, screen) {
     // Reaching Home ends onboarding; a person without a family yet (e.g. deep link) gets an empty own family.
@@ -900,14 +905,9 @@ const ENTER = {
     initial.textContent = fam ? (fam.name.replace(/^The /, "")[0] || "?").toUpperCase() : "";
     const left = Math.max(0, 3 - (s.uploads || 0));
     screen.querySelector("[data-share-sub]").textContent = !s.subscribed && !s.community
-      ? (left ? `${plural(left, "free upload")} left` : "Subscribe to keep sending")
+      ? (left ? `${plural(left, "free upload")} left` : "Free uploads used — this one arrives locked")
       : fam && fam.members.length > 1 ? `${fam.members.length} members` : "Just you for now";
     resetMomentUpload();
-    // Back from the paywall after subscribing: the moment they were sharing goes through now.
-    if (s.resumeUpload && s.pendingMoment) {
-      saveSession({ resumeUpload: false });
-      startMomentUpload(s.pendingMoment.moment);
-    }
   },
   b4(_, screen) {
     // The steps play in order: number, text, then the line down to the next number.
@@ -963,7 +963,7 @@ function render() {
 /* ---------- Clicks ---------- */
 
 document.addEventListener("click", (e) => {
-  const el = e.target.closest("[data-go], [data-todo], [data-share], [data-push], [data-signin], [data-sheet-close], [data-sheet-confirm], [data-email-option], [data-back], [data-picker], [data-photos-found], [data-all-confirm], [data-pick-tile], [data-picker-photo], [data-picker-close], [data-picker-next], [data-tv-later], [data-tv-scan], [data-connect-close], [data-invite], [data-story], [data-story-close], [data-approve], [data-not-family], [data-resident-join], [data-care-continue], [data-subscribe], [data-not-now], [data-paywall-back], [data-community], [data-nav], [data-group-toggle], [data-switch-family], [data-like], [data-save], [data-more], [data-save-item], [data-save-confirm], [data-more-action], [data-confirm-yes], [data-overlay-close], [data-dismiss-nudge], [data-open-family], [data-connect-family], [data-share-pin], [data-leave-family], [data-delete-family], [data-mark-read], [data-send-all], [data-keep-all], [data-skip-photos], [data-ask-join], [data-shared-done], [data-upload-cancel], [data-toggle-members], [data-tv-chip], [data-tv-add], [data-feed-tab]");
+  const el = e.target.closest("[data-go], [data-todo], [data-share], [data-push], [data-signin], [data-sheet-close], [data-sheet-confirm], [data-email-option], [data-back], [data-picker], [data-photos-found], [data-all-confirm], [data-pick-tile], [data-picker-photo], [data-picker-close], [data-picker-next], [data-tv-later], [data-tv-scan], [data-connect-close], [data-invite], [data-story], [data-story-close], [data-approve], [data-not-family], [data-resident-join], [data-care-continue], [data-subscribe], [data-not-now], [data-paywall-back], [data-community], [data-nav], [data-group-toggle], [data-switch-family], [data-like], [data-save], [data-more], [data-save-item], [data-save-confirm], [data-more-action], [data-confirm-yes], [data-overlay-close], [data-dismiss-nudge], [data-open-family], [data-connect-family], [data-share-pin], [data-leave-family], [data-delete-family], [data-mark-read], [data-send-all], [data-keep-all], [data-skip-photos], [data-ask-join], [data-shared-done], [data-upload-cancel], [data-toggle-members], [data-unlock], [data-tv-chip], [data-tv-add], [data-feed-tab]");
   if (!el) return;
   if (handleNewClick(el)) return;
   if (el.dataset.go) {

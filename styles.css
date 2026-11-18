@@ -1535,3 +1535,32 @@ body.is-comparing .palette-switch { display: none; }
 .community-locked .locked-title { font: 600 20px/26px var(--font-title); }
 .community-locked .body-small { color: rgba(255, 255, 255, .7); }
 .community-locked .state-pill { margin-top: 8px; }
+
+/* Locked moment (uploaded past the 3 free ones): blurred, a lock to tap → paywall. */
+.lock-icon { display: block; width: 30px; height: 30px; background: #fff; -webkit-mask: url("assets/icon-lock.svg") center / contain no-repeat; mask: url("assets/icon-lock.svg") center / contain no-repeat; }
+.lock-icon.is-small { width: 14px; height: 14px; flex-shrink: 0; }
+.moment-slide.is-locked .locked-photo { filter: blur(28px) brightness(.55) saturate(1.2); transform: scale(1.15); }
+.locked-center {
+  position: absolute; left: 32px; right: 32px; top: 50%; transform: translateY(-62%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
+}
+.lock-btn {
+  display: grid; place-items: center; width: 76px; height: 76px; margin-bottom: 8px; border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .25); background: rgba(255, 255, 255, .14);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .3); transition: transform .15s;
+}
+.lock-btn:active { transform: scale(.94); }
+.locked-title { font: 600 22px/28px var(--font-title); }
+.locked-sub { max-width: 280px; font: 400 15px/21px var(--font-body); color: rgba(255, 255, 255, .78); }
+.locked-cta { width: auto; height: 40px; margin-top: 16px; padding: 0 28px; font-size: 15px; }
+.locked-note { display: flex; align-items: center; gap: 6px; }
+.grid-locked { position: relative; display: block; overflow: hidden; aspect-ratio: 1; padding: 0; }
+.grid-locked img { width: 100%; height: 100%; object-fit: cover; filter: blur(10px) brightness(.6); transform: scale(1.2); }
+.grid-locked .lock-icon { position: absolute; left: 50%; top: 50%; width: 20px; height: 20px; transform: translate(-50%, -50%); }
+.paywall-locked {
+  display: flex; align-items: center; gap: 10px; margin-top: 4px; padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, .12); border-radius: 14px; background: rgba(255, 255, 255, .06);
+  font: 400 14px/20px var(--font-body); color: rgba(255, 255, 255, .85);
+}
+.note-row[data-unlock] { cursor: pointer; }
