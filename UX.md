@@ -5,13 +5,13 @@ Source: Figma `Uk1zH52TS6WFucHkYVFKJY`, section `13871:2156` ("ONBOARDING v2.1",
 No welcome screen. Straight after sign-in the person names their family (E1), pre-filled from their surname, or joins one that already exists.
 
 Seven journeys (one row each in Figma) plus the detail screens they share:
-1. **Scanned the TV, new family.** TV QR → Sign in → E1 Name your family → Photo access → Moments found (Send now) → Home, moments arriving → Home, all in (with Stories).
+1. **Scanned the TV, new family.** TV QR → Sign in → E1 Name your family → Photo access → Moments found (Send now) → Home, moments arriving → Home, all in (with Memories).
 2. **a · From an ad, TV in front of you.** Sign in → E1 → Photo access → Keep these → Which TV → TV in front of me → Home, moments arriving. **b · TV somewhere else / I don't know.** Which TV → Add another TV → Set-up message → Home, waiting → Home, connected.
 3. **Skipped everything.** Sign in → E1 → Skip → empty Home → share with "+" → "Shared. Now connect a TV" → Home, waiting → TV connected, invite your family.
 4. **Second member, family PIN.** Sign in → E1 → Join a family → E2 Enter the PIN → the family's Home. No approval.
 5. **Second member, scanned the TV's small QR.** Sign in → F1 Join The Johnsons? → Ask to join → F2 Sent to Sarah → their own Home, waiting → (admin approves on F3) → the family's Home. Declined → E1 again.
 6. **Care community.** Sign in → E1 → Care community → E4 Find their community → E5 Who lives there → E6 Is this them? (matched) or E7 You're set up (no match, not blocked) → Photo access → Keep these.
-7. **After onboarding.** G1 Home with the moment's Stories → G2 / G3 a story playing · F4 paywall on the 4th upload.
+7. **After onboarding.** G1 Home with the moment's Memories → G2 / G3 a story playing · F4 paywall on the 4th upload.
 
 Every frame in the section is built, except the old TV QR screen (kept in Figma only as "current design" for comparison).
 
@@ -77,7 +77,7 @@ Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined fam
 | TV chip | No TV → "No TV yet" (opens Which TV). One TV on → "{name} on" ("TV on" for an unnamed TV and while photos are still arriving). Two or more → "2 TVs on". |
 | Members | "Just you" or "N members". |
 | Feed | Every moment in the current family, newest first. Swipe up/down between moments, sideways through a moment's photos; "k / N" and the dots follow. Empty → "Share your first moment" (D1). |
-| What you uploaded | **Send now / Keep these** → one bulk moment: "128 photos · May – Oct 2026" (or the count left after unticking), with the Timeline and Da Lat stories on it, caption prompt "Six months in one go — add a caption". **Choose my own** → a moment with exactly the photos picked ("Just now · 3 photos") and the caption typed; no stories. **Skip** → nothing. Later "+" shares stack on top. |
+| What you uploaded | **Send now / Keep these** → one bulk moment: "128 photos · May – Oct 2026" (or the count left after unticking), with the Timeline and Da Lat memories on it, caption prompt "Six months in one go — add a caption". **Choose my own** → a moment with exactly the photos picked ("Just now · 3 photos") and the caption typed; no memories. **Skip** → nothing. Later "+" shares stack on top. |
 | Status pill | "Adding n of N photos" while a bulk upload arrives; "Waiting for Mum's TV" after a set-up message; "Waiting for a TV" when moments exist and there's no TV (opens Which TV); "Waiting for Sarah" while a join request is pending; nothing once it's all playing. |
 | Invite nudge | Only after a TV joins **after** they shared (D5) and it's still just them. Not on the bulk-upload Home. |
 | Sheets over Home | D3 "Shared. Now connect a TV" (first share with no TV, once) · F2 "Sent to Sarah" · F3 "Tom wants to join" (admin). Swipe down, tap outside or Esc closes to Home. |
@@ -106,7 +106,7 @@ Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined fam
 | `#family-edit` | Edit family | Family name and "Who is it for" fields (separate boxes; hint updates live). Save stays dimmed until something changes and the name isn’t empty. Below, one settings-style card of tappable rows with icons: **Leave this family** and **Delete this family** (red, admins only), with "Both ask before anything changes." under it. Both open a confirm popup that says what happens (Delete names how many members and which TVs are unpaired). Change photo → not built. |
 | `#family-new` | Create a new family | Name (button enabled once typed) → new family, admin, just you → its family screen. |
 | `#notifications` | Notifications | From what happened (TV connected, joined, approvals, "Lisa saw your photo…", waiting for a subscription, the family's activity once you're in one). Unread rows tinted with the option's colour; count badge; ⋯ marks all read; leaving the tab marks them read. Empty → "Nothing yet". Nav bell shows a dot while anything is unread. |
-| `#profile` | My profile | Name, photo (Apple/Google) or initial, families as chips (Owner/Member, open the family), Stories row only if they did a bulk upload, Moments grid of their own photos with the count. Settings and photo edit → not built. |
+| `#profile` | My profile | Name, photo (Apple/Google) or initial, families as chips (Owner/Member, open the family), Memories row only if they did a bulk upload, Moments grid of their own photos with the count. Settings and photo edit → not built. |
 
 Bottom nav on Home and every tab: Home · Families · + (share) · Notifications · Profile. Same in every colour option: the selected tab is a filled white icon with a white dot, the others are white at 60%, and the gradient "+" is the only colour.
 
@@ -144,6 +144,7 @@ All four share the same secondary button (2px white outline at 30%, as on the A1
 **When the client picks:** copy that option's values into `:root` in `styles.css`, then delete the other `[data-palette]` blocks, the switcher and Compare styles, the "Colour options" and "Compare" blocks in `app.js` (plus `EMBED`) and the head script in `index.html`. Or go back to the old palette with the `before-palettes` tag.
 
 ### Shortcuts and choices to confirm
+- On screen the auto-made clips are called **Memories** ("Made for you from your photos, by date and place."), not "Stories": Stories suggests something you post yourself, as on Instagram / Facebook. Figma’s working name was Stories, with Albums / Collections as alternatives — to confirm.
 - A known Apple / Google account or phone number would go straight to Home; this build treats every sign-in as new.
 - B4's "Scan the TV's code" skips the camera (A0, not drawn in this section).
 - B7 → B8 and D4 → D5 run on a 5 s timer to show the moment the other TV joins.
@@ -160,7 +161,7 @@ All four share the same secondary button (2px white outline at 30%, as on the A1
 - G1's dashed "AI groups coming later" circle (in the note, not in the frame) isn't drawn.
 
 ### Open questions (from the Figma section)
-which entry comes first · app not installed after the scan · are bulk moments free, and when to ask for a subscription · bulk moments in the feed or in a "year" collection · typing a code on the TV vs "nothing typed on the TV" · "What TV is it?" when the sender doesn't know · second family member joining · care rooms · Samsung / LG "not supported yet" · photo date vs upload time on the TV · smart titles · the word on screen: photos, moments or stories.
+which entry comes first · app not installed after the scan · are bulk moments free, and when to ask for a subscription · bulk moments in the feed or in a "year" collection · typing a code on the TV vs "nothing typed on the TV" · "What TV is it?" when the sender doesn't know · second family member joining · care rooms · Samsung / LG "not supported yet" · photo date vs upload time on the TV · smart titles · the word on screen: photos, moments or memories.
 
 ### Asset note
 The eight photos are the original Figma exports (~2 MB each, ~16 MB total). Fine for review; they need compressing before real users load them on mobile data.

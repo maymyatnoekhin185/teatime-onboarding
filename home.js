@@ -167,7 +167,7 @@ function slideMarkup(m, i, f) {
       <div class="feed-shade"></div>
       <p class="glass-pill right" data-count>1 / ${n}</p>
       ${m.kind === "bulk" ? `
-      <div class="stories" aria-label="Stories from this moment">
+      <div class="stories" aria-label="Memories made from this moment">
         <button class="story-btn" type="button" data-story="g2"><span class="story-ring"><img src="assets/story-cover-timeline.png" alt=""></span><span class="story-label">Timeline</span></button>
         <button class="story-btn" type="button" data-story="g3"><span class="story-ring"><img src="assets/story-cover-place.png" alt=""></span><span class="story-label">Da Lat</span></button>
       </div>` : ""}
