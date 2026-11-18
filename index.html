@@ -1006,21 +1006,22 @@
             <span class="avatar-disc avatar-disc-96" data-edit-initial>J</span>
             <button class="link-btn" type="button" data-todo="Changing the family photo">Change photo</button>
           </div>
-          <label class="field"><span class="field-label">Family name</span><input class="field-box is-glass" name="name" type="text" maxlength="40" autocapitalize="words" data-autofocus></label>
-          <label class="field"><span class="field-label">Who is it for</span><input class="field-box is-glass" name="forWhom" type="text" maxlength="30" autocapitalize="words"></label>
-          <p class="body-small small" data-for-hint></p>
-          <p class="list-label caps">Manage</p>
-          <div class="manage-card">
-            <button class="manage-row" type="button" data-leave-family>
-              <span class="row-icon is-brand is-square"><img src="assets/icon-users-white.svg" alt="" width="20" height="20"></span>
+          <p class="list-label">Details</p>
+          <div class="group-card form-card">
+            <label class="form-row"><span class="field-label">Family name</span><input name="name" type="text" maxlength="40" autocapitalize="words" data-autofocus></label>
+            <label class="form-row"><span class="field-label">Who it’s for</span><input name="forWhom" type="text" maxlength="30" autocapitalize="words" placeholder="e.g. Mum"></label>
+          </div>
+          <p class="form-hint" data-for-hint></p>
+          <p class="list-label">Your membership</p>
+          <div class="group-card">
+            <button class="group-row" type="button" data-leave-family>
+              <span class="row-icon is-glass"><img src="assets/icon-users-white.svg" alt="" width="20" height="20"></span>
               <span class="row-text"><span class="row-title">Leave this family</span><span class="row-sub">You stop seeing its moments and TV. Ask for the PIN to come back.</span></span>
-              <img src="assets/icon-chevron-right.svg" alt="" width="20" height="20">
             </button>
-            <button class="manage-row" type="button" data-delete-family>
-              <span class="row-icon is-danger is-square"><img src="assets/icon-trash.svg" alt="" width="20" height="20"></span>
-              <span class="row-text"><span class="row-title is-danger">Delete this family</span><span class="row-sub" data-delete-sub></span></span>
-              <img src="assets/icon-chevron-right.svg" alt="" width="20" height="20">
-            </button>
+          </div>
+          <div class="danger-block" data-delete-block>
+            <button class="btn btn-danger-outline" type="button" data-delete-family>Delete this family</button>
+            <p class="form-hint center" data-delete-sub></p>
           </div>
         </div>
       </form>

@@ -1131,6 +1131,18 @@ button.group-row:active { background: rgba(255, 255, 255, .06); }
 .role-pill { flex-shrink: 0; padding: 3px 8px; border-radius: 10px; background: rgba(255, 255, 255, .1); font: 500 12px/16px var(--font-body); color: rgba(255, 255, 255, .85); }
 .you-tag { margin-left: 4px; font: 400 13px/18px var(--font-body); color: var(--tt-text-secondary); }
 
+/* Edit family: one grouped form card, a calm membership row, and Delete set apart at the bottom. */
+.form-card .form-row { display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; }
+.form-card .form-row + .form-row { border-top: 1px solid rgba(255, 255, 255, .08); }
+.form-card input { width: 100%; padding: 0; border: 0; background: none; color: #fff; font: 400 16px/22px var(--font-body); caret-color: var(--accent); }
+.form-card input::placeholder { color: rgba(255, 255, 255, .35); }
+.form-card input:focus { outline: none; }
+.form-card .form-row:focus-within { background: rgba(255, 255, 255, .04); }
+.form-hint { margin: 2px 4px 0; font: 400 13px/18px var(--font-body); color: var(--tt-text-secondary); }
+.danger-block { display: flex; flex-direction: column; gap: 8px; margin-top: 32px; flex-shrink: 0; }
+.btn-danger-outline { height: 44px; border: 1px solid rgba(255, 69, 58, .45); background: rgba(255, 69, 58, .08); color: #ff6961; font-size: 16px; }
+.btn-danger-outline:active { background: rgba(255, 69, 58, .16); }
+.top-bar-action:disabled { opacity: .35; }
 /* Family PIN: its own card with the digits large, so it reads as something to share, not another row. */
 .pin-card { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; padding: 16px; border: 1px solid var(--tt-border-glass-soft); border-radius: 18px; background: rgba(255, 255, 255, .04); flex-shrink: 0; }
 .pin-top { display: flex; align-items: center; justify-content: space-between; }

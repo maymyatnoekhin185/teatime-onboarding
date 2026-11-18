@@ -488,8 +488,11 @@ const TAB_ENTER = {
     form.forWhom.value = f.forWhom || "";
     screen.querySelector("[data-edit-initial]").textContent = familyInitial(f);
     screen.querySelector("[data-for-hint]").textContent = `Shown as “For ${f.forWhom || "…"}” on the family screen and in the TV greeting.`;
-    screen.querySelector("[data-delete-sub]").textContent = f.tvs.length ? `Removes it for every member and unpairs ${f.tvs[0].name}.` : "Removes it for every member.";
-    screen.querySelector("[data-delete-family]").hidden = f.role !== "admin";
+    screen.querySelector("[data-delete-sub]").textContent = f.tvs.length ? `Removes it for all ${plural(f.members.length, "member")} and unpairs ${f.tvs.map((t) => t.name).join(" and ")}. This can’t be undone.` : `Removes it for all ${plural(f.members.length, "member")}. This can’t be undone.`;
+    screen.querySelector("[data-delete-block]").hidden = f.role !== "admin";
+    // Save only lights up once something has changed.
+    form.dataset.original = JSON.stringify([f.name, f.forWhom || ""]);
+    form.querySelector("[type=submit]").disabled = true;
   },
   "family-new"(_, screen) {
     const form = screen.querySelector("form");
@@ -657,6 +660,8 @@ function markAllRead() {
 function initTabForms() {
   const edit = document.getElementById("family-edit-form");
   edit.addEventListener("input", () => {
+    const changed = JSON.stringify([edit.name.value.trim(), edit.forWhom.value.trim()]) !== edit.dataset.original;
+    edit.querySelector("[type=submit]").disabled = !changed || !edit.name.value.trim();
     device.querySelector("[data-for-hint]").textContent = `Shown as “For ${edit.forWhom.value.trim() || "…"}” on the family screen and in the TV greeting.`;
     device.querySelector("[data-edit-initial]").textContent = (edit.name.value.replace(/^The /, "")[0] || "?").toUpperCase();
   });
