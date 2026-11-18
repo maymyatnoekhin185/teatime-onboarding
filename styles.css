@@ -1034,8 +1034,8 @@ button.glass-pill { color: #fff; }
 .option-row:active { background: rgba(255, 255, 255, .06); }
 .option-row.is-danger { color: #ff453a; }
 .save-sheet { gap: 10px; padding-left: 16px; padding-right: 16px; }
-.sheet-header h2 { margin: 0; font: 600 17px/22px var(--font-title); }
-.sheet-header p { font: 400 13px/18px var(--font-body); color: var(--tt-text-secondary); }
+.save-head h2 { margin: 0; font: 700 22px/28px var(--font-title); }
+.save-head p { margin: 4px 0 6px; font: 400 15px/20px var(--font-body); color: var(--tt-text-secondary); }
 .save-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .save-item { position: relative; height: 120px; border-radius: 12px; overflow: hidden; }
 .save-item img { width: 100%; height: 100%; object-fit: cover; }
@@ -1132,7 +1132,7 @@ button.list-row:active { background: rgba(255, 255, 255, .12); }
 .add-sheet { align-items: stretch; gap: 0; padding: 10px 20px max(32px, calc(var(--bottom) + 12px)); }
 .add-sheet .connect-grabber { align-self: center; margin-bottom: 20px; }
 .add-title { margin: 0; text-align: center; font: 700 22px/28px var(--font-title); color: #fff; }
-.add-sub { margin: 8px 0 24px; padding: 0 8px; text-align: center; font: 400 15px/20px var(--font-body); color: var(--tt-text-secondary); }
+.add-sub { margin: 8px 0 0; padding: 0 8px; text-align: center; font: 400 15px/20px var(--font-body); color: var(--tt-text-secondary); }
 .add-sheet .btn { height: 44px; font-size: 16px; line-height: 20px; }
 .add-sheet .btn + .btn { margin-top: 8px; }
 
@@ -1199,6 +1199,25 @@ button.list-row:active { background: rgba(255, 255, 255, .12); }
 .shared-title:focus { outline: none; }
 .center { text-align: center; }
 @media (prefers-reduced-motion: reduce) { .upload-spinner { animation: none; } .option-sheet { animation: none; } }
+
+
+/* ---------- Popups: one type and spacing system ----------
+   Title 22px bold white · body 15px grey · 20px under the grabber · 8px title→body · 24px before the buttons
+   · 44px buttons, 8px apart. Applies to D3 / F2 / F3 sheets, Add a family, Save, Delete confirm. */
+.connect-sheet { gap: 0; padding: 10px 20px max(32px, calc(var(--bottom) + 12px)); align-items: stretch; }
+.connect-sheet .connect-grabber, .option-sheet .connect-grabber { align-self: center; margin-bottom: 20px; }
+.connect-sheet .spacer-10, .connect-sheet .spacer-12 { display: none; }
+.connect-sheet .title1 { font: 700 22px/28px var(--font-title); color: #fff; }
+.connect-sheet .body-small { margin-top: 8px; color: var(--tt-text-secondary); }
+.connect-sheet .sheet-who { margin-bottom: 16px; }
+.connect-sheet .btn, .option-sheet .btn { height: 44px; font-size: 16px; line-height: 20px; }
+.connect-sheet button.btn:first-of-type { margin-top: 24px; }
+.connect-sheet .btn + .btn, .option-sheet .btn + .btn { margin-top: 8px; }
+.confirm-sheet, .save-sheet { gap: 0; padding: 10px 20px max(32px, calc(var(--bottom) + 12px)); }
+.confirm-title { color: #fff; }
+.confirm-sheet .body-small { margin: 8px 0 24px; color: var(--tt-text-secondary); }
+.save-sheet .save-grid { margin-top: 10px; }
+.save-sheet .btn { margin-top: 24px; }
 
 /* ---------- Colour options (review only) ----------
    Four CTA colour directions from Figma "CTA colour options" (13960:30674).
