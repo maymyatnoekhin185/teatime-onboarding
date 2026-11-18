@@ -978,14 +978,15 @@
             <span class="row-title" data-family-for></span>
             <span class="row-sub" data-family-counts></span>
           </div>
-          <p class="list-label">TV</p>
-          <div class="row-list" data-family-tvs></div>
-          <p class="list-label">Members</p>
-          <div class="row-list" data-family-members></div>
-          <button class="pin-card" type="button" data-share-pin>
-            <span class="row-text"><span class="row-title" data-family-pin>Family PIN</span><span class="row-sub">Share it so relatives can join</span></span>
-            <img src="assets/icon-share.svg" alt="" width="20" height="20">
-          </button>
+          <div class="group-head"><p class="list-label" data-tv-label>TVs</p></div>
+          <div class="group-card" data-family-tvs></div>
+          <div class="group-head"><p class="list-label" data-members-label>Members</p><button class="group-action" type="button" data-share-pin>Invite</button></div>
+          <div class="group-card" data-family-members></div>
+          <div class="pin-card">
+            <div class="pin-top"><span class="pin-label">Family PIN</span><button class="pin-share" type="button" data-share-pin><img src="assets/icon-share.svg" alt="" width="16" height="16">Share</button></div>
+            <div class="pin-digits" data-family-pin aria-label="Family PIN"></div>
+            <p class="pin-sub">Relatives type it in TeaTime to join straight away.</p>
+          </div>
         </div>
       </div>
     </section>

@@ -1113,16 +1113,33 @@ button.list-row:active { background: rgba(255, 255, 255, .12); }
 .link-btn { font: 500 14px/18px var(--font-title); color: var(--accent); padding: 4px; }
 .avatar-wrap { position: relative; }
 .camera-badge { position: absolute; right: -2px; bottom: 0; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 16px; background: var(--brand-grad); }
-.pin-card {
-  display: flex; align-items: center; gap: 14px; width: 100%; margin-top: 10px; padding: 16px;
-  border: 1px solid var(--tt-border-glass-soft); border-radius: 18px;
-  background: var(--tt-glass-light-8); text-align: left; flex-shrink: 0;
-}
-/* Neutral glass like the other rows; the share icon file is black, so show it white. */
-.pin-card:active { background: rgba(255, 255, 255, .12); }
-.pin-card .row-title { white-space: pre; }
-.pin-card .row-sub { color: var(--tt-text-secondary); }
-.pin-card img { filter: invert(1); }
+/* Family screen: grouped cards per section (rows divided by hairlines), different from the single-row cards elsewhere. */
+.group-head { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
+.group-head .list-label { margin: 0; }
+.group-action { padding: 4px 2px; font: 500 15px/20px var(--font-title); color: var(--text-btn); }
+.group-card { border: 1px solid var(--tt-border-glass-soft); border-radius: 18px; background: var(--tt-glass-light-8); overflow: hidden; flex-shrink: 0; }
+.group-row { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 12px 16px; text-align: left; }
+.group-row + .group-row { border-top: 1px solid rgba(255, 255, 255, .08); }
+button.group-row:active { background: rgba(255, 255, 255, .06); }
+.group-row .avatar-disc { width: 40px; height: 40px; }
+.row-icon.is-add { border: 1.5px dashed rgba(255, 255, 255, .3); background: none; }
+.group-add .row-title { color: var(--text-btn); }
+.group-more { justify-content: center; min-height: 48px; font: 500 15px/20px var(--font-title); color: var(--text-btn); }
+.state-pill { flex-shrink: 0; padding: 3px 10px; border-radius: 12px; font: 600 12px/16px var(--font-body); }
+.state-pill.is-on { background: rgba(91, 215, 91, .16); color: #6fe36f; }
+.state-pill.is-waiting { background: rgba(255, 255, 255, .1); color: var(--tt-text-secondary); }
+.role-pill { flex-shrink: 0; padding: 3px 8px; border-radius: 10px; background: rgba(255, 255, 255, .1); font: 500 12px/16px var(--font-body); color: rgba(255, 255, 255, .85); }
+.you-tag { margin-left: 4px; font: 400 13px/18px var(--font-body); color: var(--tt-text-secondary); }
+
+/* Family PIN: its own card with the digits large, so it reads as something to share, not another row. */
+.pin-card { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; padding: 16px; border: 1px solid var(--tt-border-glass-soft); border-radius: 18px; background: rgba(255, 255, 255, .04); flex-shrink: 0; }
+.pin-top { display: flex; align-items: center; justify-content: space-between; }
+.pin-label { font: 500 14px/18px var(--font-title); color: var(--tt-text-secondary); }
+.pin-share { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 16px; background: rgba(255, 255, 255, .1); font: 600 13px/16px var(--font-title); }
+.pin-share img { filter: invert(1); }
+.pin-digits { display: flex; gap: 8px; }
+.pin-digits span { display: grid; place-items: center; width: 44px; height: 52px; border-radius: 12px; background: rgba(255, 255, 255, .08); font: 700 24px/28px var(--font-title); letter-spacing: 0; }
+.pin-sub { font: 400 13px/18px var(--font-body); color: var(--tt-text-secondary); }
 .field-box.is-glass { background: var(--tt-glass-light-8); border-color: var(--tt-border-glass-soft); }
 .body-small.small { font-size: 13px; line-height: 18px; }
 .manage-card { border: 1px solid var(--tt-border-glass-soft); border-radius: 16px; background: var(--tt-glass-light-8); overflow: hidden; flex-shrink: 0; }

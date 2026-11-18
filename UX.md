@@ -102,7 +102,7 @@ Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined fam
 | Route | Screen | Behaviour |
 |---|---|---|
 | `#families` | Families | One row per family: initial, green dot when its TV is on, "For X · N members · N TVs", "Admin/Member · PIN". Add family → sheet: Join with a family PIN (E2) · Create a new family. |
-| `#family` | A family | Avatar, "For X", counts; TV rows (on/waiting) or "No TV yet → Connect a TV" (Which TV for that family); members; Family PIN card → share sheet. Edit only for admins. |
+| `#family` | A family | Avatar, "For X", counts. **TVs** in one grouped card (row per TV with an On / Waiting pill, "Add another TV" / "Connect a TV" at the end → Which TV for that family; label "TVs · 2" when there are several). **Members · N** in one grouped card: you first, then admins (Admin pill), each with their own tint; first four, then "Show all N members" expands in place. Invite (header) and Share on the **Family PIN** card (digits shown large) open the share sheet. Edit only for admins. |
 | `#family-edit` | Edit family | Name, who it's for (hint updates live), Save. Leave this family / Delete this family (admins) both ask first, then go to Families. Change photo → not built. |
 | `#family-new` | Create a new family | Name (button enabled once typed) → new family, admin, just you → its family screen. |
 | `#notifications` | Notifications | From what happened (TV connected, joined, approvals, "Lisa saw your photo…", waiting for a subscription, the family's activity once you're in one). Unread rows tinted with the option's colour; count badge; ⋯ marks all read; leaving the tab marks them read. Empty → "Nothing yet". Nav bell shows a dot while anything is unread. |

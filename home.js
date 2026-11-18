@@ -414,6 +414,9 @@ function paintNav(screen, active) {
 
 /* ---------- Tabs: Families, a family, edit, create; Notifications; Profile ---------- */
 
+// A different soft tint per person so members are easy to tell apart.
+const TINTS = ["#ab87ff", "#ff8fab", "#5cc8ff", "#6fd394", "#ffb35c", "#c58bff"];
+const tintFor = (name) => TINTS[[...(name || "?")].reduce((n, c) => n + c.charCodeAt(0), 0) % TINTS.length];
 const familyInitial = (f) => (f.name.replace(/^The /, "")[0] || "?").toUpperCase();
 const formatPin = (pin) => pin;
 const tvCountText = (f) => (f.tvs.length ? plural(f.tvs.length, "TV") : "No TV yet");
@@ -447,25 +450,35 @@ const TAB_ENTER = {
     screen.querySelector("[data-family-initial]").textContent = familyInitial(f);
     screen.querySelector("[data-family-for]").textContent = f.forWhom ? `For ${f.forWhom}` : f.name;
     screen.querySelector("[data-family-counts]").textContent = `${plural(f.members.length, "member")} · ${tvCountText(f)}`;
-    screen.querySelector("[data-family-tvs]").innerHTML = f.tvs.length
-      ? f.tvs.map((t) => `
-        <div class="list-row is-static">
+    // TVs: one grouped card, a row per TV with its state, and "Add a TV" at the end.
+    screen.querySelector("[data-tv-label]").textContent = f.tvs.length > 1 ? `TVs · ${f.tvs.length}` : "TV";
+    screen.querySelector("[data-family-tvs]").innerHTML = f.tvs.map((t) => `
+        <div class="group-row">
           <span class="row-icon is-glass"><img src="assets/icon-tv.svg" alt="" width="20" height="20"></span>
-          <span class="row-text"><span class="row-title">${escapeHtml(t.name)}</span><span class="row-sub">${t.state === "on" ? `${t.place ? escapeHtml(t.place) + " · " : ""}playing now` : "Waiting for the code to be typed"}</span></span>
-          <span class="tv-state ${t.state === "on" ? "is-on" : ""}" aria-label="${t.state === "on" ? "On" : "Waiting"}"></span>
-        </div>`).join("")
-      : `<button class="list-row" type="button" data-connect-family="${f.id}">
-          <span class="row-icon"><img src="assets/icon-tv.svg" alt="" width="20" height="20"></span>
-          <span class="row-text"><span class="row-title">No TV yet</span><span class="row-sub">Connect a TV so moments play on it</span></span>
-          <img src="assets/icon-chevron-right.svg" alt="" width="20" height="20">
+          <span class="row-text"><span class="row-title">${escapeHtml(t.name)}</span><span class="row-sub">${t.state === "on" ? (t.place ? escapeHtml(t.place) : "Playing now") : "Waiting for the code"}</span></span>
+          <span class="state-pill ${t.state === "on" ? "is-on" : "is-waiting"}">${t.state === "on" ? "On" : "Waiting"}</span>
+        </div>`).join("") + `
+        <button class="group-row group-add" type="button" data-connect-family="${f.id}">
+          <span class="row-icon is-add"><img src="assets/icon-plus.svg" alt="" width="18" height="18"></span>
+          <span class="row-text"><span class="row-title">${f.tvs.length ? "Add another TV" : "Connect a TV"}</span>${f.tvs.length ? "" : `<span class="row-sub">So moments play on the big screen</span>`}</span>
         </button>`;
-    screen.querySelector("[data-family-members]").innerHTML = f.members.map((m) => `
-      <button class="list-row" type="button" data-todo="Member details">
-        <span class="row-avatar"><span class="avatar-disc">${escapeHtml((m.first[0] || "?").toUpperCase())}</span></span>
-        <span class="row-text"><span class="row-title">${escapeHtml(`${m.first} ${m.last}`.trim())}</span><span class="row-sub">${[m.rel, m.admin ? "Admin" : "", m.isMe ? "you" : ""].filter(Boolean).join(" · ") || "Member"}</span></span>
-        <img src="assets/icon-chevron-right.svg" alt="" width="20" height="20">
-      </button>`).join("");
-    screen.querySelector("[data-family-pin]").textContent = `Family PIN  ${formatPin(f.pin)}`;
+
+    // Members: first four, then "Show all N" (expands in place). You first, admins next.
+    const sorted = [...f.members].sort((x, y) => (y.isMe ? 2 : y.admin ? 1 : 0) - (x.isMe ? 2 : x.admin ? 1 : 0));
+    const expanded = loadSession().membersOpen === f.id;
+    const shown = expanded ? sorted : sorted.slice(0, 4);
+    screen.querySelector("[data-members-label]").textContent = `Members · ${f.members.length}`;
+    screen.querySelector("[data-family-members]").innerHTML = shown.map((m) => `
+      <button class="group-row" type="button" data-todo="Member details">
+        <span class="avatar-disc" style="background:${tintFor(m.first)}">${escapeHtml((m.first[0] || "?").toUpperCase())}</span>
+        <span class="row-text"><span class="row-title">${escapeHtml(`${m.first} ${m.last}`.trim())}${m.isMe ? ` <span class="you-tag">You</span>` : ""}</span>${m.rel ? `<span class="row-sub">${escapeHtml(m.rel)}</span>` : ""}</span>
+        ${m.admin ? `<span class="role-pill">Admin</span>` : ""}
+        <img src="assets/icon-chevron-right.svg" alt="" width="18" height="18">
+      </button>`).join("") + (f.members.length > 4 ? `
+      <button class="group-row group-more" type="button" data-toggle-members="${f.id}" aria-expanded="${expanded}">
+        ${expanded ? "Show fewer" : `Show all ${f.members.length} members`}
+      </button>` : "");
+    screen.querySelector("[data-family-pin]").innerHTML = String(f.pin).split("").map((d) => `<span>${escapeHtml(d)}</span>`).join("");
   },
   "family-edit"(_, screen) {
     const f = families().find((x) => x.id === loadSession().familyView) || currentFamily();
@@ -603,6 +616,10 @@ function handleHomeClick(el, e) {
   } else if (el.dataset.openFamily) {
     saveSession({ familyView: el.dataset.openFamily });
     go("family");
+  } else if (el.dataset.toggleMembers) {
+    const open = loadSession().membersOpen === el.dataset.toggleMembers;
+    saveSession({ membersOpen: open ? null : el.dataset.toggleMembers });
+    TAB_ENTER.family("family", screen);
   } else if (el.dataset.connectFamily) {
     saveSession({ familyId: el.dataset.connectFamily, path: "d" });
     go("b3");
@@ -703,7 +720,9 @@ const PRESETS = {
     const j = johnsonsFamily("admin");
     j.members = [{ ...me(), rel: "Daughter", admin: true, isMe: true }, ...j.members.filter((m) => m.first !== "Sarah")];
     j.tvs.push({ name: "Mum’s TV", place: "Bedroom", state: "on" });
-    saveFamilies([j, nanFamily()], "johnsons");
+    const nan = nanFamily();
+    nan.members.push({ ...me(), rel: "Granddaughter", isMe: true });
+    saveFamilies([j, nan], "johnsons");
     seedFamilyEvents();
     addEvent({ kind: "person", who: "Lisa", text: "<b>Lisa</b> saw your photo on the big screen", thumb: "newborn" });
     return "home";
