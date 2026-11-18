@@ -1003,7 +1003,8 @@ button.glass-pill { color: #fff; }
 
 /* Like: the heart fills in */
 .rail-heart { display: block; width: 28px; height: 28px; background: #fff; -webkit-mask: url("assets/icon-heart.svg") center / contain no-repeat; mask: url("assets/icon-heart.svg") center / contain no-repeat; transition: transform .15s; }
-[data-like][aria-pressed="true"] .rail-heart { background: var(--select-bg); transform: scale(1.08); }
+/* Liked: solid brand pink in every colour option (not the gradient). */
+[data-like][aria-pressed="true"] .rail-heart { background: #f63a90; transform: scale(1.08); }
 [data-like]:active .rail-heart { transform: scale(.9); }
 
 /* Group menu under the title */
