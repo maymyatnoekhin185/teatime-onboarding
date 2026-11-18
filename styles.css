@@ -1519,8 +1519,9 @@ body.is-comparing .palette-switch { display: none; }
 }
 .feed-switch button { padding: 8px 12px; border-radius: 20px; font: 500 15px/20px var(--font-title); color: rgba(255, 255, 255, .72); white-space: nowrap; }
 .feed-switch button[aria-selected="true"] { background: rgba(255, 255, 255, .18); color: #fff; }
-.home.has-switch .home-header { top: calc(var(--top) + 56px); }
-.home.is-community .home-header, .home.is-community .nudge { display: none; }
+/* Care members: only the switch at the top. Their TVs and family live in the Families tab. */
+.home.has-switch .home-header { display: none; }
+.home.is-community .nudge { display: none; }
 .community-locked {
   position: absolute; left: 24px; right: 24px; top: calc(var(--top) + 220px);
   display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
