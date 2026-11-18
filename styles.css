@@ -995,11 +995,6 @@ button.glass-pill { color: #fff; }
 .story-step { font: 400 12px/16px var(--font-body); color: rgba(255, 255, 255, .5); }
 
 /* Sheets over Home: "Request sent" and the admin's "wants to join" */
-.sheet-who { display: flex; align-items: center; gap: 12px; width: 100%; }
-.sheet-who-avatar { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border: 2px solid #1a1226; border-radius: 22px; background: var(--brand-grad); font: 600 18px/22px var(--font-title); }
-.sheet-who-text { display: flex; flex-direction: column; gap: 2px; white-space: nowrap; }
-.sheet-who-name { font: 600 16px/20px var(--font-title); }
-.sheet-who-sub { font: 400 13px/18px var(--font-body); color: var(--tt-text-secondary); }
 .connect-sheet .btn-tertiary { width: 100%; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1308,7 +1303,6 @@ button.group-row:active { background: rgba(255, 255, 255, .06); }
 .connect-sheet .spacer-10, .connect-sheet .spacer-12 { display: none; }
 .connect-sheet .title1 { font: 700 22px/28px var(--font-title); color: #fff; }
 .connect-sheet .body-small { margin-top: 8px; color: var(--tt-text-secondary); }
-.connect-sheet .sheet-who { margin-bottom: 16px; }
 .connect-sheet .btn, .option-sheet .btn { height: 44px; font-size: 16px; line-height: 20px; }
 .connect-sheet button.btn:first-of-type { margin-top: 24px; }
 .connect-sheet .btn + .btn, .option-sheet .btn + .btn { margin-top: 8px; }
