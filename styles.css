@@ -1115,10 +1115,14 @@ button.list-row:active { background: rgba(255, 255, 255, .12); }
 .camera-badge { position: absolute; right: -2px; bottom: 0; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 16px; background: var(--brand-grad); }
 .pin-card {
   display: flex; align-items: center; gap: 14px; width: 100%; margin-top: 10px; padding: 16px;
-  border-radius: 18px; background: var(--brand-grad); text-align: left; flex-shrink: 0;
+  border: 1px solid var(--tt-border-glass-soft); border-radius: 18px;
+  background: var(--tt-glass-light-8); text-align: left; flex-shrink: 0;
 }
+/* Neutral glass like the other rows; the share icon file is black, so show it white. */
+.pin-card:active { background: rgba(255, 255, 255, .12); }
 .pin-card .row-title { white-space: pre; }
-.pin-card .row-sub { color: rgba(255, 255, 255, .85); }
+.pin-card .row-sub { color: var(--tt-text-secondary); }
+.pin-card img { filter: invert(1); }
 .field-box.is-glass { background: var(--tt-glass-light-8); border-color: var(--tt-border-glass-soft); }
 .body-small.small { font-size: 13px; line-height: 18px; }
 .manage-card { border: 1px solid var(--tt-border-glass-soft); border-radius: 16px; background: var(--tt-glass-light-8); overflow: hidden; flex-shrink: 0; }
