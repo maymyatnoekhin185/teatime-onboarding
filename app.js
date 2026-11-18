@@ -56,6 +56,13 @@ const fullName = () => { const s = loadSession(); return `${s.first} ${s.last}`.
 const signInScreen = () => (loadSession().path === "b" ? "b1" : "a1");
 const photoPrompt = () => (loadSession().path === "b" ? "b-a2" : "a2");
 // Straight after sign-in: name the family (E1), or ask to join the TV's family when they scanned its small QR.
+// Signing in = a new account in this prototype: nothing from an earlier run in this tab carries over
+// (families, uploads used, subscription, notifications). The journey so far (path, TV scanned, phone) is kept.
+function startNewAccount() {
+  saveSession({ families: [], familyId: null, uploads: 0, subscribed: false, events: [], push: null, uploading: null, joinPending: false,
+    pendingMoment: null, inviteNudge: false, inviteDismissed: false, connectSeen: false, community: null, resident: null,
+    homeFeed: null, paywallFrom: null, lastShared: null, picked: [], caption: "" });
+}
 const afterSignIn = () => (loadSession().joinVia === "tvqr" ? "f1" : "e1");
 
 /* ---------- Set-up details (B5 → B6–B8), kept across refreshes ---------- */
@@ -143,6 +150,7 @@ function startSigningIn(provider) {
       return;
     }
     // Demo identities: whoever scanned the TV’s small QR is Tom, asking to join Sarah’s family.
+    startNewAccount();
     saveSession({ provider, ...(loadSession().joinVia === "tvqr" ? { first: "Tom", last: "Nguyen" } : { first: "Sarah", last: "Johnson" }) });
     go(afterSignIn());
   }, 1400);
@@ -217,6 +225,7 @@ function initPhoneForms() {
   nameForm.addEventListener("submit", (e) => {
     e.preventDefault();
     if (!nameForm.first.value.trim()) return;
+    startNewAccount();
     saveSession({ first: nameForm.first.value.trim(), last: nameForm.last.value.trim(), provider: null });
     go(afterSignIn());
   });
@@ -492,10 +501,11 @@ function leavePaywall() {
   saveSession({ paywallFrom: null });
   go(from, { replace: true });
 }
-const needsPaywall = () => {
-  const s = loadSession();
-  return (s.uploads || 0) >= 3 && !s.subscribed && !s.community;
-};
+// The free allowance: 3 uploads per account. Subscribed, or a family run by a paid care community → no limit.
+const FREE_UPLOADS = 3;
+const noLimit = () => !!loadSession().subscribed || !!currentFamily()?.community;
+const freeUploadsLeft = () => Math.max(0, FREE_UPLOADS - (loadSession().uploads || 0));
+const needsPaywall = () => !noLimit() && freeUploadsLeft() === 0;
 
 /* ---------- G2 / G3 · Story player ---------- */
 
@@ -842,7 +852,7 @@ const NEW_ENTER = {
     screen.querySelector("[data-shared-sub]").textContent = tv
       ? (ownerOf(tv.name) && tv.name !== "Living room TV" ? `${ownerOf(tv.name)} will see it on the TV within a minute.` : "It’ll be on the TV within a minute.")
       : tvWaiting(f) ? `It plays as soon as ${tvWaiting(f).name} is connected.` : "It plays as soon as a TV is connected.";
-    screen.querySelector("[data-last-free]").hidden = !((s.uploads || 0) === 3 && !s.subscribed && !s.community);
+    screen.querySelector("[data-last-free]").hidden = !(needsPaywall() && !lockedCount());
   },
   story(route) {
     story.id = route === "g3" ? "g3" : "g2";
@@ -903,8 +913,8 @@ const ENTER = {
     screen.querySelector("[data-family-name]").textContent = fam?.name || s.family || "Your moments";
     const initial = screen.querySelector("[data-family-initial-share]");
     initial.textContent = fam ? (fam.name.replace(/^The /, "")[0] || "?").toUpperCase() : "";
-    const left = Math.max(0, 3 - (s.uploads || 0));
-    screen.querySelector("[data-share-sub]").textContent = !s.subscribed && !s.community
+    const left = freeUploadsLeft();
+    screen.querySelector("[data-share-sub]").textContent = !noLimit()
       ? (left ? `${plural(left, "free upload")} left` : "Free uploads used — this one arrives locked")
       : fam && fam.members.length > 1 ? `${fam.members.length} members` : "Just you for now";
     resetMomentUpload();
