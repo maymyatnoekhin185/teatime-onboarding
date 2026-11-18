@@ -450,7 +450,7 @@ const TAB_ENTER = {
     screen.querySelector("[data-family-tvs]").innerHTML = f.tvs.length
       ? f.tvs.map((t) => `
         <div class="list-row is-static">
-          <span class="row-icon is-brand"><img src="assets/icon-tv.svg" alt="" width="20" height="20"></span>
+          <span class="row-icon is-glass"><img src="assets/icon-tv.svg" alt="" width="20" height="20"></span>
           <span class="row-text"><span class="row-title">${escapeHtml(t.name)}</span><span class="row-sub">${t.state === "on" ? `${t.place ? escapeHtml(t.place) + " · " : ""}playing now` : "Waiting for the code to be typed"}</span></span>
           <span class="tv-state ${t.state === "on" ? "is-on" : ""}" aria-label="${t.state === "on" ? "On" : "Waiting"}"></span>
         </div>`).join("")

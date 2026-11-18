@@ -1094,6 +1094,8 @@ button.list-row:active { background: rgba(255, 255, 255, .12); }
 .row-icon { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 20px; background: rgba(255, 255, 255, .12); }
 .row-icon.is-brand { background: var(--brand-grad); }
 .row-icon.is-danger { background: rgba(229, 72, 77, .12); }
+/* TV rows: neutral glass tile with a white TV, like the TV notices (the gradient is kept for brand moments). */
+.row-icon.is-glass { border: 1px solid var(--tt-border-glass-soft); background: var(--tt-glass-light-8); }
 .row-icon.is-square { border-radius: 12px; }
 .row-icon img[src*="icon-tv.svg"] { filter: invert(1); }
 .row-icon.is-brand img[src*="icon-tv.svg"] { filter: none; }
