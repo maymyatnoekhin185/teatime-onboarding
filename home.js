@@ -488,7 +488,8 @@ const TAB_ENTER = {
     form.forWhom.value = f.forWhom || "";
     screen.querySelector("[data-edit-initial]").textContent = familyInitial(f);
     screen.querySelector("[data-for-hint]").textContent = `Shown as “For ${f.forWhom || "…"}” on the family screen and in the TV greeting.`;
-    screen.querySelector("[data-delete-sub]").textContent = f.tvs.length ? `Removes it for all ${plural(f.members.length, "member")} and unpairs ${f.tvs.map((t) => t.name).join(" and ")}. This can’t be undone.` : `Removes it for all ${plural(f.members.length, "member")}. This can’t be undone.`;
+    const deleteSub = screen.querySelector("[data-delete-sub]");
+    if (deleteSub) deleteSub.textContent = f.tvs.length ? `Removes it for all ${plural(f.members.length, "member")} and unpairs ${f.tvs.map((t) => t.name).join(" and ")}. This can’t be undone.` : `Removes it for all ${plural(f.members.length, "member")}. This can’t be undone.`;
     screen.querySelector("[data-delete-block]").hidden = f.role !== "admin";
     // Save only lights up once something has changed.
     form.dataset.original = JSON.stringify([f.name, f.forWhom || ""]);
@@ -634,7 +635,9 @@ function handleHomeClick(el, e) {
     const del = el.hasAttribute("data-delete-family");
     confirmSheet({
       title: del ? `Delete ${f.name}?` : `Leave ${f.name}?`,
-      body: del ? "It’s removed for every member and its TV is unpaired. This can’t be undone." : "You stop seeing its moments and TV. Ask for the PIN to come back.",
+      body: del
+        ? `It’s removed for all ${plural(f.members.length, "member")}${f.tvs.length ? ` and ${f.tvs.map((t) => t.name).join(" and ")} ${f.tvs.length > 1 ? "are" : "is"} unpaired` : ""}. This can’t be undone.`
+        : "You stop seeing its moments and TV. Ask for the PIN to come back.",
       action: del ? "Delete family" : "Leave family",
       danger: true,
       onConfirm: () => {

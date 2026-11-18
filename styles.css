@@ -1139,7 +1139,10 @@ button.group-row:active { background: rgba(255, 255, 255, .06); }
 .form-card input:focus { outline: none; }
 .form-card .form-row:focus-within { background: rgba(255, 255, 255, .04); }
 .form-hint { margin: 2px 4px 0; font: 400 13px/18px var(--font-body); color: var(--tt-text-secondary); }
-.danger-block { display: flex; flex-direction: column; gap: 8px; margin-top: 32px; flex-shrink: 0; }
+.family-actions { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: auto; padding-top: 32px; flex-shrink: 0; }
+.text-link { min-height: 44px; padding: 0 16px; font: 600 16px/20px var(--font-title); color: #fff; }
+.text-link.is-danger { color: #ff6961; }
+.text-link:active { opacity: .6; }
 .btn-danger-outline { height: 44px; border: 1px solid rgba(255, 69, 58, .45); background: rgba(255, 69, 58, .08); color: #ff6961; font-size: 16px; }
 .btn-danger-outline:active { background: rgba(255, 69, 58, .16); }
 .top-bar-action:disabled { opacity: .35; }
