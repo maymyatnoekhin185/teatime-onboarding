@@ -5,13 +5,21 @@ const GRID_PHOTOS = ["birthday", "beach", "newborn", "dog", "roses", "dinner", "
 // Home feed screens share one layout; only the moment and the status change.
 const FEEDS = {
   a4: { photo: "newborn", tv: "TV on", dot: "green", meta: "25 December 2025 · 9 photos", caption: null, count: "1 / 9", pill: "Adding 38 of 128 photos" },
-  a5: { photo: "newborn", tv: "Lisa’s TV on", dot: "green", meta: "25 December 2025 · 9 photos", caption: null, count: "1 / 9" },
+  a5: { photo: "newborn", tv: "Lisa’s TV on", dot: "green", meta: "25 December 2025 · 9 photos", caption: null, count: "1 / 9", stories: true },
   a6: { photo: "birthday", tv: "Lisa’s TV on", dot: "green", meta: "Just now · 6 photos", caption: "Lily’s 6th birthday 🎂", count: "1 / 6" },
   b7: { photo: "roses", tv: "No TV yet", dot: "grey", meta: "24 December 2025 · 6 photos", caption: null, count: "1 / 6", pill: "" },
   b8: { photo: "roses", tv: "", dot: "green", meta: "24 December 2025 · 6 photos", caption: null, count: "1 / 6", push: true },
   // Row D: shared with "+" before any TV. The pill and "No TV yet" both open Which TV.
-  d4: { photo: "roses", tv: "No TV yet", dot: "grey", meta: "Just now · 3 photos", caption: null, count: "1 / 3", pill: "Waiting for a TV", dots: 3, toWhichTv: true, connectSheet: true },
+  d4: { photo: "roses", tv: "No TV yet", dot: "grey", meta: "Just now · 3 photos", caption: null, count: "1 / 3", pill: "Waiting for a TV", dots: 3, toWhichTv: true, sheet: "connect" },
   d5: { photo: "roses", tv: "TV on", dot: "green", meta: "Just now · 3 photos", caption: null, count: "1 / 3", dots: 3, nudge: true },
+  // Row 4 / 5: a second member lands in the family's own feed (their moments, their TV).
+  joined: { photo: "newborn", tv: "Lisa’s TV on", dot: "green", meta: "25 December 2025 · 9 photos", caption: null, count: "1 / 9", author: "Sarah Johnson", members: "·  5 in the family", push: true },
+  // Row 5: asked to join from the TV's small QR. Their own Home, nothing from the family yet.
+  "f2-home": { photo: "roses", tv: "No TV yet", dot: "grey", meta: "Just now · 3 photos", caption: null, count: "1 / 3", pill: "Waiting for Sarah", dots: 3, sheet: "sent", push: true },
+  // Row 5, the admin's phone: the request opens as a sheet on Home.
+  "f3-home": { photo: "newborn", tv: "Lisa’s TV on", dot: "green", meta: "25 December 2025 · 9 photos", caption: null, count: "1 / 9", author: "Sarah Johnson", members: "·  4 in the family", sheet: "approve" },
+  // Row 7: the bulk upload stays one moment; its stories sit on the moment.
+  g1: { src: "assets/hero-photo.png", tv: "Lisa’s TV on", dot: "green", meta: "100 photos · May – Oct 2026", caption: null, captionPrompt: "Six months in one go — add a caption", count: "1 / 100", stories: true },
 };
 
 // Inside Compare, each phone is this page in a frame with ?embed=1.
@@ -22,12 +30,20 @@ const ROUTES = [
   "b1", "b-a2", "b2", "b3", "b4", "b5", "b6", "b7", "b8",
   "c1", "c2", "c3", "photos-off", "all-photos", "picker", "moment",
   "d1", "d3", "d4", "d5",
+  "e1", "e2", "e4", "e5", "e6", "e7", "joined", "declined",
+  "f1", "f2", "f2-home", "f3", "f3-home", "f4",
+  "g1", "g2", "g3",
 ];
-// Routes drawn by another screen's section (D3 is D4 with the "connect a TV" sheet up).
-const SECTION_OF = { "b-a2": "a2", d3: "d4" };
+// Routes drawn by another screen's section: a sheet over a Home, the story player, E1 after a decline.
+const SECTION_OF = { "b-a2": "a2", d3: "d4", f2: "f2-home", f3: "f3-home", declined: "e1", g2: "story", g3: "story" };
+// Routes that only set where the journey started, then show its first screen.
+const ENTRY = {
+  ad: () => { saveSession({ path: "b", joinVia: null }); return "b1"; },      // ad, poster or app store
+  tvqr: () => { saveSession({ path: "b", joinVia: "tvqr" }); return "b1"; },  // the small QR on the TV's Home
+};
 const STORE_KEY = "teatime.setup";
 const SESSION_KEY = "teatime.session";
-const FAMILY_CODE = "482917"; // placeholder until the family-code service exists
+const FAMILY_PIN = "4829"; // placeholder until the family service exists (any other PIN shows the error)
 
 const device = document.querySelector(".device");
 const toastEl = document.querySelector(".toast");
@@ -44,13 +60,37 @@ function buildGrids() {
   });
 }
 
+// Sheets over a Home. No Cancel button: swipe down, tap outside or Esc does it later.
+const SHEETS = {
+  connect: (id) => `
+          <h2 id="${id}-sheet-title" class="title1">Shared. Now connect a TV</h2>
+          <p class="body-small">Your moment is saved. It plays as soon as a TV is connected.</p>
+          <span class="spacer-12"></span>
+          <button class="btn btn-primary btn-glass-edge" type="button" data-go="b3">Connect a TV</button>`,
+  sent: (id) => `
+          <h2 id="${id}-sheet-title" class="title1">Sent to Sarah</h2>
+          <p class="body-small">We’ll tell you the moment she says yes. Until then you can look around and get your photos ready.</p>
+          <span class="spacer-12"></span>
+          <button class="btn btn-primary btn-glass-edge" type="button" data-connect-close>Got it</button>`,
+  approve: (id) => `
+          <div class="sheet-who">
+            <span class="sheet-who-avatar" aria-hidden="true">T</span>
+            <span class="sheet-who-text"><span class="sheet-who-name">Tom Nguyen</span><span class="sheet-who-sub">Signed in with Google · just now</span></span>
+          </div>
+          <h2 id="${id}-sheet-title" class="title1">Tom wants to join</h2>
+          <p class="body-small">Tom Nguyen scanned the code on Lisa’s TV. Approve only if you know him — he’ll see every moment and can send to the TV.</p>
+          <span class="spacer-12"></span>
+          <button class="btn btn-primary btn-glass-edge" type="button" data-approve="yes">Approve</button>
+          <button class="btn btn-tertiary" type="button" data-approve="no">Decline</button>`,
+};
+
 function feedMarkup(id, f) {
   const caption = f.caption
     ? `<p class="caption">${f.caption}</p>`
-    : `<button class="caption" type="button" data-todo="Adding a caption">Add a caption</button>`;
+    : `<button class="caption" type="button" data-todo="Adding a caption">${f.captionPrompt || "Add a caption"}</button>`;
   return `
     <section class="screen feed" data-screen="${id}" hidden aria-labelledby="${id}-title">
-      <img class="feed-photo" src="assets/photo-${f.photo}.png" alt="" loading="lazy" decoding="async" data-feed-photo>
+      <img class="feed-photo" src="${f.src || `assets/photo-${f.photo}.png`}" alt="" loading="lazy" decoding="async" data-feed-photo>
       <div class="feed-shade"></div>
       <div class="home-header">
         <div class="home-title-row">
@@ -61,7 +101,7 @@ function feedMarkup(id, f) {
           ${f.toWhichTv
             ? `<button class="tv-chip" type="button" data-go="b3"><img src="assets/status-dot-${f.dot}.svg" alt=""><span data-tv-label>${f.tv}</span></button>`
             : `<span class="tv-chip"><img src="assets/status-dot-${f.dot}.svg" alt=""><span data-tv-label>${f.tv}</span></span>`}
-          <span class="members">·  Just you</span>
+          <span class="members">${f.members || "·  Just you"}</span>
         </div>
       </div>
       ${f.pill === undefined ? "" : f.toWhichTv
@@ -73,6 +113,11 @@ function feedMarkup(id, f) {
         <button class="nudge-btn" type="button" data-invite>Invite</button>
       </div>` : ""}
       <p class="glass-pill right${f.nudge ? " low" : ""}" data-count>${f.count}</p>
+      ${f.stories ? `
+      <div class="stories" aria-label="Stories from this moment">
+        <button class="story-btn" type="button" data-story="g2"><span class="story-ring"><img src="assets/story-cover-timeline.png" alt=""></span><span class="story-label">Timeline</span></button>
+        <button class="story-btn" type="button" data-story="g3"><span class="story-ring"><img src="assets/story-cover-place.png" alt=""></span><span class="story-label">Da Lat</span></button>
+      </div>` : ""}
       <img class="pagination${f.dots === 3 ? " dots-3" : ""}" src="assets/pagination-${f.dots || 5}.svg" alt="">
       <div class="action-rail">
         <button type="button" data-todo="Likes"><img src="assets/icon-heart.svg" alt="">0<span class="sr-only"> likes</span></button>
@@ -83,7 +128,7 @@ function feedMarkup(id, f) {
       <div class="caption-panel">
         <div class="author-row">
           <span class="avatar-ring"><img src="assets/avatar-sarah.png" alt=""></span>
-          <span class="author"><span class="author-name" data-author>Sarah Johnson</span><span class="author-meta" data-meta>${f.meta}</span></span>
+          <span class="author"><span class="author-name"${f.author ? "" : " data-author"}>${f.author || "Sarah Johnson"}</span><span class="author-meta" data-meta>${f.meta}</span></span>
         </div>
         <div data-caption-slot>${caption}</div>
       </div>
@@ -102,16 +147,13 @@ function feedMarkup(id, f) {
           <span class="push-body" data-push-body></span>
         </span>
       </button>` : ""}
-      ${f.connectSheet ? `
+      ${f.sheet ? `
       <div class="connect-layer" data-connect-sheet hidden>
         <div class="connect-dim" data-connect-close></div>
         <div class="connect-sheet" role="dialog" aria-modal="true" aria-labelledby="${id}-sheet-title">
           <span class="connect-grabber" aria-hidden="true"></span>
           <span class="spacer-10"></span>
-          <h2 id="${id}-sheet-title" class="title1">Shared. Now connect a TV</h2>
-          <p class="body-small">Your moment is saved. It plays as soon as a TV is connected.</p>
-          <span class="spacer-12"></span>
-          <button class="btn btn-primary btn-glass-edge" type="button" data-go="b3">Connect a TV</button>
+          ${SHEETS[f.sheet](id)}
         </div>
       </div>` : ""}
     </section>`;
@@ -139,6 +181,8 @@ function saveSession(patch) {
 const fullName = () => { const s = loadSession(); return `${s.first} ${s.last}`.trim() || "You"; };
 const signInScreen = () => (loadSession().path === "b" ? "b1" : "a1");
 const photoPrompt = () => (loadSession().path === "b" ? "b-a2" : "a2");
+// Straight after sign-in: name the family (E1), or ask to join the TV's family when they scanned its small QR.
+const afterSignIn = () => (loadSession().joinVia === "tvqr" ? "f1" : "e1");
 
 /* ---------- Set-up details (B5 → B6–B8), kept across refreshes ---------- */
 
@@ -224,8 +268,9 @@ function startSigningIn(provider) {
       toast(`Couldn’t sign in with ${PROVIDER[provider]}. Try again.`);
       return;
     }
-    saveSession({ first: "Sarah", last: "Johnson" });
-    go(photoPrompt());
+    // Demo identities: whoever scanned the TV’s small QR is Tom, asking to join Sarah’s family.
+    saveSession(loadSession().joinVia === "tvqr" ? { first: "Tom", last: "Nguyen" } : { first: "Sarah", last: "Johnson" });
+    go(afterSignIn());
   }, 1400);
 }
 
@@ -243,7 +288,7 @@ function initSheetSwipe() {
       const moved = e.clientY - startY;
       startY = null;
       sheet.style.transform = "";
-      if (moved > 80) sheet.classList.contains("connect-sheet") ? go("d4", { replace: true }) : closeSheet();
+      if (moved > 80) sheet.classList.contains("connect-sheet") ? closeFeedSheet(sheet) : closeSheet();
     };
     sheet.addEventListener("pointerup", end);
     sheet.addEventListener("pointercancel", end);
@@ -295,7 +340,7 @@ function initPhoneForms() {
     e.preventDefault();
     if (!nameForm.first.value.trim()) return;
     saveSession({ first: nameForm.first.value.trim(), last: nameForm.last.value.trim() });
-    go(photoPrompt());
+    go(afterSignIn());
   });
   checkName();
 }
@@ -390,9 +435,20 @@ function initMomentForm() {
     const { picked = [], caption = "" } = loadSession();
     if (!picked.length) return go("picker");
     const dest = momentDestination();
-    saveSession({ moment: { photos: picked, caption: caption.trim() }, momentOn: dest === "d3" ? "d4" : dest, picked: [], caption: "" });
-    go(dest);
+    const moment = { photos: picked, caption: caption.trim() };
+    // The 4th upload asks for a subscription first; nothing is sent until they choose.
+    if (needsPaywall()) {
+      saveSession({ pendingMoment: { moment, dest } });
+      return go("f4");
+    }
+    finishMoment(moment, dest);
   });
+}
+
+function finishMoment(moment, dest) {
+  countUpload();
+  saveSession({ moment, momentOn: dest === "d3" ? "d4" : dest, picked: [], caption: "", pendingMoment: null });
+  go(dest);
 }
 
 // Show the person's own new moment on a Home screen: first photo, count, caption (or "Add a caption").
@@ -406,6 +462,427 @@ function applyMoment(screen, m) {
   else { p.type = "button"; p.dataset.todo = "Adding a caption"; p.textContent = "Add a caption"; }
   screen.querySelector("[data-caption-slot]").replaceChildren(p);
 }
+
+/* ---------- E1 · Name your family, E2 · family PIN, E4–E7 · care community ---------- */
+
+// "Johnson" → "The Johnsons" (pre-filled from the Apple / Google / phone surname).
+function familyFromSurname(last) {
+  const name = (last || "").trim();
+  if (!name) return "";
+  return `The ${/(s|x|z|ch|sh)$/i.test(name) ? name + "es" : name + "s"}`;
+}
+
+// Placeholder directory until the community service exists.
+const COMMUNITIES = [
+  { name: "Cheltenham Manor", place: "Cheltenham VIC", kind: "care home" },
+  { name: "Cheltenham Gardens", place: "Cheltenham VIC", kind: "retirement village" },
+  { name: "Chelsea Heights Care", place: "Chelsea Heights VIC", kind: "care home" },
+  { name: "Bayside Gardens", place: "Brighton VIC", kind: "care home" },
+  { name: "Lakeside Lodge", place: "Mentone VIC", kind: "retirement village" },
+  { name: "Sandringham House", place: "Sandringham VIC", kind: "care home" },
+];
+// Residents each community has listed. `her` only where the community's own record says so;
+// a name typed in by the family never decides the pronoun.
+const RESIDENTS = {
+  "Cheltenham Manor": [{ first: "Margaret", last: "Johnson", room: "Room 12 · Lakeside wing", her: true }],
+  "Cheltenham Gardens": [{ first: "Joan", last: "Smith", room: "Unit 4 · Garden court", her: true }],
+};
+
+const DEFAULT_COMMUNITY = "Cheltenham Manor";
+const DEFAULT_RESIDENT = RESIDENTS[DEFAULT_COMMUNITY][0];
+const careResident = () => loadSession().resident || DEFAULT_RESIDENT;
+const pron = (r) => (r.her ? { obj: "her", pos: "her" } : { obj: "them", pos: "their" });
+const possessive = (name) => `${name}’s`;
+
+const prefixLen = (a, b) => { let i = 0; while (i < a.length && i < b.length && a[i] === b[i]) i++; return i; };
+const escapeHtml = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// Results appear as you type; a word that starts like the search counts, so "Chelt" also finds Chelsea.
+function matchCommunities(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  const need = Math.min(q.length, 4);
+  return COMMUNITIES.map((c) => {
+    const words = c.name.toLowerCase().split(/\s+/);
+    let best = { len: 0, word: -1 };
+    words.forEach((w, i) => { const len = prefixLen(q, w); if (len > best.len) best = { len, word: i }; });
+    const inName = c.name.toLowerCase().includes(q);
+    const inPlace = c.place.toLowerCase().includes(q) || c.place.toLowerCase().split(/\s+/).some((w) => prefixLen(q, w) >= need);
+    const score = inName ? 100 + q.length : best.len >= need ? best.len : inPlace ? 1 : 0;
+    return { c, score, best };
+  }).filter((m) => m.score > 0).sort((x, y) => y.score - x.score);
+}
+
+function highlightName(name, best) {
+  if (best.word < 0 || !best.len) return escapeHtml(name);
+  const words = name.split(/(\s+)/); // keep the spaces
+  let wi = -1;
+  return words.map((w) => {
+    if (/^\s+$/.test(w)) return w;
+    wi += 1;
+    return wi === best.word ? `<mark>${escapeHtml(w.slice(0, best.len))}</mark>${escapeHtml(w.slice(best.len))}` : escapeHtml(w);
+  }).join("");
+}
+
+function paintCommunities() {
+  const input = device.querySelector("[data-community-search]");
+  const matches = matchCommunities(input.value);
+  device.querySelector("[data-community-clear]").hidden = !input.value;
+  const count = device.querySelector("[data-community-count]");
+  count.textContent = !input.value.trim() ? "" : matches.length ? `${matches.length} ${matches.length === 1 ? "community matches" : "communities match"}` : "No communities match";
+  device.querySelector("[data-community-results]").innerHTML = matches.map(({ c, best }) => `
+    <li><button class="result" type="button" data-community="${escapeHtml(c.name)}">
+      <img src="assets/icon-pin.svg" alt="" width="22" height="22">
+      <span class="result-text"><span class="result-name">${highlightName(c.name, best)}</span><span class="result-sub">${c.place} · ${c.kind}</span></span>
+    </button></li>`).join("");
+}
+
+function initFamilyForms() {
+  // E1: Continue right under the name, so most people tap once.
+  const familyForm = document.getElementById("family-form");
+  const checkFamily = () => { familyForm.querySelector("[type=submit]").disabled = !familyForm.family.value.trim(); };
+  familyForm.family.addEventListener("input", () => { saveSession({ familyDraft: familyForm.family.value }); checkFamily(); });
+  familyForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = familyForm.family.value.trim();
+    if (!name) return familyForm.family.focus();
+    saveSession({ family: name, familyDraft: name, community: null, resident: null });
+    go(photoPrompt());
+  });
+
+  // E2: the PIN joins straight away — no approval.
+  const pinForm = document.getElementById("pin-form");
+  const pinBox = pinForm.querySelector(".pin-input");
+  const pinBoxes = [...pinForm.querySelectorAll(".code-box")];
+  const pinError = pinForm.querySelector("#pin-error");
+  const paintPin = () => {
+    const pin = pinForm.pin.value.replace(/\D/g, "").slice(0, 4);
+    pinForm.pin.value = pin;
+    pinBoxes.forEach((b, i) => {
+      b.textContent = pin[i] || "";
+      b.classList.toggle("is-active", i === Math.min(pin.length, 3));
+    });
+    pinForm.querySelector("[type=submit]").disabled = pin.length < 4;
+  };
+  pinForm.pin.addEventListener("input", () => {
+    pinBox.classList.remove("is-error");
+    pinError.hidden = true;
+    pinForm.pin.removeAttribute("aria-invalid");
+    paintPin();
+  });
+  pinForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (pinForm.pin.value.length < 4) return;
+    if (pinForm.pin.value !== FAMILY_PIN) {
+      pinBox.classList.add("is-error");
+      pinError.hidden = false;
+      pinForm.pin.setAttribute("aria-invalid", "true");
+      pinForm.pin.select();
+      return;
+    }
+    saveSession({ family: "The Johnsons", joinedBy: "pin" });
+    pinForm.pin.value = "";
+    paintPin();
+    go("joined");
+  });
+  paintPin();
+
+  // E4: search the communities.
+  const search = device.querySelector("[data-community-search]");
+  search.value = loadSession().communityQuery || "";
+  search.addEventListener("input", () => { saveSession({ communityQuery: search.value }); paintCommunities(); });
+  search.addEventListener("keydown", (e) => {
+    // Enter picks the only match, so a keyboard user doesn't have to tab to it.
+    if (e.key !== "Enter") return;
+    const first = device.querySelector("[data-community]");
+    if (first && matchCommunities(search.value).length === 1) first.click();
+  });
+  device.querySelector("[data-community-clear]").addEventListener("click", () => {
+    search.value = "";
+    saveSession({ communityQuery: "" });
+    paintCommunities();
+    search.focus();
+  });
+  paintCommunities();
+
+  // E5: first and last name only; matched against the community's list, ignoring case.
+  const residentForm = document.getElementById("resident-form");
+  const checkResident = () => {
+    residentForm.querySelector("[type=submit]").disabled = !residentForm.first.value.trim() || !residentForm.last.value.trim();
+  };
+  residentForm.addEventListener("input", () => {
+    saveSession({ residentDraft: { first: residentForm.first.value, last: residentForm.last.value } });
+    checkResident();
+  });
+  residentForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const first = residentForm.first.value.trim();
+    const last = residentForm.last.value.trim();
+    if (!first || !last) return;
+    const community = loadSession().community || DEFAULT_COMMUNITY;
+    const found = (RESIDENTS[community] || []).find((r) => r.first.toLowerCase() === first.toLowerCase() && r.last.toLowerCase() === last.toLowerCase());
+    saveSession({ resident: found ? { ...found } : { first, last }, matched: !!found });
+    go(found ? "e6" : "e7");
+  });
+  residentForm.checkResident = checkResident;
+}
+
+/* ---------- Uploads: 3 free, the 4th asks for a subscription ---------- */
+
+// Bulk at sign-up = upload 1; every moment shared after that is one more. Paid care communities skip the paywall.
+function countUpload() {
+  const s = loadSession();
+  saveSession({ uploads: (s.uploads || 0) + 1 });
+}
+const needsPaywall = () => {
+  const s = loadSession();
+  return (s.uploads || 0) >= 3 && !s.subscribed && !s.community;
+};
+
+/* ---------- G2 / G3 · Story player ---------- */
+
+const STORY_MS = 3000;
+const MONTHS = ["May", "June", "July", "August", "September", "October"];
+const STORY_PHOTOS = ["beach", "birthday", "newborn", "dog", "roses", "dinner", "trophy", "drawing"];
+const STORY_CAPTIONS = { beach: "Beach day", birthday: "Lily’s birthday", newborn: "Welcome home", dog: "Walk with Biscuit", roses: "Tree night", dinner: "Sunday dinner", trophy: "Footy final", drawing: "Fridge art", hero: "Park walk" };
+const DA_LAT_SPOTS = ["Xuan Huong Lake", "Langbiang Mountain", "Da Lat Market", "Crazy House", "Valley of Love", "Datanla Falls", "Truc Lam Pagoda"];
+
+// Timeline = 2–3 photos a month over 6 months; a place = photos taken in the same spot.
+const STORIES = {
+  g2: {
+    title: "Six months with the Johnsons", // replaced with the family name when it plays
+    sub: "May – October 2026 · 20 photos",
+    count: 20,
+    photo: (i) => STORY_PHOTOS[i % STORY_PHOTOS.length],
+    chip: (i) => `${MONTHS[Math.min(5, Math.floor((i * 6) / 20))]} 2026`,
+    caption: (i, p) => `${STORY_CAPTIONS[p]} · ${3 + ((i * 7) % 25)} ${MONTHS[Math.min(5, Math.floor((i * 6) / 20))]} 2026 · from Sarah’s upload`,
+  },
+  g3: {
+    title: "Moments in Da Lat",
+    sub: "August 2026 · 14 photos",
+    count: 14,
+    photo: (i) => ["hero", "roses", "dog", "dinner", "beach", "trophy", "drawing"][i % 7],
+    chip: () => "Da Lat, Vietnam",
+    caption: (i) => `${DA_LAT_SPOTS[i % DA_LAT_SPOTS.length]} · ${2 + i} August 2026`,
+  },
+};
+
+const story = { id: "g2", i: 0, remaining: STORY_MS, started: 0, timer: null, paused: false };
+const storyScreen = () => device.querySelector('[data-screen="story"]');
+const storyPhotoSrc = (p) => (p === "hero" ? "assets/hero-photo.png" : `assets/photo-${p}.png`);
+
+function paintStory() {
+  const s = STORIES[story.id];
+  const screen = storyScreen();
+  const p = s.photo(story.i);
+  screen.querySelector("[data-story-photo]").src = storyPhotoSrc(p);
+  const family = loadSession().family;
+  screen.querySelector("[data-story-title]").textContent = story.id === "g2" && family ? `Six months with ${family.replace(/^The /, "the ")}` : s.title;
+  screen.querySelector("[data-story-sub]").textContent = s.sub;
+  screen.querySelector("[data-story-chip]").textContent = s.chip(story.i);
+  screen.querySelector("[data-story-caption]").textContent = s.caption(story.i, p);
+  screen.querySelector("[data-story-step]").textContent = `${story.i + 1} of ${s.count} · tap to skip, hold to pause`;
+  screen.querySelector("[data-story-progress]").innerHTML = Array.from({ length: s.count }, (_, k) =>
+    `<span class="story-seg${k < story.i ? " is-done" : k === story.i ? " is-current" : ""}"></span>`).join("");
+  screen.style.setProperty("--story-ms", `${STORY_MS}ms`);
+  // Load the next photo early so the change is instant.
+  new Image().src = storyPhotoSrc(s.photo((story.i + 1) % s.count));
+}
+
+function storyPlay() {
+  clearTimeout(story.timer);
+  story.started = Date.now();
+  story.timer = setTimeout(storyNext, story.remaining);
+  timers.push(story.timer);
+}
+
+function storyGoTo(i) {
+  const s = STORIES[story.id];
+  if (i >= s.count) return closeStory();
+  story.i = Math.max(0, i);
+  story.remaining = STORY_MS;
+  paintStory();
+  if (!story.paused) storyPlay();
+}
+const storyNext = () => storyGoTo(story.i + 1);
+
+function storyPause(on) {
+  if (on === story.paused) return;
+  story.paused = on;
+  storyScreen().classList.toggle("is-paused", on);
+  if (on) {
+    clearTimeout(story.timer);
+    story.remaining = Math.max(200, story.remaining - (Date.now() - story.started));
+  } else {
+    storyPlay();
+  }
+}
+
+function closeStory() {
+  clearTimeout(story.timer);
+  go(loadSession().storyFrom || "g1", { replace: true });
+}
+
+function initStoryPlayer() {
+  const tap = device.querySelector("[data-story-tap]");
+  let holdTimer = null;
+  let held = false;
+  tap.addEventListener("pointerdown", () => {
+    held = false;
+    holdTimer = setTimeout(() => { held = true; storyPause(true); }, 220);
+  });
+  tap.addEventListener("pointerup", (e) => {
+    clearTimeout(holdTimer);
+    if (held) return storyPause(false); // let go after holding: carry on
+    const box = tap.getBoundingClientRect();
+    storyGoTo(story.i + (e.clientX - box.left < box.width / 3 ? -1 : 1)); // left third goes back
+  });
+  tap.addEventListener("pointercancel", () => { clearTimeout(holdTimer); if (held) storyPause(false); });
+  tap.addEventListener("contextmenu", (e) => e.preventDefault()); // long-press is pause, not a menu
+  document.addEventListener("keydown", (e) => {
+    if (!/^#g[23]$/.test(location.hash)) return;
+    if (e.key === "ArrowRight") storyGoTo(story.i + 1);
+    else if (e.key === "ArrowLeft") storyGoTo(story.i - 1);
+    else if (e.key === " ") { e.preventDefault(); storyPause(!story.paused); }
+  });
+  // Switching away from the app pauses the story; coming back carries on.
+  document.addEventListener("visibilitychange", () => {
+    if (/^#g[23]$/.test(location.hash)) storyPause(document.hidden);
+  });
+}
+
+/* ---------- Sheets over Home, and clicks for the new screens ---------- */
+
+// Close a sheet over Home (D3, F2, F3): stay on that Home.
+function closeFeedSheet(el) {
+  const home = el.closest("[data-screen]")?.dataset.screen;
+  if (home) go(home, { replace: true });
+}
+
+function handleNewClick(el) {
+  if (el.dataset.story) {
+    saveSession({ storyFrom: location.hash.slice(1) || "g1" });
+    go(el.dataset.story);
+  } else if (el.hasAttribute("data-story-close")) {
+    closeStory();
+  } else if (el.dataset.community) {
+    saveSession({ community: el.dataset.community, residentDraft: null });
+    go("e5");
+  } else if (el.hasAttribute("data-resident-join")) {
+    // Joins the resident's existing family; moments appear on their TV.
+    saveSession({ family: `${possessive(careResident().first)} family` });
+    go(photoPrompt());
+  } else if (el.hasAttribute("data-care-continue")) {
+    // No match: a family is made at once and the community is told. Photos next, as in Flow 2.
+    saveSession({ family: `${possessive(careResident().first)} family` });
+    go(photoPrompt());
+  } else if (el.hasAttribute("data-not-family")) {
+    saveSession({ joinVia: null });
+    go("e1");
+  } else if (el.dataset.approve) {
+    const yes = el.dataset.approve === "yes";
+    go("f3-home", { replace: true });
+    toast(yes ? "Tom is in. He’s been told “You’re in”." : "Tom has been told. Nothing else changes.");
+  } else if (el.hasAttribute("data-subscribe")) {
+    saveSession({ subscribed: true });
+    const { pendingMoment } = loadSession();
+    toast("Subscribed. Demo only — no payment taken.");
+    if (pendingMoment) finishMoment(pendingMoment.moment, pendingMoment.dest);
+    else go(loadSession().pickerFrom && FEEDS[loadSession().pickerFrom] ? loadSession().pickerFrom : "g1");
+  } else if (el.hasAttribute("data-not-now")) {
+    // Nothing is uploaded; back to Home.
+    const { pickerFrom } = loadSession();
+    saveSession({ pendingMoment: null, picked: [], caption: "" });
+    go(FEEDS[pickerFrom] ? pickerFrom : /^d\d$/.test(pickerFrom || "") ? "d1" : "g1");
+    toast("Not uploaded");
+  } else if (el.hasAttribute("data-paywall-back")) {
+    loadSession().pendingMoment ? go("moment") : history.length > 1 ? history.back() : go("g1");
+  } else {
+    return false;
+  }
+  return true;
+}
+
+const NEW_ENTER = {
+  e1(route, screen) {
+    const s = loadSession();
+    const input = screen.querySelector("[name=family]");
+    input.value = s.familyDraft ?? s.family ?? familyFromSurname(s.last);
+    screen.querySelector("[type=submit]").disabled = !input.value.trim();
+    if (route === "declined") {
+      saveSession({ joinVia: null });
+      later(() => toast("The Johnsons declined your request. Name your own family, or join another way."), 300);
+    }
+  },
+  e2(_, screen) {
+    screen.querySelector(".pin-input").classList.remove("is-error");
+    screen.querySelector("#pin-error").hidden = true;
+  },
+  e4() { paintCommunities(); },
+  e5(_, screen) {
+    const s = loadSession();
+    const community = s.community || DEFAULT_COMMUNITY;
+    screen.querySelector("[data-e5-title]").textContent = `Who lives at ${community}?`;
+    const form = screen.querySelector("form");
+    const draft = s.residentDraft || (s.resident ? { first: s.resident.first, last: s.resident.last } : { first: "", last: "" });
+    form.first.value = draft.first;
+    form.last.value = draft.last;
+    form.checkResident?.();
+  },
+  e6(_, screen) {
+    const r = careResident();
+    const community = loadSession().community || DEFAULT_COMMUNITY;
+    const p = pron(r);
+    screen.querySelector("[data-e6-title]").textContent = `Is this ${r.first}?`;
+    screen.querySelector("[data-e6-sub]").textContent = `One resident at ${community} has this name.`;
+    screen.querySelector("[data-e6-initial]").textContent = r.first[0].toUpperCase();
+    screen.querySelector("[data-e6-name]").textContent = `${r.first} ${r.last}`;
+    screen.querySelector("[data-e6-room]").textContent = r.room || "";
+    screen.querySelector("[data-e6-hint]").textContent = `Joining adds you to ${possessive(r.first)} family. What you share plays on ${p.pos} TV.`;
+    screen.querySelector("[data-resident-join]").textContent = `Yes, join ${possessive(r.first)} family`;
+    screen.querySelector("[data-e6-not]").textContent = `Not ${p.obj} — tell the community`;
+  },
+  e7(_, screen) {
+    const r = careResident();
+    const community = loadSession().community || DEFAULT_COMMUNITY;
+    const p = pron(r);
+    screen.querySelector("[data-e7-sub]").textContent = `We couldn’t find ${r.first} yet, so we made ${p.pos} family for you and told ${community}.`;
+    screen.querySelector("[data-e7-tv]").textContent = `Then ${possessive(r.first)} TV joins`;
+    screen.querySelector("[data-e7-tv]").nextElementSibling.textContent = `${p.pos[0].toUpperCase() + p.pos.slice(1)} room TV and the community posts unlock.`;
+  },
+  f4(_, screen) {
+    screen.querySelector("[data-paywall-back]").setAttribute("aria-label", loadSession().pendingMoment ? "Back to your moment" : "Back");
+  },
+  joined(_, screen) {
+    const s = loadSession();
+    saveSession({ family: "The Johnsons" });
+    screen.querySelector("[data-push-body]").textContent = s.joinedBy === "pin"
+      ? "You’ve joined The Johnsons. Their moments are playing on Lisa’s TV."
+      : "Sarah said yes. You’re in The Johnsons.";
+    const push = screen.querySelector("[data-push]");
+    push.classList.remove("is-shown");
+    later(() => push.classList.add("is-shown"), 400);
+    later(() => push.classList.remove("is-shown"), 6500);
+  },
+  "f2-home"(route, screen) {
+    saveSession({ joinedBy: "approval" });
+    const push = screen.querySelector("[data-push]");
+    push.classList.remove("is-shown");
+    if (route !== "f2-home") return; // the sheet is still up
+    screen.querySelector("[data-push-body]").textContent = "Sarah said yes. You’re in The Johnsons — tap to see the family’s moments.";
+    // Stand-in for the admin approving; stays until tapped.
+    later(() => push.classList.add("is-shown"), 5000);
+  },
+  story(route) {
+    story.id = route === "g3" ? "g3" : "g2";
+    story.i = 0;
+    story.remaining = STORY_MS;
+    story.paused = false;
+    storyScreen().classList.remove("is-paused");
+    paintStory();
+    storyPlay();
+  },
+};
 
 /* ---------- Toast ---------- */
 
@@ -427,6 +904,7 @@ function go(id, { replace = false } = {}) {
 function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
 
 const ENTER = {
+  ...NEW_ENTER,
   c2(_, screen) {
     screen.querySelector("[data-sent-to]").textContent = `Sent to ${loadSession().phone || "your phone"}`;
   },
@@ -447,6 +925,7 @@ const ENTER = {
     counter.textContent = `1/${picked.length}`;
     counter.hidden = picked.length < 2;
     screen.querySelector("textarea").value = caption;
+    screen.querySelector("[data-family-name]").textContent = loadSession().family || "Your moments";
   },
   a4(_, screen) {
     const pill = screen.querySelector("[data-pill]");
@@ -501,6 +980,8 @@ const ENTER = {
 };
 
 function render() {
+  const entry = ENTRY[location.hash.slice(1)];
+  if (entry) return go(entry(), { replace: true });
   const route = ROUTES.includes(location.hash.slice(1)) ? location.hash.slice(1) : "tv";
   const sectionId = SECTION_OF[route] || route;
 
@@ -509,7 +990,7 @@ function render() {
   closeSheet();
 
   // Remember the journey so shared screens (sign in, photo prompt) continue the right way.
-  if (route === "tv" || route === "a1") saveSession({ path: "a" });
+  if (route === "tv" || route === "a1") saveSession({ path: "a", joinVia: null });
   if (route === "b1") saveSession({ path: "b" });
   if (route === "d1") saveSession({ path: "d", tvWaiting: false });
 
@@ -525,7 +1006,8 @@ function render() {
   current.querySelectorAll("[data-author]").forEach((el) => { el.textContent = fullName(); });
   const { moment, momentOn } = loadSession();
   if (moment && (momentOn === sectionId || (momentOn === "d4" && sectionId === "d5"))) applyMoment(current, moment);
-  current.querySelectorAll("[data-connect-sheet]").forEach((s) => { s.hidden = route !== "d3"; });
+  // A sheet over Home shows only on its own route (D3, F2, F3); closing it lands on that Home.
+  current.querySelectorAll("[data-connect-sheet]").forEach((s) => { s.hidden = route === sectionId; });
   ENTER[sectionId]?.(route, current);
 
   document.querySelectorAll(".flow-nav a").forEach((a) => {
@@ -540,9 +1022,15 @@ function render() {
 /* ---------- Clicks ---------- */
 
 document.addEventListener("click", (e) => {
-  const el = e.target.closest("[data-go], [data-todo], [data-share], [data-push], [data-signin], [data-sheet-close], [data-sheet-confirm], [data-email-option], [data-back], [data-picker], [data-photos-found], [data-all-confirm], [data-pick-tile], [data-picker-photo], [data-picker-close], [data-picker-next], [data-tv-later], [data-tv-scan], [data-connect-close], [data-invite]");
+  const el = e.target.closest("[data-go], [data-todo], [data-share], [data-push], [data-signin], [data-sheet-close], [data-sheet-confirm], [data-email-option], [data-back], [data-picker], [data-photos-found], [data-all-confirm], [data-pick-tile], [data-picker-photo], [data-picker-close], [data-picker-next], [data-tv-later], [data-tv-scan], [data-connect-close], [data-invite], [data-story], [data-story-close], [data-approve], [data-not-family], [data-resident-join], [data-care-continue], [data-subscribe], [data-not-now], [data-paywall-back], [data-community]");
   if (!el) return;
-  if (el.dataset.go) go(el.dataset.go);
+  if (handleNewClick(el)) return;
+  if (el.dataset.go) {
+    // "Send now" / "Keep these" send the whole batch: that is upload 1.
+    const from = location.hash.slice(1);
+    if ((from === "a3" && el.dataset.go === "a4") || (from === "b2" && el.dataset.go === "b3")) countUpload();
+    go(el.dataset.go);
+  }
   else if (el.hasAttribute("data-picker")) openPicker();
   else if (el.hasAttribute("data-photos-found")) go(photosFound());
   else if (el.dataset.pickTile) {
@@ -552,6 +1040,7 @@ document.addEventListener("click", (e) => {
   }
   else if (el.hasAttribute("data-all-confirm")) {
     saveSession({ excluded: [...excludedDraft] });
+    countUpload();
     go(loadSession().path === "b" ? "b3" : "a4");
   }
   else if (el.dataset.pickerPhoto) togglePickerPhoto(el.dataset.pickerPhoto);
@@ -560,7 +1049,7 @@ document.addEventListener("click", (e) => {
   // Which TV / connect steps are shared by path B and row D; only where they finish differs.
   else if (el.hasAttribute("data-tv-later")) go(loadSession().path === "d" ? "d4" : "b7");
   else if (el.hasAttribute("data-tv-scan")) go(loadSession().path === "d" ? "d5" : "a4");
-  else if (el.hasAttribute("data-connect-close")) go("d4", { replace: true });
+  else if (el.hasAttribute("data-connect-close")) closeFeedSheet(el);
   else if (el.hasAttribute("data-invite")) shareInvite();
   else if (el.dataset.signin) openSheet(el.dataset.signin);
   else if (el.hasAttribute("data-sheet-close")) closeSheet();
@@ -570,7 +1059,10 @@ document.addEventListener("click", (e) => {
     el.parentElement.querySelectorAll("[data-email-option]").forEach((o) => o.setAttribute("aria-checked", String(o === el)));
   }
   else if (el.dataset.todo) toast(`Not in this build yet: ${el.dataset.todo}`);
-  else if (el.hasAttribute("data-push")) el.classList.remove("is-shown");
+  else if (el.hasAttribute("data-push")) {
+    el.classList.remove("is-shown");
+    if (location.hash === "#f2-home") go("joined"); // "Sarah said yes" opens the family's Home
+  }
   else if (el.hasAttribute("data-share")) shareSetup();
 });
 
@@ -608,7 +1100,7 @@ async function shareSetup() {
 
 async function shareInvite() {
   const sent = await shareText(
-    `Join our family on TeaTime so you can send photos to the TV too. Family code: ${FAMILY_CODE}`,
+    `Join ${loadSession().family || "our family"} on TeaTime so you can send photos to the TV too. Family PIN: ${FAMILY_PIN}`,
     "Invite copied. Paste it into WhatsApp or Messages."
   );
   if (sent && navigator.share) toast("Invite sent");
@@ -734,7 +1226,10 @@ let compareReturnFocus;
 
 function compareScreens() {
   // Same order and names as the review list: journey A, B, sign-in details, photo details, D.
-  return [...document.querySelectorAll(".flow-nav a[href^='#']")].map((l) => ({ id: l.getAttribute("href").slice(1), name: l.textContent.trim() }));
+  // Entry links (ad, small QR) only set the journey; Compare shows the screen they open.
+  return [...document.querySelectorAll(".flow-nav a[href^='#']")]
+    .map((l) => ({ id: { ad: "b1" }[l.getAttribute("href").slice(1)] ?? l.getAttribute("href").slice(1), name: l.textContent.trim() }))
+    .filter((s, i, all) => ROUTES.includes(s.id) && all.findIndex((t) => t.id === s.id) === i);
 }
 
 function compareRoute() {
@@ -880,7 +1375,8 @@ document.addEventListener("keydown", (e) => {
   if (closeCompare()) return;
   if (closePalettePanel()) return;
   closeSheet();
-  if (location.hash === "#d3") go("d4", { replace: true });
+  if (SECTION_OF[location.hash.slice(1)] && /^#(d3|f2|f3)$/.test(location.hash)) go(SECTION_OF[location.hash.slice(1)], { replace: true });
+  if (/^#g[23]$/.test(location.hash)) closeStory();
 });
 
 buildGrids();
@@ -890,6 +1386,8 @@ buildPicker();
 initSetupForm();
 initPhoneForms();
 initMomentForm();
+initFamilyForms();
+initStoryPlayer();
 initSheetSwipe();
 if (EMBED) initEmbed();
 else initPaletteSwitch();

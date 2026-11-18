@@ -25,24 +25,50 @@
   <!-- Review aid: jump to any screen (wide screens only) -->
   <nav class="flow-nav" aria-label="Onboarding screens">
     <p class="flow-nav-title">Onboarding v2.1</p>
-    <p class="flow-nav-group">A · At the TV</p>
+    <p class="flow-nav-group">1 · Scanned the TV, new family</p>
     <a href="#tv">TV · Scan to send photos</a>
     <a href="#a1">A1 · Sign in</a>
+    <a href="#e1">E1 · Name your family</a>
     <a href="#a2">A2 · Photo access</a>
     <a href="#a3">A3 · Moments found</a>
     <a href="#a4">A4 · Home, moments arriving</a>
     <a href="#a5">A5 · Home, all in</a>
-    <a href="#a6">A6 · Home, after “Choose my own”</a>
-    <p class="flow-nav-group">B · From an ad</p>
-    <a href="#b1">B1 · Sign in</a>
-    <a href="#b-a2">B · Photo access</a>
+    <p class="flow-nav-group">2a · From an ad, TV in front</p>
+    <a href="#ad">B1 · Sign in</a>
+    <a href="#b-a2">Photo access</a>
     <a href="#b2">B2 · Keep these</a>
     <a href="#b3">B3 · Which TV</a>
     <a href="#b4">B4 · TV in front of me</a>
-    <a href="#b5">B5 · TV somewhere else</a>
+    <p class="flow-nav-group">2b · TV somewhere else</p>
+    <a href="#b5">B5 · Add another TV</a>
     <a href="#b6">B6 · Set-up message</a>
     <a href="#b7">B7 · Home, waiting</a>
     <a href="#b8">B8 · Home, connected</a>
+    <p class="flow-nav-group">3 · Skipped everything</p>
+    <a href="#d1">D1 · Home, nothing shared</a>
+    <a href="#d3">D3 · Shared, connect a TV</a>
+    <a href="#d4">D4 · Home, waiting for a TV</a>
+    <a href="#d5">D5 · TV connected, invite</a>
+    <p class="flow-nav-group">4 · Second member, family PIN</p>
+    <a href="#e2">E2 · Enter the family PIN</a>
+    <a href="#joined">Home · family moments</a>
+    <p class="flow-nav-group">5 · Second member, TV’s small QR</p>
+    <a href="#tvqr">Start · scanned the small QR</a>
+    <a href="#f1">F1 · Join The Johnsons?</a>
+    <a href="#f2">F2 · Request sent</a>
+    <a href="#f2-home">Home · waiting for Sarah</a>
+    <a href="#f3">F3 · Admin approves</a>
+    <a href="#declined">Declined · back to E1</a>
+    <p class="flow-nav-group">6 · Care community</p>
+    <a href="#e4">E4 · Find their community</a>
+    <a href="#e5">E5 · Who lives there</a>
+    <a href="#e6">E6 · Is this them?</a>
+    <a href="#e7">E7 · No match, not blocked</a>
+    <p class="flow-nav-group">7 · After onboarding</p>
+    <a href="#g1">G1 · Home with Stories</a>
+    <a href="#g2">G2 · Story, timeline</a>
+    <a href="#g3">G3 · Story, a place</a>
+    <a href="#f4">F4 · Paywall, upload 4</a>
     <p class="flow-nav-group">Sign-in details</p>
     <a href="#c1">C1 · Phone number</a>
     <a href="#c2">C2 · Enter the code</a>
@@ -52,11 +78,7 @@
     <a href="#all-photos">All 128 photos</a>
     <a href="#picker">Choose my own · picker</a>
     <a href="#moment">New moment · caption</a>
-    <p class="flow-nav-group">D · Skipped everything</p>
-    <a href="#d1">D1 · Home, nothing shared</a>
-    <a href="#d3">D3 · Shared, connect a TV</a>
-    <a href="#d4">D4 · Home, waiting for a TV</a>
-    <a href="#d5">D5 · TV connected, invite</a>
+    <a href="#a6">A6 · Home, after “Choose my own”</a>
   </nav>
 
   <!-- TV: path A starts here -->
@@ -92,7 +114,7 @@
       </div>
     </div>
     <p class="tv-caption">This is the TV. Tap the code to scan it with the phone.</p>
-    <a class="tv-alt" href="#b1">Start from an ad instead</a>
+    <a class="tv-alt" href="#ad">Start from an ad instead</a>
   </section>
 
   <!-- Phone -->
@@ -273,6 +295,251 @@
         </div>
       </form>
     </section>
+
+    <!-- E1 · Name your family (straight after sign-in) -->
+    <section class="screen" data-screen="e1" hidden aria-labelledby="e1-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <form class="content" id="family-form" novalidate>
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-back aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body">
+          <h1 id="e1-title" class="title1" tabindex="-1">Name your family</h1>
+          <p class="body-small">It shows on the TV and to everyone you invite.</p>
+          <label class="field">
+            <span class="field-label">Family name</span>
+            <input class="field-box" name="family" type="text" autocomplete="off" autocapitalize="words" enterkeyhint="done" maxlength="40">
+          </label>
+          <p class="hint">We started with your surname — change it to anything.</p>
+          <button class="btn btn-primary" type="submit">Continue</button>
+          <p class="or-line"><span>or join one that already exists</span></p>
+          <div class="join-tiles">
+            <button class="join-tile" type="button" data-go="e2">
+              <span class="join-tile-icon"><img src="assets/icon-join-family.svg" alt="" width="22" height="22"></span>
+              <span class="join-tile-title">Join a family</span>
+              <span class="join-tile-sub">I have a family PIN</span>
+            </button>
+            <button class="join-tile" type="button" data-go="e4">
+              <span class="join-tile-icon"><img src="assets/icon-care-home.svg" alt="" width="22" height="22"></span>
+              <span class="join-tile-title">Care community</span>
+              <span class="join-tile-sub">Their care home has it</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- E2 · Join a family with the family PIN (no approval) -->
+    <section class="screen" data-screen="e2" hidden aria-labelledby="e2-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <form class="content" id="pin-form" novalidate>
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="e1" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body">
+          <h1 id="e2-title" class="title1" tabindex="-1">Enter the family PIN</h1>
+          <p class="body-small">Ask whoever set up the family — it’s under Families › Invite.</p>
+          <span class="spacer spacer-8"></span>
+          <label class="code-input pin-input">
+            <span class="sr-only">4-digit family PIN</span>
+            <input name="pin" type="text" inputmode="numeric" autocomplete="off" maxlength="4" pattern="[0-9]*" aria-describedby="pin-error" data-autofocus>
+            <span class="code-box"></span><span class="code-box"></span><span class="code-box"></span><span class="code-box"></span>
+          </label>
+          <p class="field-error" id="pin-error" role="alert" hidden>That PIN doesn’t match a family. Check it with whoever set it up.</p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit" disabled>Join the family</button>
+          <p class="link-row"><span>Got an invite link instead?</span><button type="button" data-todo="Invite links (later release)">Open it</button></p>
+        </div>
+      </form>
+    </section>
+
+    <!-- E4 · Care community: find it -->
+    <section class="screen" data-screen="e4" hidden aria-labelledby="e4-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="e1" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body body-scroll">
+          <h1 id="e4-title" class="title1" tabindex="-1">Find their community</h1>
+          <p class="body-small">Type the care home or village name, or the suburb.</p>
+          <label class="search-bar">
+            <img src="assets/icon-search.svg" alt="" width="22" height="22">
+            <span class="sr-only">Search communities</span>
+            <input type="search" name="community" autocomplete="off" enterkeyhint="search" placeholder="Care home, village or suburb" aria-controls="community-results" data-community-search data-autofocus>
+            <button class="search-clear" type="button" aria-label="Clear" data-community-clear hidden><img src="assets/icon-clear-x.svg" alt="" width="12" height="12"></button>
+          </label>
+          <p class="result-count" data-community-count aria-live="polite"></p>
+          <ul class="results" id="community-results" data-community-results></ul>
+          <p class="hint">Can’t find it? Ask the care home for their TeaTime code.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- E5 · Care community: who lives there -->
+    <section class="screen" data-screen="e5" hidden aria-labelledby="e5-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <form class="content" id="resident-form" novalidate>
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="e4" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body">
+          <h1 id="e5-title" class="title1" tabindex="-1" data-e5-title>Who lives there?</h1>
+          <p class="body-small">We match the name with the community’s residents.</p>
+          <span class="spacer spacer-8"></span>
+          <label class="field">
+            <span class="field-label">Their first name</span>
+            <input class="field-box" name="first" type="text" autocomplete="off" autocapitalize="words" enterkeyhint="next" maxlength="30" data-autofocus>
+          </label>
+          <label class="field">
+            <span class="field-label">Their last name</span>
+            <input class="field-box" name="last" type="text" autocomplete="off" autocapitalize="words" enterkeyhint="done" maxlength="30">
+          </label>
+          <p class="hint">Only the community sees this. We don’t ask how you’re related.</p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit" disabled>Find them</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- E6 · Care community: is this them? (matched) -->
+    <section class="screen" data-screen="e6" hidden aria-labelledby="e6-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="e5" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body">
+          <h1 id="e6-title" class="title1" tabindex="-1" data-e6-title>Is this them?</h1>
+          <p class="body-small" data-e6-sub></p>
+          <span class="spacer spacer-8"></span>
+          <div class="person-card">
+            <span class="person-disc" data-e6-initial></span>
+            <span class="person-text"><span class="person-name" data-e6-name></span><span class="person-sub" data-e6-room></span></span>
+          </div>
+          <p class="hint" data-e6-hint></p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-resident-join></button>
+          <button class="btn btn-tertiary" type="button" data-go="e7" data-e6-not></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- E7 · Care community: no match, not blocked -->
+    <section class="screen" data-screen="e7" hidden aria-labelledby="e7-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-go="e5" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body body-scroll">
+          <h1 id="e7-title" class="title1" tabindex="-1">You’re set up</h1>
+          <p class="body-small" data-e7-sub></p>
+          <div class="hero-disc"><img src="assets/icon-send-dark.svg" alt="" width="40" height="40"></div>
+          <div class="info-rows">
+            <div class="info-row"><span class="info-title">Share now</span><span class="info-sub">Your moments are saved and play once a TV is connected.</span></div>
+            <div class="info-row"><span class="info-title">Community checks you’re family</span><span class="info-sub">Usually within a day. Nothing is blocked while you wait.</span></div>
+            <div class="info-row"><span class="info-title" data-e7-tv>Then their TV joins</span><span class="info-sub">Her room TV and the community posts unlock.</span></div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-care-continue>Go to Home</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- F1 · Join The Johnsons? (scanned the TV’s small QR, needs approval) -->
+    <section class="screen" data-screen="f1" hidden aria-labelledby="f1-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-back aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body">
+          <h1 id="f1-title" class="title1" tabindex="-1">Join The Johnsons?</h1>
+          <p class="body-small">This TV belongs to their family. Ask to join and the family admin decides.</p>
+          <span class="spacer spacer-8"></span>
+          <div class="person-card">
+            <span class="person-disc">J</span>
+            <span class="person-text"><span class="person-name">The Johnsons</span><span class="person-sub person-sub-sm">Sarah, Ed, Mum and Tom&nbsp; ·&nbsp; Lisa’s TV</span></span>
+          </div>
+          <p class="hint">Anyone in the room can scan the TV, so a family admin checks it’s really you.</p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-go="f2">Ask to join</button>
+          <button class="btn btn-tertiary" type="button" data-not-family>Not this family</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- F4 · Paywall on the 4th upload -->
+    <section class="screen" data-screen="f4" hidden aria-labelledby="f4-title">
+      <div class="glow top"><img src="assets/glow-top.svg" alt=""></div>
+      <div class="glow bottom"><img src="assets/glow-bottom.svg" alt=""></div>
+      <div class="content">
+        <div class="top-bar">
+          <button class="top-bar-back" type="button" data-paywall-back aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
+          <span class="top-bar-spacer"></span>
+        </div>
+        <div class="body body-scroll">
+          <h1 id="f4-title" class="title1" tabindex="-1">You’ve used your 3 free uploads</h1>
+          <p class="body-small">Keep sending — every upload, every TV, everyone in the family.</p>
+          <span class="spacer spacer-8"></span>
+          <div class="plan-card">
+            <div class="plan-head"><span class="plan-name">TeaTime Family</span><span class="plan-chip">Monthly</span></div>
+            <p class="plan-price">$—.— / month</p>
+            <ul class="plan-benefits">
+              <li>Unlimited uploads — bulk and one-off</li>
+              <li>Plays on every TV in the family</li>
+              <li>Covers everyone in the family, not just you</li>
+              <li>Cancel any time</li>
+            </ul>
+          </div>
+          <p class="hint">Your 3 free uploads: 100 photos at sign-up counted as one.</p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-subscribe>Subscribe</button>
+          <button class="btn btn-tertiary" type="button" data-not-now>Not now</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- G2 / G3 · A story playing (timeline or a place) -->
+    <section class="screen story" data-screen="story" hidden aria-labelledby="story-title" aria-roledescription="story">
+      <img class="feed-photo" src="assets/photo-beach.png" alt="" decoding="async" data-story-photo>
+      <div class="feed-shade"></div>
+      <div class="story-tap" data-story-tap aria-hidden="true"></div>
+      <div class="story-top">
+        <div class="story-progress" data-story-progress></div>
+        <div class="story-title-row">
+          <span class="story-text"><h1 id="story-title" class="story-title" tabindex="-1" data-story-title></h1><span class="story-sub" data-story-sub></span></span>
+          <button class="story-close" type="button" aria-label="Close story" data-story-close><img src="assets/icon-close-white.svg" alt="" width="18" height="18"></button>
+        </div>
+      </div>
+      <p class="story-chip" data-story-chip></p>
+      <div class="story-bottom">
+        <p class="story-caption" data-story-caption></p>
+        <p class="story-step" data-story-step aria-live="polite"></p>
+      </div>
+    </section>
+
 
     <!-- A2 · Photo access (the phone's own prompt) -->
     <section class="screen" data-screen="a2" hidden aria-labelledby="a2-alert-title">
@@ -531,7 +798,7 @@
           </label>
           <button class="share-to" type="button" data-todo="Choosing another group">
             <span class="share-to-avatar"><img src="assets/icon-users-choose.svg" alt="" width="18" height="18"></span>
-            <span class="share-to-text"><small>Sharing to</small><span>Your moments</span><small>Just you for now</small></span>
+            <span class="share-to-text"><small>Sharing to</small><span data-family-name>Your moments</span><small>Just you for now</small></span>
             <img src="assets/icon-chevron-right-choose.svg" alt="" width="20" height="20">
           </button>
         </div>
