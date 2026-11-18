@@ -180,7 +180,7 @@ function tvMenuMarkup(f) {
   return `${rows || `<p class="tv-menu-empty">No TV yet. Add one so moments play on the big screen.</p>`}
     <div class="tv-menu-actions">
       <button class="btn btn-primary" type="button" data-picker>Send a moment now</button>
-      <button class="btn btn-accent-outline" type="button" data-tv-add><img src="assets/icon-plus.svg" alt="" width="16" height="16">Add new TV</button>
+      <button class="btn btn-accent-outline" type="button" data-tv-add><span class="plus-mask" aria-hidden="true"></span>Add new TV</button>
     </div>`;
 }
 
