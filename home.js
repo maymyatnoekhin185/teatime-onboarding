@@ -428,7 +428,7 @@ const tvCountText = (f) => (f.tvs.length ? plural(f.tvs.length, "TV") : "No TV y
 function familyRow(f, attrs) {
   return `
     <button class="list-row" type="button" ${attrs}>
-      <span class="row-avatar"><span class="avatar-disc">${familyInitial(f)}</span>${tvOnList(f).length ? `<span class="row-tv-dot"></span>` : ""}</span>
+      <span class="row-avatar"><span class="avatar-disc is-pastel" style="background:${tintFor(f.name)}">${familyInitial(f)}</span>${tvOnList(f).length ? `<span class="row-tv-dot"></span>` : ""}</span>
       <span class="row-text"><span class="row-title">${escapeHtml(f.name)}</span>
         <span class="row-sub">${f.forWhom ? `For ${escapeHtml(f.forWhom)} · ` : ""}${plural(f.members.length, "member")} · ${tvCountText(f)}</span>
         <span class="row-sub">${f.role === "admin" ? "Admin" : "Member"} · PIN ${formatPin(f.pin)}</span></span>
@@ -537,7 +537,7 @@ const TAB_ENTER = {
     screen.querySelector("[data-profile-families]").innerHTML = list.length
       ? list.map((f) => `
         <button class="family-chip" type="button" data-open-family="${f.id}">
-          <span class="family-chip-disc">${familyInitial(f)}</span>
+          <span class="family-chip-disc" style="background:${tintFor(f.name)}">${familyInitial(f)}</span>
           <span class="family-chip-text"><span>${escapeHtml(f.name)}</span><small class="${f.role === "admin" ? "is-owner" : ""}">${f.role === "admin" ? "Owner" : "Member"}</small></span>
         </button>`).join("")
       : `<p class="empty-note">No family yet.</p>`;
