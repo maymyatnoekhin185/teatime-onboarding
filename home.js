@@ -17,10 +17,10 @@ function johnsonsFamily(role = "member") {
     role,
     pin: FAMILY_PIN,
     members: [
-      { first: "Sarah", last: "Johnson", rel: "Daughter", admin: true },
-      { first: "Tom", last: "Johnson", rel: "Grandson" },
-      { first: "Ed", last: "Johnson", rel: "Son" },
-      { first: "Priya", last: "Johnson", rel: "Daughter-in-law" },
+      { first: "Sarah", last: "Johnson", rel: "Daughter", admin: true, moments: 14 },
+      { first: "Tom", last: "Johnson", rel: "Grandson", moments: 3 },
+      { first: "Ed", last: "Johnson", rel: "Son", moments: 9 },
+      { first: "Priya", last: "Johnson", rel: "Daughter-in-law", moments: 9 },
     ],
     tvs: [{ name: "Lisa’s TV", place: "Living room", state: "on" }],
     moments: [
@@ -38,7 +38,7 @@ function nanFamily() {
     forWhom: "Nan",
     role: "member",
     pin: "9051",
-    members: [{ first: "Joan", last: "Smith", rel: "Mother", admin: true }, { first: "Bev", last: "Smith", rel: "Sister" }, { first: "Max", last: "Smith", rel: "Nephew" }, { first: "Ann", last: "Smith", rel: "Aunt" }, { first: "Kim", last: "Smith", rel: "Cousin" }],
+    members: [{ first: "Joan", last: "Smith", rel: "Mother", admin: true, moments: 11 }, { first: "Bev", last: "Smith", rel: "Sister", moments: 6 }, { first: "Max", last: "Smith", rel: "Nephew", moments: 2 }, { first: "Ann", last: "Smith", rel: "Aunt", moments: 4 }, { first: "Kim", last: "Smith", rel: "Cousin", moments: 1 }],
     tvs: [{ name: "Nan’s TV", place: "Lounge", state: "on" }],
     moments: [{ id: "n1", kind: "family", author: "Bev Smith", photos: ["roses", "dinner", "dog", "beach", "trophy"], meta: "Yesterday · 5 photos", caption: "Afternoon tea at Nan’s ☕", likes: 4 }],
   };
@@ -415,8 +415,12 @@ function paintNav(screen, active) {
 /* ---------- Tabs: Families, a family, edit, create; Notifications; Profile ---------- */
 
 // A different soft tint per person so members are easy to tell apart.
-const TINTS = ["#ab87ff", "#ff8fab", "#5cc8ff", "#6fd394", "#ffb35c", "#c58bff"];
+// Pastel discs with a dark initial (like the reference and the TV family cards).
+const TINTS = ["#d9c8ff", "#ffd1dc", "#c9ecff", "#cdf2d5", "#ffe2bf", "#f3d1ff"];
 const tintFor = (name) => TINTS[[...(name || "?")].reduce((n, c) => n + c.charCodeAt(0), 0) % TINTS.length];
+const memberDisc = (m, cls = "") => `<span class="member-disc ${cls}" style="background:${tintFor(m.first)}">${escapeHtml((m.first[0] || "?").toUpperCase())}</span>`;
+// How many moments a person has shared here: the demo number, or counted from the feed.
+const momentsBy = (f, m) => m.moments ?? f.moments.filter((x) => x.author === `${m.first} ${m.last}`.trim() || (m.isMe && isMineMoment(x))).length;
 const familyInitial = (f) => (f.name.replace(/^The /, "")[0] || "?").toUpperCase();
 const formatPin = (pin) => pin;
 const tvCountText = (f) => (f.tvs.length ? plural(f.tvs.length, "TV") : "No TV yet");
@@ -447,9 +451,11 @@ const TAB_ENTER = {
     saveSession({ familyView: f.id });
     screen.querySelector("[data-family-title]").textContent = f.name;
     screen.querySelector("[data-family-edit]").hidden = f.role !== "admin";
-    screen.querySelector("[data-family-initial]").textContent = familyInitial(f);
-    screen.querySelector("[data-family-for]").textContent = f.forWhom ? `For ${f.forWhom}` : f.name;
-    screen.querySelector("[data-family-counts]").textContent = `${plural(f.members.length, "member")} · ${tvCountText(f)}`;
+    screen.querySelector("[data-family-counts]").textContent = [f.forWhom ? `For ${f.forWhom}` : "", plural(f.members.length, "member"), tvCountText(f)].filter(Boolean).join(" · ");
+    // Who's in the family at a glance: up to five faces, then "+N".
+    const stackMembers = [...f.members].sort((x, y) => (y.admin ? 1 : 0) - (x.admin ? 1 : 0));
+    screen.querySelector("[data-family-stack]").innerHTML = stackMembers.slice(0, 5).map((m) => memberDisc(m, "is-stack")).join("")
+      + (f.members.length > 5 ? `<span class="member-disc is-stack is-more">+${f.members.length - 5}</span>` : "");
     // TVs: one grouped card, a row per TV with its state, and "Add a TV" at the end.
     screen.querySelector("[data-tv-label]").textContent = f.tvs.length > 1 ? `TVs · ${f.tvs.length}` : "TV";
     screen.querySelector("[data-family-tvs]").innerHTML = f.tvs.map((t) => `
@@ -470,9 +476,9 @@ const TAB_ENTER = {
     screen.querySelector("[data-members-label]").textContent = `Members · ${f.members.length}`;
     screen.querySelector("[data-family-members]").innerHTML = shown.map((m) => `
       <button class="group-row" type="button" data-todo="Member details">
-        <span class="avatar-disc" style="background:${tintFor(m.first)}">${escapeHtml((m.first[0] || "?").toUpperCase())}</span>
-        <span class="row-text"><span class="row-title">${escapeHtml(`${m.first} ${m.last}`.trim())}${m.isMe ? ` <span class="you-tag">You</span>` : ""}</span>${m.rel ? `<span class="row-sub">${escapeHtml(m.rel)}</span>` : ""}</span>
-        ${m.admin ? `<span class="role-pill">Admin</span>` : ""}
+        <span class="member-avatar">${memberDisc(m)}${m.admin ? `<span class="admin-badge" title="Admin"><img src="assets/icon-star.svg" alt="" width="10" height="10"></span>` : ""}</span>
+        <span class="row-text"><span class="row-title">${escapeHtml(`${m.first} ${m.last}`.trim())}${m.isMe ? ` <span class="you-tag">(You)</span>` : ""}</span>
+          <span class="row-sub">${[m.rel, m.admin ? "Admin" : "", (momentsBy(f, m) ? plural(momentsBy(f, m), "moment") : "No moments yet")].filter(Boolean).join(" · ")}</span></span>
         <img src="assets/icon-chevron-right.svg" alt="" width="18" height="18">
       </button>`).join("") + (f.members.length > 4 ? `
       <button class="group-row group-more" type="button" data-toggle-members="${f.id}" aria-expanded="${expanded}">
@@ -726,7 +732,7 @@ const PRESETS = {
   "p-two": () => {
     freshState();
     const j = johnsonsFamily("admin");
-    j.members = [{ ...me(), rel: "Daughter", admin: true, isMe: true }, ...j.members.filter((m) => m.first !== "Sarah")];
+    j.members = [{ ...me(), rel: "Daughter", admin: true, isMe: true, moments: 14 }, ...j.members.filter((m) => m.first !== "Sarah")];
     j.tvs.push({ name: "Mum’s TV", place: "Bedroom", state: "on" });
     const nan = nanFamily();
     nan.members.push({ ...me(), rel: "Granddaughter", isMe: true });

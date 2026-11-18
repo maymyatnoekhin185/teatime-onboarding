@@ -969,13 +969,13 @@
       <div class="content">
         <div class="top-bar">
           <button class="top-bar-back" type="button" data-go="families" aria-label="Back"><img src="assets/icon-chevron-left.svg" alt="" width="24" height="24"></button>
-          <h1 id="family-title" class="top-bar-title" tabindex="-1" data-family-title>Family</h1>
+          <span class="top-bar-title" aria-hidden="true"></span>
           <button class="top-bar-action top-bar-end" type="button" data-go="family-edit" data-family-edit>Edit</button>
         </div>
         <div class="tab-body">
-          <div class="family-hero">
-            <span class="avatar-disc avatar-disc-xl" data-family-initial>J</span>
-            <span class="row-title" data-family-for></span>
+          <div class="family-hero family-hero-stack">
+            <div class="avatar-stack" data-family-stack aria-hidden="true"></div>
+            <h1 id="family-title" class="family-name" tabindex="-1" data-family-title>Family</h1>
             <span class="row-sub" data-family-counts></span>
           </div>
           <div class="group-head"><p class="list-label" data-tv-label>TVs</p></div>

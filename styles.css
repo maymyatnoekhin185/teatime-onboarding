@@ -1146,6 +1146,16 @@ button.group-row:active { background: rgba(255, 255, 255, .06); }
 .btn-danger-outline { height: 44px; border: 1px solid rgba(255, 69, 58, .45); background: rgba(255, 69, 58, .08); color: #ff6961; font-size: 16px; }
 .btn-danger-outline:active { background: rgba(255, 69, 58, .16); }
 .top-bar-action:disabled { opacity: .35; }
+/* Family header: overlapping member faces, then the family name. */
+.family-hero-stack { gap: 8px; padding: 4px 0 8px; }
+.avatar-stack { display: flex; justify-content: center; padding-left: 14px; }
+.member-disc { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; color: #1a1226; font: 600 16px/20px var(--font-title); }
+.member-disc.is-stack { width: 64px; height: 64px; margin-left: -14px; border: 3px solid var(--tt-bg-app); font-size: 24px; }
+.member-disc.is-more { background: rgba(255, 255, 255, .14); color: #fff; font-size: 18px; }
+.family-name { margin: 4px 0 0; font: 700 26px/32px var(--font-title); text-align: center; }
+.family-name:focus { outline: none; }
+.member-avatar { position: relative; flex-shrink: 0; }
+.admin-badge { position: absolute; right: -3px; bottom: -3px; display: grid; place-items: center; width: 18px; height: 18px; border: 2px solid #1d1824; border-radius: 9px; background: #f63a90; }
 /* Family PIN: its own card with the digits large, so it reads as something to share, not another row. */
 .pin-card { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; padding: 16px; border: 1px solid var(--tt-border-glass-soft); border-radius: 18px; background: rgba(255, 255, 255, .04); flex-shrink: 0; }
 .pin-top { display: flex; align-items: center; justify-content: space-between; }
