@@ -108,7 +108,7 @@ Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined fam
 | `#notifications` | Notifications | From what happened (TV connected, joined, approvals, "Lisa saw your photo…", waiting for a subscription, the family's activity once you're in one). Unread rows tinted with the option's colour; count badge; ⋯ marks all read; leaving the tab marks them read. Empty → "Nothing yet". Nav bell shows a dot while anything is unread. |
 | `#profile` | My profile | Name, photo (Apple/Google) or initial, families as chips (Owner/Member, open the family), Stories row only if they did a bulk upload, Moments grid of their own photos with the count. Settings and photo edit → not built. |
 
-Bottom nav on Home and every tab: Home · Families · + (share) · Notifications · Profile; the active tab follows the colour option (white in option 2).
+Bottom nav on Home and every tab: Home · Families · + (share) · Notifications · Profile. Same in every colour option: the selected tab is a filled white icon with a white dot, the others are white at 60%, and the gradient "+" is the only colour.
 
 ### Review list: "Start as…" presets
 Each fills in the choices a person would have made and opens Home (or its sheet): uploaded everything + TV on · uploading · chose 6 photos + TV on · kept photos, waiting for Mum's TV · skipped everything · shared, no TV · TV on, invite family · joined by PIN · asked to join, waiting · admin with a request · two families, two TVs · 3 free uploads used. Everything else is reached by clicking through.
@@ -123,7 +123,7 @@ Source: Figma `13960:30674` ("CTA colour options"). The original pink-orange pal
 | 3 | Analogous | Violet → pink, white label | White / links pink | Violet → pink | Violet → pink |
 | 4 | Logo gold | #F2B53B, dark label #1A1226 | Gold | Gold, dark tick | Magenta → gold |
 
-Option 2 colour rule (Instagram approach): blue = actions only (buttons, links, selected chips); white = navigation and "where am I" (active Home tab as a filled white house with a white dot, other tabs white at 60%, pagination dots white 100% / 40%); logo gradient = brand moments only ("+" share disc, avatar / TV rings, success). So the "+" is the only colour in the nav. Options 1, 3 and 4 keep the active tab and active dot in their accent colour.
+Option 2 colour rule (Instagram approach): blue = actions only (buttons, links, selected chips); white = navigation and "where am I" (active Home tab as a filled white house with a white dot, other tabs white at 60%, pagination dots white 100% / 40%); logo gradient = brand moments only ("+" share disc, avatar / TV rings, success). So the "+" is the only colour in the nav. The bottom nav follows this rule in all four options (selected tab = filled white icon + white dot, others white at 60%); only the pagination dots stay in each option’s accent in options 1, 3 and 4.
 
 "Use email instead" (text button under the phone button on A1 / B1): gold in options 1 and 4, white in option 2, white at 60% in option 3.
 

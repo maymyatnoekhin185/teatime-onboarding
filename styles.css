@@ -1046,8 +1046,10 @@ button.glass-pill { color: #fff; }
 .confirm-title { margin: 0; font: 700 22px/28px var(--font-title); }
 .btn-danger { background: #e5484d; color: #fff; }
 
-/* ---------- Bottom nav: masked icons so the active tab follows the colour option ---------- */
-.nav-icon { display: block; width: 26px; height: 26px; background: #fff; opacity: var(--nav-inactive-opacity);
+/* ---------- Bottom nav: the same in every colour option ----------
+   White = navigation: the selected tab is a filled white icon with a white dot, the others white at 60%.
+   The gradient "+" stays the only colour in the nav. */
+.nav-icon { display: block; width: 26px; height: 26px; background: #fff; opacity: .6;
   -webkit-mask: var(--icon) center / 26px 26px no-repeat; mask: var(--icon) center / 26px 26px no-repeat; }
 /* Home, Families and Profile files are 26×34 (icon + room for a dot): show only the 26×26 icon so all four sit on the same centre line as the + button. */
 .nav-icon-home-tab, .nav-icon-users, .nav-icon-user { -webkit-mask-size: 26px 34px; mask-size: 26px 34px; -webkit-mask-position: top center; mask-position: top center; }
@@ -1056,9 +1058,12 @@ button.glass-pill { color: #fff; }
 .nav-icon-bell { --icon: url("assets/icon-bell.svg"); }
 .nav-icon-user { --icon: url("assets/nav-user.svg"); }
 .nav-pill .nav-item { position: relative; display: grid; place-items: center; min-width: 34px; height: 46px; }
-.nav-item[aria-current="page"] .nav-icon { background: var(--nav-active); opacity: 1; }
-.nav-item[aria-current="page"] .nav-icon-home-tab { --icon: var(--nav-active-icon); }
-.nav-item[aria-current="page"]::after { content: ""; position: absolute; top: calc(50% + 17px); left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 2px; background: var(--nav-active); }
+.nav-item[aria-current="page"] .nav-icon { opacity: 1; }
+.nav-item[aria-current="page"] .nav-icon-home-tab { --icon: url("assets/nav-home-filled.svg"); }
+.nav-item[aria-current="page"] .nav-icon-users { --icon: url("assets/nav-users-filled.svg"); -webkit-mask-size: 26px 26px; mask-size: 26px 26px; -webkit-mask-position: center; mask-position: center; }
+.nav-item[aria-current="page"] .nav-icon-bell { --icon: url("assets/nav-bell-filled.svg"); }
+.nav-item[aria-current="page"] .nav-icon-user { --icon: url("assets/nav-user-filled.svg"); -webkit-mask-size: 26px 26px; mask-size: 26px 26px; -webkit-mask-position: center; mask-position: center; }
+.nav-item[aria-current="page"]::after { content: ""; position: absolute; top: calc(50% + 17px); left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 2px; background: #fff; }
 .nav-unread { position: absolute; top: 9px; right: 3px; width: 8px; height: 8px; border: 1.5px solid #1a1226; border-radius: 4px; background: var(--select-bg); }
 
 /* ---------- Tabs ---------- */
