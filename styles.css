@@ -548,7 +548,7 @@ button.glass-pill { color: #fff; }
    Gradient rings are kept for Memories only (= tap to play). */
 .avatar-ring { display: flex; padding: 0; border: 1px solid rgba(255, 255, 255, .25); border-radius: 50%; background: none; flex-shrink: 0; }
 .avatar-ring img, .avatar-ring .avatar-initial { border-radius: 50%; }
-.avatar-ring img { width: 36px; height: 36px; }
+.avatar-ring img { width: 44px; height: 44px; }
 .author { display: flex; flex-direction: column; gap: 2px; min-width: 0; white-space: nowrap; }
 .author-name { font: 600 17px/22px var(--font-title); }
 .author-meta { font: 400 13px/18px var(--font-body); }
@@ -1036,7 +1036,7 @@ button.glass-pill { color: #fff; }
 .tv-chip { cursor: pointer; }
 .tv-chip:active { opacity: .7; }
 .moment-slide .pagination { display: block; }
-.avatar-initial { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 18px; background: #2c2c2e; font: 600 16px/20px var(--font-title); }
+.avatar-initial { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 22px; background: #2c2c2e; font: 600 19px/24px var(--font-title); }
 .seen-on { display: flex; align-items: center; gap: 6px; opacity: .72; font: 400 11px/13px var(--font-body); }
 
 /* Like: the heart fills in */
