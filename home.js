@@ -145,10 +145,31 @@ function homeStatus(f) {
 function tvChip(f) {
   const s = loadSession();
   const on = tvOnList(f);
+  const paired = (f?.tvs || []).filter((t) => t.state !== "waiting");
   if (s.uploading && on.length) return { label: "TV on", on: true };
+  if (paired.length > 1 && on.length < paired.length) return { label: `${on.length} of ${paired.length} TVs on`, on: on.length > 0 };
   if (on.length > 1) return { label: `${on.length} TVs on`, on: true };
   if (on.length === 1) return { label: on[0].name === "Living room TV" ? "TV on" : `${on[0].name} on`, on: true };
+  if (paired.length) return { label: paired.length > 1 ? "TVs off" : "TV off", on: false };
   return { label: "No TV yet", on: false, toTv: true };
+}
+
+// The chip's popup: every TV in the family with its state, then Send a moment now / Add new TV.
+function tvMenuMarkup(f) {
+  const rows = (f?.tvs || []).map((t) => {
+    const sub = t.state === "on" ? `On · ${t.seen || "seen just now"}` : t.state === "off" ? `Off · ${t.seen || "last seen yesterday"}` : "Waiting for the code";
+    return `
+      <div class="tv-menu-row">
+        <img src="assets/icon-tv-small.svg" alt="" width="22" height="22">
+        <span class="tv-menu-text"><b>${escapeHtml(t.name)}</b><span>${sub}</span></span>
+        <span class="tv-dot is-${t.state}" aria-label="${t.state}"></span>
+      </div>`;
+  }).join("");
+  return `${rows || `<p class="tv-menu-empty">No TV yet. Add one so moments play on the big screen.</p>`}
+    <div class="tv-menu-actions">
+      <button class="btn btn-primary" type="button" data-picker>Send a moment now</button>
+      <button class="btn btn-accent-outline" type="button" data-tv-add><img src="assets/icon-plus.svg" alt="" width="16" height="16">Add new TV</button>
+    </div>`;
 }
 
 function slideMarkup(m, i, f) {
@@ -189,25 +210,52 @@ function slideMarkup(m, i, f) {
     </article>`;
 }
 
+// Demo posts from the care community (activities team, kitchen…), shown on the Community tab once linked.
+function communityPosts(fam) {
+  const c = fam.community;
+  return [
+    { id: "c1", kind: "community", author: c, meta: "Activities team · 2 h ago", photos: ["roses", "drawing"], count: 2, caption: "Garden club planted the spring roses this morning 🌹", likes: 12 },
+    { id: "c2", kind: "community", author: c, meta: "Kitchen · Yesterday", photos: ["dinner"], count: 1, caption: "Sunday roast in the dining room. Thank you to everyone who joined!", likes: 18 },
+    { id: "c3", kind: "community", author: c, meta: "Activities team · 3 days ago", photos: ["birthday", "trophy"], count: 2, caption: "Happy 90th, Joan! Cake and a quiz trophy for the winners.", likes: 25 },
+  ];
+}
+
 function renderHome(route, screen) {
   const s = loadSession();
   const f = currentFamily();
   const list = families();
   const multi = (f?.members.length || 1) > 1;
   screen.querySelector("[data-home-title]").textContent = multi ? f.name : "Your moments";
+  // Care community members: My Families / Community switch replaces the title row.
+  const care = list.find((x) => x.community);
+  const view = care && s.homeFeed === "community" ? "community" : "families";
+  const sw = screen.querySelector("[data-feed-switch]");
+  sw.hidden = !care;
+  sw.querySelectorAll("[data-feed-tab]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.feedTab === view)));
+  screen.classList.toggle("has-switch", !!care);
+  screen.classList.toggle("is-community", view === "community");
+  screen.querySelector(".home-title-row").hidden = !!care;
   const chip = tvChip(f);
   const chipEl = screen.querySelector("[data-tv-chip]");
   chipEl.innerHTML = `<img src="assets/status-dot-${chip.on ? "green" : "grey"}.svg" alt="">${escapeHtml(chip.label)}`;
   // Tappable in every state: no TV → Which TV; otherwise the family screen with its TVs.
   chipEl.setAttribute("aria-label", f && f.tvs.length ? `${chip.label}. See your TVs` : "No TV yet. Connect a TV");
-  screen.querySelector("[data-members]").textContent = multi ? `·  ${f.members.length} members` : "·  Just you";
+  screen.querySelector("[data-members]").textContent = care
+    ? `·  ${f.name}${multi ? ` · ${f.members.length} members` : ""}`
+    : multi ? `·  ${f.members.length} members` : "·  Just you";
   screen.querySelector("[data-group-toggle]").hidden = false;
 
-  // Feed or empty state
-  const moments = f?.moments || [];
+  // Feed or empty state (Community: the care community's posts, or the locked note while it's pending)
+  const moments = view === "community" ? (care.communityStatus === "linked" ? communityPosts(care) : []) : f?.moments || [];
   const feed = screen.querySelector("[data-feed]");
   screen.classList.toggle("is-empty", !moments.length);
-  screen.querySelector("[data-home-empty]").hidden = !!moments.length;
+  screen.querySelector("[data-home-empty]").hidden = !!moments.length || view === "community";
+  const locked = screen.querySelector("[data-community-locked]");
+  locked.hidden = view !== "community" || !!moments.length;
+  if (!locked.hidden) {
+    locked.querySelector("[data-locked-title]").textContent = `Waiting for ${care.community}`;
+    locked.querySelector("[data-locked-body]").textContent = `Their posts show here once they confirm ${care.forWhom || "your resident"} lives there. You can share moments with your family meanwhile.`;
+  }
   feed.innerHTML = moments.map((m, i) => slideMarkup(m, i, f)).join("");
   feed.scrollTop = 0;
   initTracks(feed);
@@ -220,7 +268,7 @@ function renderHome(route, screen) {
   const showNudge = !status && moments.length && tvOnList(f).length && !multi && s.inviteNudge && !s.inviteDismissed;
   nudge.hidden = !showNudge;
   screen.classList.toggle("has-nudge", !!showNudge);
-  pill.hidden = !status || !moments.length;
+  pill.hidden = !status || !moments.length || view === "community";
   if (status) {
     pill.textContent = status.text;
     pill.disabled = !status.toTv;
@@ -232,6 +280,8 @@ function renderHome(route, screen) {
     <button type="button" role="menuitem" class="group-create" data-go="family-new">+  Create a family group</button>`;
   screen.querySelector("[data-group-menu]").hidden = true;
   screen.querySelector("[data-group-toggle]").setAttribute("aria-expanded", "false");
+  screen.querySelector("[data-tv-menu]").hidden = true;
+  chipEl.setAttribute("aria-expanded", "false");
 
   // Sheets over Home: each shows only on its own route
   screen.querySelectorAll("[data-home-sheet]").forEach((sh) => { sh.hidden = sh.dataset.homeSheet !== route; });
@@ -564,13 +614,26 @@ function timeAgo(at) {
 function handleHomeClick(el, e) {
   const screen = el.closest("[data-screen]");
   if (el.hasAttribute("data-tv-chip")) {
+    // The chip opens the TV list (or Which TV when there is none yet).
     const f = currentFamily();
-    if (!f || !f.tvs.length) { saveSession({ path: loadSession().path || "d" }); go("b3"); }
-    else { saveSession({ familyView: f.id }); go("family"); }
+    if (!f || !f.tvs.length) { saveSession({ path: loadSession().path || "d" }); return go("b3"), true; }
+    const menu = screen.querySelector("[data-tv-menu]");
+    screen.querySelector("[data-group-menu]").hidden = true;
+    if (menu.hidden) menu.innerHTML = tvMenuMarkup(f);
+    menu.hidden = !menu.hidden;
+    el.setAttribute("aria-expanded", String(!menu.hidden));
+  } else if (el.hasAttribute("data-tv-add")) {
+    const f = currentFamily();
+    saveSession({ familyId: f.id, path: loadSession().path || "d" });
+    go("b3");
+  } else if (el.dataset.feedTab) {
+    saveSession({ homeFeed: el.dataset.feedTab });
+    renderHome("home", screen);
   } else if (el.dataset.nav) {
     if (location.hash.slice(1) === "notifications" && el.dataset.nav !== "notifications") markAllRead();
     go(el.dataset.nav);
   } else if (el.hasAttribute("data-group-toggle")) {
+    screen.querySelector("[data-tv-menu]").hidden = true;
     const menu = screen.querySelector("[data-group-menu]");
     menu.hidden = !menu.hidden;
     el.setAttribute("aria-expanded", String(!menu.hidden));
@@ -739,7 +802,7 @@ const PRESETS = {
     freshState();
     const j = johnsonsFamily("admin");
     j.members = [{ ...me(), rel: "Daughter", admin: true, isMe: true, moments: 14 }, ...j.members.filter((m) => m.first !== "Sarah")];
-    j.tvs.push({ name: "Mum’s TV", place: "Bedroom", state: "on" });
+    j.tvs = [{ name: "Lisa’s TV", place: "Living room", state: "on", seen: "seen 2 min ago" }, { name: "Mum’s TV", place: "Bedroom", state: "off", seen: "last seen yesterday" }];
     const nan = nanFamily();
     nan.members.push({ ...me(), rel: "Granddaughter", isMe: true });
     saveFamilies([j, nan], "johnsons");
@@ -747,5 +810,26 @@ const PRESETS = {
     addEvent({ kind: "person", who: "Lisa", text: "<b>Lisa</b> saw your photo on the big screen", thumb: "newborn" });
     return "home";
   },
+  "p-care": () => {
+    freshState({ path: "b", community: "Cheltenham Manor" });
+    ensureOwnFamily("Margaret’s family", { forWhom: "Margaret", community: "Cheltenham Manor", communityStatus: "linked", tvs: [{ name: "Margaret’s TV", place: "Room 12", state: "on", seen: "seen 2 min ago" }] });
+    addMyMoment({ kind: "own", photos: ["roses", "dinner", "dog"], count: 3, meta: "Just now · 3 photos", caption: "" });
+    saveSession({ uploads: 1, connectSeen: true });
+    return "home";
+  },
+  "p-care-pending": () => {
+    freshState({ path: "b", community: "Cheltenham Manor" });
+    ensureOwnFamily("Margaret’s family", { forWhom: "Margaret", community: "Cheltenham Manor", communityStatus: "pending" });
+    saveSession({ homeFeed: "community", connectSeen: true });
+    return "home";
+  },
   "p-paywall": () => { PRESETS["p-bulk"](); saveSession({ uploads: 3 }); return "home"; },
 };
+
+// The TV list closes on a tap anywhere outside it (the chip itself toggles it).
+document.addEventListener("click", (e) => {
+  const menu = document.querySelector("[data-tv-menu]:not([hidden])");
+  if (!menu || menu.contains(e.target) || e.target.closest("[data-tv-chip]")) return;
+  menu.hidden = true;
+  document.querySelector("[data-tv-chip]")?.setAttribute("aria-expanded", "false");
+}, true);

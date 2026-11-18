@@ -74,7 +74,8 @@ Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined fam
 | Part | Rule |
 |---|---|
 | Title | "Your moments" while it's just you; the family name once the family has other members. Chevron opens the family menu (all your families, a tick on the current one, "+ Create a family group"); picking one switches Home to that family. |
-| TV chip | Tappable in every state. No TV → "No TV yet" (opens Which TV); a TV on or waiting → opens the family screen with its TVs (On / Waiting, Add another TV). One TV on → "{name} on" ("TV on" for an unnamed TV and while photos are still arriving). Two or more → "2 TVs on". |
+| TV chip | Tappable in every state. No TV → "No TV yet" (opens Which TV). Otherwise it opens the **TV list** under the chip (C7b): each TV with its state ("On · seen 2 min ago" green dot, "Off · last seen yesterday" grey dot, "Waiting for the code"), then **Send a moment now** (picker) and **+ Add new TV** (Which TV for this family). Closes on a tap outside, Esc or the chip again. Label: one TV on → "{name} on" ("TV on" for an unnamed TV and while photos are arriving); all on → "2 TVs on"; some off → "1 of 2 TVs on"; all off → "TV off". |
+| Care community | Once they joined through a care community (E6/E7), the title row is replaced by a **My Families / Community** switch (Figma 14138:6051); the chip row stays under it with the family name. **My Families** = the normal Home. **Community** = the community's posts (activities, kitchen…) as moments; while the resident isn't confirmed yet (E7) it shows "Waiting for {community}" with a Pending pill instead. The family menu chevron isn't shown in this mode (switch families from the Families tab). |
 | Members | "Just you" or "N members". |
 | Feed | Every moment in the current family, newest first. Swipe up/down between moments, sideways through a moment's photos; "k / N" and the dots follow. Empty → "Share your first moment" (D1). |
 | What you uploaded | **Send now / Keep these** → one bulk moment: "128 photos · May – Oct 2026" (or the count left after unticking), with the Timeline and Da Lat memories on it, caption prompt "Six months in one go — add a caption". **Choose my own** → a moment with exactly the photos picked ("Just now · 3 photos") and the caption typed; no memories. **Skip** → nothing. Later "+" shares stack on top. |
@@ -96,7 +97,7 @@ Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined fam
 | 4th upload | Paywall first. Subscribe → the same moment uploads. Not now → nothing sent, a notification says it's waiting. "N free uploads left" shows under "Sharing to". |
 | E2 right PIN | Joins The Johnsons (their moments, Lisa's TV, 5 members) and opens Home. |
 | F1 Ask to join | Their own empty Home + F2 sheet; 5 s later Sarah approves → Home switches to The Johnsons. |
-| E6 / E7 | Family made for the resident ("Margaret's family", for Margaret), linked to the community; no paywall. |
+| E6 / E7 | Family made for the resident ("Margaret's family", for Margaret), linked to the community; no paywall. E6 (matched) → community posts show at once; E7 (no match) → Community tab waits until the community confirms. |
 
 ### Tabs
 | Route | Screen | Behaviour |
@@ -111,7 +112,7 @@ Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined fam
 Bottom nav on Home and every tab: Home · Families · + (share) · Notifications · Profile. Same in every colour option: the selected tab is a filled white icon with a white dot, the others are white at 60%, and the gradient "+" is the only colour.
 
 ### Review list: "Start as…" presets
-Each fills in the choices a person would have made and opens Home (or its sheet): uploaded everything + TV on · uploading · chose 6 photos + TV on · kept photos, waiting for Mum's TV · skipped everything · shared, no TV · TV on, invite family · joined by PIN · asked to join, waiting · admin with a request · two families, two TVs · 3 free uploads used. Everything else is reached by clicking through.
+Each fills in the choices a person would have made and opens Home (or its sheet): uploaded everything + TV on · uploading · chose 6 photos + TV on · kept photos, waiting for Mum's TV · skipped everything · shared, no TV · TV on, invite family · joined by PIN · asked to join, waiting · admin with a request · two families, two TVs (one off) · care community, linked · care community, waiting to confirm · 3 free uploads used. Everything else is reached by clicking through.
 
 ### Colour options (temporary, for the client to choose)
 Source: Figma `13960:30674` ("CTA colour options"). The original pink-orange palette has been removed, leaving four options. Only buttons, links and selected states change. All four share option 2’s background: near-black #0E0C12 with the purple / pink glow at 45%.

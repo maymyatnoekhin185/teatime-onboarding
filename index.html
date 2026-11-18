@@ -38,6 +38,8 @@
     <a href="#p-asked">Asked to join, waiting for Sarah</a>
     <a href="#p-admin">Admin: Tom wants to join</a>
     <a href="#p-two">Two families, two TVs</a>
+    <a href="#p-care">Care community, linked</a>
+    <a href="#p-care-pending">Care community, waiting to confirm</a>
     <a href="#p-paywall">3 free uploads used</a>
     <p class="flow-nav-group">App</p>
     <a href="#home">Home</a>
@@ -829,6 +831,16 @@
         <span class="spacer spacer-16"></span>
         <button class="btn btn-white" type="button" data-picker>Share a moment</button>
       </div>
+      <div class="community-locked" data-community-locked hidden>
+        <span class="locked-icon"><img src="assets/icon-users-white.svg" alt="" width="28" height="28"></span>
+        <p class="locked-title" data-locked-title>Waiting for the community</p>
+        <p class="body-small" data-locked-body></p>
+        <span class="state-pill is-waiting">Pending</span>
+      </div>
+      <div class="feed-switch" role="tablist" aria-label="Feed" data-feed-switch hidden>
+        <button type="button" role="tab" data-feed-tab="families">My Families</button>
+        <button type="button" role="tab" data-feed-tab="community">Community</button>
+      </div>
       <div class="home-header">
         <div class="home-title-row">
           <h1 id="home-title" class="home-title" tabindex="-1" data-home-title>Your moments</h1>
@@ -839,6 +851,7 @@
           <span class="members" data-members>·  Just you</span>
         </div>
         <div class="group-menu" role="menu" aria-label="Your families" data-group-menu hidden></div>
+        <div class="tv-menu" role="dialog" aria-label="Your TVs" data-tv-menu hidden></div>
       </div>
       <button class="glass-pill left" type="button" data-go="b3" data-home-pill hidden></button>
       <div class="nudge" data-nudge hidden>

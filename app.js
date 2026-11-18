@@ -706,7 +706,8 @@ function handleNewClick(el) {
     // Matched: joins the resident's family. No match: a family is made at once and the community is told.
     // Photos next, as in Flow 2.
     const r = careResident();
-    ensureOwnFamily(`${possessive(r.first)} family`, { forWhom: r.first, community: loadSession().community || DEFAULT_COMMUNITY });
+    // E6 matched → linked to the community at once; E7 → pending until the community confirms.
+    ensureOwnFamily(`${possessive(r.first)} family`, { forWhom: r.first, community: loadSession().community || DEFAULT_COMMUNITY, communityStatus: el.hasAttribute("data-resident-join") ? "linked" : "pending" });
     saveSession({ family: `${possessive(r.first)} family`, path: "b" });
     go(photoPrompt());
   } else if (el.hasAttribute("data-not-family")) {
@@ -962,7 +963,7 @@ function render() {
 /* ---------- Clicks ---------- */
 
 document.addEventListener("click", (e) => {
-  const el = e.target.closest("[data-go], [data-todo], [data-share], [data-push], [data-signin], [data-sheet-close], [data-sheet-confirm], [data-email-option], [data-back], [data-picker], [data-photos-found], [data-all-confirm], [data-pick-tile], [data-picker-photo], [data-picker-close], [data-picker-next], [data-tv-later], [data-tv-scan], [data-connect-close], [data-invite], [data-story], [data-story-close], [data-approve], [data-not-family], [data-resident-join], [data-care-continue], [data-subscribe], [data-not-now], [data-paywall-back], [data-community], [data-nav], [data-group-toggle], [data-switch-family], [data-like], [data-save], [data-more], [data-save-item], [data-save-confirm], [data-more-action], [data-confirm-yes], [data-overlay-close], [data-dismiss-nudge], [data-open-family], [data-connect-family], [data-share-pin], [data-leave-family], [data-delete-family], [data-mark-read], [data-send-all], [data-keep-all], [data-skip-photos], [data-ask-join], [data-shared-done], [data-upload-cancel], [data-toggle-members], [data-tv-chip]");
+  const el = e.target.closest("[data-go], [data-todo], [data-share], [data-push], [data-signin], [data-sheet-close], [data-sheet-confirm], [data-email-option], [data-back], [data-picker], [data-photos-found], [data-all-confirm], [data-pick-tile], [data-picker-photo], [data-picker-close], [data-picker-next], [data-tv-later], [data-tv-scan], [data-connect-close], [data-invite], [data-story], [data-story-close], [data-approve], [data-not-family], [data-resident-join], [data-care-continue], [data-subscribe], [data-not-now], [data-paywall-back], [data-community], [data-nav], [data-group-toggle], [data-switch-family], [data-like], [data-save], [data-more], [data-save-item], [data-save-confirm], [data-more-action], [data-confirm-yes], [data-overlay-close], [data-dismiss-nudge], [data-open-family], [data-connect-family], [data-share-pin], [data-leave-family], [data-delete-family], [data-mark-read], [data-send-all], [data-keep-all], [data-skip-photos], [data-ask-join], [data-shared-done], [data-upload-cancel], [data-toggle-members], [data-tv-chip], [data-tv-add], [data-feed-tab]");
   if (!el) return;
   if (handleNewClick(el)) return;
   if (el.dataset.go) {
@@ -1304,8 +1305,8 @@ document.addEventListener("keydown", (e) => {
   closeSheet();
   const openOverlay = device.querySelector("[data-overlay]:not([hidden])");
   if (openOverlay) return closeOverlays();
-  const menu = device.querySelector("[data-group-menu]:not([hidden])");
-  if (menu) { menu.hidden = true; return; }
+  const menu = device.querySelector("[data-group-menu]:not([hidden]), [data-tv-menu]:not([hidden])");
+  if (menu) { menu.hidden = true; device.querySelector("[data-tv-chip]")?.setAttribute("aria-expanded", "false"); return; }
   if (/^#(home-connect|home-sent|home-approve|families-add)$/.test(location.hash)) go(SECTION_OF[location.hash.slice(1)], { replace: true });
   if (/^#g[23]$/.test(location.hash)) closeStory();
 });

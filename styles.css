@@ -1488,3 +1488,48 @@ body.is-comparing .palette-switch { display: none; }
   .compare-use { padding: 3px 8px; font-size: 11px; }
 }
 @media (prefers-reduced-motion: reduce) { .compare { animation: none; } }
+
+/* TV list: opens under the Home chip (C7b). */
+.tv-menu {
+  position: absolute; left: 16px; right: 16px; top: 100px; z-index: 5;
+  display: flex; flex-direction: column; padding: 8px 16px 16px;
+  border: 1px solid rgba(255, 255, 255, .1); border-radius: 20px;
+  background: var(--tt-bg-surface); box-shadow: 0 12px 32px rgba(0, 0, 0, .5);
+  animation: tv-menu-in .18s ease-out;
+}
+.home.has-switch .tv-menu { top: 58px; }
+@keyframes tv-menu-in { from { opacity: 0; transform: translateY(-6px); } }
+@media (prefers-reduced-motion: reduce) { .tv-menu { animation: none; } }
+.tv-menu-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--tt-glass-light-8); }
+.tv-menu-row img { filter: invert(1); opacity: .9; }
+.tv-menu-text { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.tv-menu-text b { font: 500 15px/20px var(--font-body); color: #fff; }
+.tv-menu-text span { font: 400 13px/18px var(--font-body); color: rgba(255, 255, 255, .6); }
+.tv-dot { width: 10px; height: 10px; flex-shrink: 0; border-radius: 50%; background: #8a8590; }
+.tv-dot.is-on { background: #34c759; box-shadow: 0 0 0 3px rgba(52, 199, 89, .2); }
+.tv-dot.is-waiting { background: #ffb35c; }
+.tv-menu-empty { padding: 12px 0; font: 400 14px/20px var(--font-body); color: rgba(255, 255, 255, .7); }
+.tv-menu-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+.tv-menu-actions .btn { height: 44px; font-size: 16px; line-height: 20px; }
+.btn-accent-outline { display: flex; align-items: center; justify-content: center; gap: 6px; border: 1.5px solid var(--accent); color: var(--accent); background: transparent; }
+.btn-accent-outline img { width: 16px; height: 16px; filter: none; }
+.tv-chip[aria-expanded="true"] { background: rgba(255, 255, 255, .18); }
+
+/* Care community: My Families / Community switch at the top of Home (Figma 14138:6051). */
+.feed-switch {
+  position: absolute; left: 50%; top: calc(var(--top) + 12px); z-index: 4; transform: translateX(-50%);
+  display: flex; gap: 0; padding: 4px; border: 1px solid rgba(255, 255, 255, .14); border-radius: 24px;
+  background: rgba(0, 0, 0, .38); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+}
+.feed-switch button { padding: 8px 12px; border-radius: 20px; font: 500 15px/20px var(--font-title); color: rgba(255, 255, 255, .72); white-space: nowrap; }
+.feed-switch button[aria-selected="true"] { background: rgba(255, 255, 255, .18); color: #fff; }
+.home.has-switch .home-header { top: calc(var(--top) + 56px); }
+.home.is-community .home-header, .home.is-community .nudge { display: none; }
+.community-locked {
+  position: absolute; left: 24px; right: 24px; top: calc(var(--top) + 220px);
+  display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
+}
+.community-locked .locked-icon { display: grid; place-items: center; width: 64px; height: 64px; margin-bottom: 8px; border-radius: 50%; background: rgba(255, 255, 255, .08); }
+.community-locked .locked-title { font: 600 20px/26px var(--font-title); }
+.community-locked .body-small { color: rgba(255, 255, 255, .7); }
+.community-locked .state-pill { margin-top: 8px; }
