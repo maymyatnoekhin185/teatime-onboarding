@@ -37,7 +37,7 @@ function nanFamily() {
     name: "Nan’s place",
     forWhom: "Nan",
     role: "member",
-    pin: "9051",
+    pin: "905118",
     members: [{ first: "Joan", last: "Smith", rel: "Mother", admin: true, moments: 11 }, { first: "Bev", last: "Smith", rel: "Sister", moments: 6 }, { first: "Max", last: "Smith", rel: "Nephew", moments: 2 }, { first: "Ann", last: "Smith", rel: "Aunt", moments: 4 }, { first: "Kim", last: "Smith", rel: "Cousin", moments: 1 }],
     tvs: [{ name: "Nan’s TV", place: "Lounge", state: "on" }],
     moments: [{ id: "n1", kind: "family", author: "Bev Smith", photos: ["roses", "dinner", "dog", "beach", "trophy"], meta: "Yesterday · 5 photos", caption: "Afternoon tea at Nan’s ☕", likes: 4 }],
@@ -66,7 +66,7 @@ function ensureOwnFamily(name, extra = {}) {
   if (own) {
     updateFamily("own", { name, ...extra });
   } else {
-    list.push({ id: "own", name, forWhom: "", role: "admin", pin: "2604", members: [{ ...me(), rel: "", admin: true, isMe: true }], tvs: [], moments: [], ...extra });
+    list.push({ id: "own", name, forWhom: "", role: "admin", pin: "260418", members: [{ ...me(), rel: "", admin: true, isMe: true }], tvs: [], moments: [], ...extra });
     saveFamilies(list, "own");
   }
   saveSession({ familyId: "own" });
@@ -509,7 +509,8 @@ const memberDisc = (m, cls = "") => `<span class="member-disc ${cls}" style="bac
 // How many moments a person has shared here: the demo number, or counted from the feed.
 const momentsBy = (f, m) => m.moments ?? f.moments.filter((x) => x.author === `${m.first} ${m.last}`.trim() || (m.isMe && isMineMoment(x))).length;
 const familyInitial = (f) => (f.name.replace(/^The /, "")[0] || "?").toUpperCase();
-const formatPin = (pin) => pin;
+// Family PINs are 6 digits, shown as two groups of three (482 917).
+const formatPin = (pin) => String(pin).replace(/^(\d{3})(\d{3})$/, "$1 $2");
 const tvCountText = (f) => (f.tvs.length ? plural(f.tvs.length, "TV") : "No TV yet");
 
 function familyRow(f, attrs) {
@@ -748,7 +749,7 @@ function handleHomeClick(el, e) {
     go("b3");
   } else if (el.hasAttribute("data-share-pin")) {
     const f = families().find((x) => x.id === loadSession().familyView) || currentFamily();
-    shareText(`Join ${f.name} on TeaTime so you can send photos to the TV too. Family PIN: ${f.pin}`, "PIN copied. Paste it into WhatsApp or Messages.");
+    shareText(`Join ${f.name} on TeaTime so you can send photos to the TV too. Family PIN: ${formatPin(f.pin)}`, "PIN copied. Paste it into WhatsApp or Messages.");
   } else if (el.hasAttribute("data-leave-family") || el.hasAttribute("data-delete-family")) {
     const f = families().find((x) => x.id === loadSession().familyView) || currentFamily();
     const del = el.hasAttribute("data-delete-family");
@@ -806,7 +807,7 @@ function initTabForms() {
     if (!name) return;
     const id = `f${Date.now()}`;
     const list = families();
-    list.push({ id, name, forWhom: "", role: "admin", pin: String(1000 + Math.floor(Math.random() * 9000)), members: [{ ...me(), rel: "", admin: true, isMe: true }], tvs: [], moments: [] });
+    list.push({ id, name, forWhom: "", role: "admin", pin: String(100000 + Math.floor(Math.random() * 900000)), members: [{ ...me(), rel: "", admin: true, isMe: true }], tvs: [], moments: [] });
     saveFamilies(list, id);
     saveSession({ familyView: id });
     go("family", { replace: true });

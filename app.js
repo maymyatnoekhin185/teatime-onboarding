@@ -21,7 +21,7 @@ const ENTRY = {
 };
 const STORE_KEY = "teatime.setup";
 const SESSION_KEY = "teatime.session";
-const FAMILY_PIN = "4829"; // placeholder until the family service exists (any other PIN shows the error)
+const FAMILY_PIN = "482917"; // placeholder until the family service exists (any other PIN shows the error)
 
 const device = document.querySelector(".device");
 const toastEl = document.querySelector(".toast");
@@ -413,13 +413,13 @@ function initFamilyForms() {
   const pinBoxes = [...pinForm.querySelectorAll(".code-box")];
   const pinError = pinForm.querySelector("#pin-error");
   const paintPin = () => {
-    const pin = pinForm.pin.value.replace(/\D/g, "").slice(0, 4);
+    const pin = pinForm.pin.value.replace(/\D/g, "").slice(0, 6);
     pinForm.pin.value = pin;
     pinBoxes.forEach((b, i) => {
       b.textContent = pin[i] || "";
-      b.classList.toggle("is-active", i === Math.min(pin.length, 3));
+      b.classList.toggle("is-active", i === Math.min(pin.length, 5));
     });
-    pinForm.querySelector("[type=submit]").disabled = pin.length < 4;
+    pinForm.querySelector("[type=submit]").disabled = pin.length < 6;
   };
   pinForm.pin.addEventListener("input", () => {
     pinBox.classList.remove("is-error");
@@ -429,7 +429,7 @@ function initFamilyForms() {
   });
   pinForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    if (pinForm.pin.value.length < 4) return;
+    if (pinForm.pin.value.length < 6) return;
     if (pinForm.pin.value !== FAMILY_PIN) {
       pinBox.classList.add("is-error");
       pinError.hidden = false;
@@ -1045,7 +1045,7 @@ async function shareSetup() {
 
 async function shareInvite() {
   const sent = await shareText(
-    `Join ${loadSession().family || "our family"} on TeaTime so you can send photos to the TV too. Family PIN: ${FAMILY_PIN}`,
+    `Join ${loadSession().family || "our family"} on TeaTime so you can send photos to the TV too. Family PIN: ${formatPin(FAMILY_PIN)}`,
     "Invite copied. Paste it into WhatsApp or Messages."
   );
   if (sent && navigator.share) toast("Invite sent");

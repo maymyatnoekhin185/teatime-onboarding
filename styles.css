@@ -868,8 +868,9 @@ button.glass-pill { color: #fff; }
 .join-tile-sub { font: 400 13px/18px var(--font-body); color: var(--tt-text-secondary); }
 
 /* ---------- E2 · Family PIN ---------- */
-.pin-input { gap: 12px; }
-.pin-input .code-box { width: 56px; height: 64px; }
+.pin-input { gap: 8px; }
+/* 6 digits read as two groups of three. */
+.pin-input .code-box:nth-of-type(4) { margin-left: 8px; }
 .field-error { font: 400 13px/18px var(--font-body); color: #ff6961; text-align: center; }
 .pin-input.is-error .code-box { border-color: #ff6961; color: #ff6961; }
 
@@ -1203,7 +1204,8 @@ button.group-row:active { background: rgba(255, 255, 255, .06); }
 .pin-label { font: 500 14px/18px var(--font-title); color: var(--tt-text-secondary); }
 .pin-share { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 16px; background: rgba(255, 255, 255, .1); font: 600 13px/16px var(--font-title); }
 .pin-share img { filter: invert(1); }
-.pin-digits { display: flex; gap: 8px; }
+.pin-digits { display: flex; gap: 6px; }
+.pin-digits span:nth-child(4) { margin-left: 8px; }
 .pin-digits span { display: grid; place-items: center; width: 44px; height: 52px; border-radius: 12px; background: rgba(255, 255, 255, .08); font: 700 24px/28px var(--font-title); letter-spacing: 0; }
 .pin-sub { font: 400 13px/18px var(--font-body); color: var(--tt-text-secondary); }
 .field-box.is-glass { background: var(--tt-glass-light-8); border-color: var(--tt-border-glass-soft); }

@@ -27,7 +27,7 @@ Every frame in the section is built, except the old TV QR screen (kept in Figma 
 | `#c2` | C2 · Enter the code | 6 boxes on one code field (SMS autofill works). Continue at 6 digits → C3. "Send again" clears and confirms with a toast |
 | `#c3` | C3 · Your name | Continue (first name needed) → E1 (F1 after the small QR). Name appears on Home |
 | `#e1` | E1 · Name your family | Pre-filled "The {surname}s" (editable; Continue disabled when empty) → photo prompt. Join a family → E2 · Care community → E4. Back → sign in |
-| `#e2` | E2 · Enter the family PIN | 4 boxes on one field. Join the family at 4 digits: right PIN → family Home (`#joined`); wrong PIN → boxes turn red with "That PIN doesn't match a family…", cleared as soon as they type. "Open it" (invite link) → "later release" toast |
+| `#e2` | E2 · Enter the family PIN | 6 boxes on one field (two groups of three). Join the family at 6 digits: right PIN → family Home (`#joined`); wrong PIN → boxes turn red with "That PIN doesn't match a family…", cleared as soon as they type. "Open it" (invite link) → "later release" toast |
 | `#e4` | E4 · Find their community | Search focused on arrival; results as you type with the matching part highlighted ("Chelt" also finds Chelsea); count line; clear (×). Tap a result → E5 (no Continue). No results → "No communities match" + "Can't find it?" hint |
 | `#e5` | E5 · Who lives at {community}? | First + last name (both needed) → Find them. Matched (ignoring case) → E6, otherwise → E7 |
 | `#e6` | E6 · Is this {name}? | Resident card (initial, name, room). Yes, join {name}'s family → photo prompt · Not them — tell the community → E7 |
@@ -155,7 +155,7 @@ All four share the same secondary button (2px white outline at 30%, as on the A1
 - D2 ("New moment — from +") is the same New moment screen, as the design note says.
 - Path B's All-128 button says "Keep N photos" to match B2's "Keep these"; the design shows "Send".
 - B5's "Their TV" options (Google TV, Android TV, Amazon Fire TV, Apple TV) are placeholders.
-- Family PIN `4829` (E2 and the invite) is a placeholder; any other PIN shows the error.
+- Family PINs are 6 digits, shown as 482 917. `482917` (E2 and the invite) is a placeholder; any other PIN shows the error.
 - Communities and residents are placeholder data: Cheltenham Manor has Margaret Johnson (Room 12 · Lakeside wing), Cheltenham Gardens has Joan Smith. Several residents with the same name (a list with each family's admin) isn't built.
 - "her" / "him" only appears where the design's own sample uses it (Margaret, Tom). Names typed by the family get "their" / "them".
 - E7's button says "Go to Home" but the flowchart sends both E6 and E7 to photo access first; the build follows the flowchart. One of the two should change.
