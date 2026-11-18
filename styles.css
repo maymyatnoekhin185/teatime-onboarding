@@ -1049,15 +1049,16 @@ button.glass-pill { color: #fff; }
 /* ---------- Bottom nav: masked icons so the active tab follows the colour option ---------- */
 .nav-icon { display: block; width: 26px; height: 26px; background: #fff; opacity: var(--nav-inactive-opacity);
   -webkit-mask: var(--icon) center / 26px 26px no-repeat; mask: var(--icon) center / 26px 26px no-repeat; }
-.nav-icon-home-tab { --icon: url("assets/nav-home-plain.svg"); -webkit-mask-size: 26px 34px; mask-size: 26px 34px; height: 34px; }
-.nav-icon-users { --icon: url("assets/nav-users.svg"); -webkit-mask-size: 26px 34px; mask-size: 26px 34px; height: 34px; }
+/* Home, Families and Profile files are 26×34 (icon + room for a dot): show only the 26×26 icon so all four sit on the same centre line as the + button. */
+.nav-icon-home-tab, .nav-icon-users, .nav-icon-user { -webkit-mask-size: 26px 34px; mask-size: 26px 34px; -webkit-mask-position: top center; mask-position: top center; }
+.nav-icon-home-tab { --icon: url("assets/nav-home-plain.svg"); }
+.nav-icon-users { --icon: url("assets/nav-users.svg"); }
 .nav-icon-bell { --icon: url("assets/icon-bell.svg"); }
 .nav-icon-user { --icon: url("assets/nav-user.svg"); }
-.nav-item { position: relative; display: grid; place-items: center; min-width: 34px; height: 46px; }
+.nav-pill .nav-item { position: relative; display: grid; place-items: center; min-width: 34px; height: 46px; }
 .nav-item[aria-current="page"] .nav-icon { background: var(--nav-active); opacity: 1; }
 .nav-item[aria-current="page"] .nav-icon-home-tab { --icon: var(--nav-active-icon); }
-.nav-item[aria-current="page"]::after { content: ""; position: absolute; bottom: 4px; left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 2px; background: var(--nav-active); }
-.nav-item[aria-current="page"]:has(.nav-icon-home-tab)::after { content: none; }
+.nav-item[aria-current="page"]::after { content: ""; position: absolute; top: calc(50% + 17px); left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 2px; background: var(--nav-active); }
 .nav-unread { position: absolute; top: 9px; right: 3px; width: 8px; height: 8px; border: 1.5px solid #1a1226; border-radius: 4px; background: var(--select-bg); }
 
 /* ---------- Tabs ---------- */
