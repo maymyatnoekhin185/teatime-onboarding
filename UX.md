@@ -123,7 +123,7 @@ Source: Figma `13960:30674` ("CTA colour options"). The original pink-orange pal
 | 3 | Analogous | Violet → pink, white label | White / links pink | Violet → pink | Violet → pink |
 | 4 | Logo gold | #F2B53B, dark label #1A1226 | Gold | Gold, dark tick | Magenta → gold |
 
-Option 2 colour rule (Instagram approach): blue = actions only (buttons, links, selected chips); white = navigation and "where am I" (active Home tab as a filled white house with a white dot, other tabs white at 60%, pagination dots white 100% / 40%); logo gradient = brand moments only ("+" share disc, avatar / TV rings, success). So the "+" is the only colour in the nav. The bottom nav follows this rule in all four options (selected tab = filled white icon + white dot, others white at 60%); only the pagination dots stay in each option’s accent in options 1, 3 and 4.
+Option 2 colour rule (Instagram approach): blue = actions only (buttons, links, selected chips); white = navigation and "where am I" (active Home tab as a filled white house with a white dot, other tabs white at 60%, pagination dots white 100% / 40%); logo gradient = brand moments only ("+" share disc, avatar / TV rings, success). So the "+" is the only colour in the nav. In option 2 the empty-state "Share a moment" button and the Memory rings are blue too (white button / gradient rings in options 1, 3 and 4). The bottom nav follows this rule in all four options (selected tab = filled white icon + white dot, others white at 60%); only the pagination dots stay in each option’s accent in options 1, 3 and 4.
 
 "Use email instead" (text button under the phone button on A1 / B1): gold in options 1 and 4, white in option 2, white at 60% in option 3.
 

@@ -1308,6 +1308,9 @@ button.group-row:active { background: rgba(255, 255, 255, .06); }
   --dot-active: #fff;
 }
 :root[data-palette="2"] .pagination { --dot-off: .4; }
+/* Option 2: the empty-state "Share a moment" button and the Memory rings use the blue too. */
+:root[data-palette="2"] .btn-white { background: #2f6bff; color: #fff; }
+:root[data-palette="2"] .story-ring { background: #2f6bff; }
 :root[data-palette="3"] { /* Analogous: violet to pink */
   --unread-tint: rgba(236, 72, 153, .16);
   --email-btn: rgba(255, 255, 255, .6);
