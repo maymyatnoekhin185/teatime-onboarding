@@ -1564,3 +1564,24 @@ body.is-comparing .palette-switch { display: none; }
   font: 400 14px/20px var(--font-body); color: rgba(255, 255, 255, .85);
 }
 .note-row[data-unlock] { cursor: pointer; }
+
+/* B3 · Where should they play?: two cards, each with an icon, what it is, and how it works. */
+.choice-cards { display: flex; flex-direction: column; gap: 12px; }
+.choice-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; width: 100%;
+  padding: 18px 18px 16px; border: 1px solid var(--tt-border-glass-soft); border-radius: 24px;
+  background: var(--tt-glass-light-8); text-align: left; transition: background .1s, transform .1s;
+}
+.choice-card:active { background: rgba(255, 255, 255, .14); transform: scale(.99); }
+.choice-card-top { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 12px; }
+.choice-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .12); }
+.choice-icon .mask-icon { width: 26px; height: 26px; }
+.choice-chevron { opacity: .7; }
+.choice-card .choice-title { font: 600 19px/24px var(--font-title); }
+.choice-card .choice-sub { font: 400 15px/20px var(--font-body); color: var(--tt-text-secondary); }
+.choice-meta {
+  display: flex; align-items: center; gap: 8px; width: 100%; margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid var(--tt-glass-light-8); font: 400 13px/18px var(--font-body); color: rgba(255, 255, 255, .7);
+}
+.choice-meta .mask-icon { width: 16px; height: 16px; opacity: .8; }
+@media (prefers-reduced-motion: reduce) { .choice-card { transition: none; } }
