@@ -10,17 +10,19 @@
   --tt-border-default: rgba(255, 255, 255, .12);
   --tt-border-glass-soft: rgba(255, 255, 255, .12);
   --tt-glass-light-8: rgba(255, 255, 255, .08);
-  /* Colour option (see "Colour options" at the end). Default = option 1. */
-  --cta-bg: linear-gradient(110deg, #d20661 4%, #f2b53b 96%);
+  /* Brand colours: Option 3 "Analogous" (violet → pink), chosen by the client on 25 Nov.
+     Figma: Uplift V2 colour styles on "Style Guide + assets for version 2". */
+  --cta-bg: linear-gradient(to right, #8a3ffc, #ec4899);
   --cta-fg: #fff;
-  --text-btn: #f2b53b;
-  --accent: #f2b53b;
-  --accent-tint: rgba(242, 181, 59, .16);
-  --select-bg: linear-gradient(117deg, #d20661 1%, #f2b53b 98%);
+  --text-btn: #fff;
+  --email-btn: rgba(255, 255, 255, .6);
+  --accent: #ec4899;
+  --accent-tint: rgba(236, 72, 153, .16);
+  --select-bg: linear-gradient(to right, #8a3ffc, #ec4899);
   --select-fg: #fff;
-  --brand-grad: linear-gradient(132deg, #d20661 6%, #f2b53b 83%);
+  --brand-grad: linear-gradient(to right, #8a3ffc, #ec4899);
   --glow-opacity: .45;
-  --unread-tint: rgba(210, 6, 97, .16);
+  --unread-tint: rgba(236, 72, 153, .16);
   --nav-active: var(--accent);
   --nav-active-icon: url("assets/nav-home.svg");
   --nav-inactive-opacity: 1;
@@ -1226,7 +1228,7 @@ button.group-row:active { background: rgba(255, 255, 255, .06); }
 .circle-btn { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 18px; background: var(--tt-bg-surface-2); }
 .mask-icon { display: block; width: 20px; height: 20px; background: #fff; -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }
 .note-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; }
-.note-row.is-unread { background: var(--unread-tint, rgba(210, 6, 97, .16)); }
+.note-row.is-unread { background: var(--unread-tint); }
 .note-icon { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border: 1px solid var(--tt-border-glass-soft); border-radius: 20px; background: var(--tt-glass-light-8); }
 .note-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .note-body { font: 400 15px/20px var(--font-body); }
@@ -1314,58 +1316,7 @@ button.group-row:active { background: rgba(255, 255, 255, .06); }
 .save-sheet .save-grid { margin-top: 10px; }
 .save-sheet .btn { margin-top: 24px; }
 
-/* ---------- Colour options (review only) ----------
-   Four CTA colour directions from Figma "CTA colour options" (13960:30674).
-   Only buttons, links and selected states change. When the client picks one:
-   copy its values into :root, delete the other blocks and the .palette-switch styles. */
-:root[data-palette="2"] { /* Strong blue */
-  --email-btn: #fff;
-  --tt-bg-app: #0e0c12;
-  --cta-bg: #2f6bff;
-  --cta-fg: #fff;
-  --text-btn: #fdfdfd;
-  --accent: #5b8cff;
-  --accent-tint: rgba(91, 140, 255, .16);
-  --select-bg: #2f6bff;
-  --select-fg: #fff;
-  --brand-grad: linear-gradient(to right, #d20661, #f2b53b);
-  --glow-opacity: .45;
-  --unread-tint: rgba(47, 107, 255, .16);
-  /* Navigation is white, so the gradient "+" is the only colour in the nav. */
-  --nav-active: #fff;
-  --nav-active-icon: url("assets/nav-home-filled.svg");
-  --nav-inactive-opacity: .6;
-  --dot-active: #fff;
-}
-:root[data-palette="2"] .pagination { --dot-off: .4; }
-/* Option 2: the empty-state "Share a moment" button and the Memory rings use the blue too. */
-:root[data-palette="2"] .btn-white { background: #2f6bff; color: #fff; }
-:root[data-palette="2"] .story-ring { background: #2f6bff; }
-:root[data-palette="3"] { /* Analogous: violet to pink */
-  --unread-tint: rgba(236, 72, 153, .16);
-  --email-btn: rgba(255, 255, 255, .6);
-  --cta-bg: linear-gradient(to right, #8a3ffc, #ec4899);
-  --cta-fg: #fff;
-  --text-btn: #fff;
-  --accent: #ec4899;
-  --accent-tint: rgba(236, 72, 153, .16);
-  --select-bg: linear-gradient(to right, #8a3ffc, #ec4899);
-  --select-fg: #fff;
-  --brand-grad: linear-gradient(to right, #8a3ffc, #ec4899);
-}
-:root[data-palette="4"] { /* Logo gold */
-  --unread-tint: rgba(242, 181, 59, .12);
-  --cta-bg: #f2b53b;
-  --cta-fg: #1a1226;
-  --text-btn: #f2b53b;
-  --accent: #f2b53b;
-  --accent-tint: rgba(242, 181, 59, .16);
-  --select-bg: #f2b53b;
-  --select-fg: #1a1226;
-  --brand-grad: linear-gradient(to right, #d20661, #f2b53b);
-}
-
-/* Shared by all four options (Figma button set) */
+/* Buttons, glow, pagination, nav (Figma button set) */
 .btn-primary:disabled { opacity: 1; background: rgba(255, 255, 255, .12); color: rgba(255, 255, 255, .4); }
 .glow, .tv-glow { opacity: var(--glow-opacity); }
 .pagination {
@@ -1382,110 +1333,6 @@ button.group-row:active { background: rgba(255, 255, 255, .06); }
 }
 .nav-pill .nav-item:not([aria-current]) img, .nav-pill .nav-bell img { opacity: var(--nav-inactive-opacity); }
 
-/* Colour switcher. Phone: small tab on the left edge. Wide screen: bottom-right, outside the device. */
-.palette-switch { position: fixed; z-index: 100; left: 0; top: 50%; transform: translateY(-50%); font-family: var(--font-body); }
-.palette-toggle {
-  display: grid; place-items: center; width: 34px; height: 44px;
-  border: 1px solid rgba(255, 255, 255, .25); border-left: 0; border-radius: 0 14px 14px 0;
-  background: rgba(20, 16, 28, .82); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-}
-.palette-swatch { display: block; width: 18px; height: 18px; flex-shrink: 0; border-radius: 50%; background: var(--cta-bg); box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .85); }
-.palette-panel {
-  position: absolute; left: 42px; top: 50%; transform: translateY(-50%);
-  width: 252px; padding: 14px; border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, .16); background: rgba(20, 16, 28, .96);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, .5);
-  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-  animation: fade-in .15s ease-out;
-}
-.palette-title { font: 600 15px/20px var(--font-title); }
-.palette-note { margin: 2px 0 10px; font: 400 12px/16px var(--font-body); color: var(--tt-text-secondary); }
-.palette-option { display: flex; align-items: center; gap: 12px; width: 100%; padding: 9px 10px; border-radius: 12px; text-align: left; }
-.palette-option:hover { background: rgba(255, 255, 255, .06); }
-.palette-option[aria-checked="true"] { background: rgba(255, 255, 255, .1); }
-.palette-option .palette-swatch { width: 26px; height: 26px; box-shadow: none; }
-.palette-option-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.palette-option-text b { font: 600 14px/18px var(--font-title); }
-.palette-option-text small { font: 400 12px/16px var(--font-body); color: var(--tt-text-secondary); }
-.palette-check { width: 16px; height: 16px; opacity: 0; }
-.palette-option[aria-checked="true"] .palette-check { opacity: 1; }
-@media (min-width: 600px) {
-  .palette-switch { left: auto; right: 20px; top: auto; bottom: 20px; transform: none; }
-  .palette-toggle { width: auto; height: 40px; gap: 8px; padding: 0 14px 0 10px; display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, .25); border-radius: 20px; font: 500 13px/16px var(--font-title); color: #fff; }
-  .palette-panel { left: auto; right: 0; top: auto; bottom: 50px; transform: none; }
-}
-@media (prefers-reduced-motion: reduce) { .palette-panel { animation: none; } }
-.palette-swatch[data-palette="1"] { background: linear-gradient(110deg, #d20661 4%, #f2b53b 96%); }
-.palette-swatch[data-palette="2"] { background: #2f6bff; }
-.palette-swatch[data-palette="3"] { background: linear-gradient(to right, #8a3ffc, #ec4899); }
-.palette-swatch[data-palette="4"] { background: #f2b53b; }
-.palette-toggle-label { display: none; }
-@media (min-width: 600px) { .palette-toggle-label { display: inline; } }
-
-/* Compare buttons in the switcher */
-.palette-compare { width: 100%; margin-top: 10px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .25); font: 600 14px/18px var(--font-title); }
-.palette-compare:hover { background: rgba(255, 255, 255, .06); }
-.palette-compare-pill { display: none; }
-@media (min-width: 600px) {
-  .palette-switch { display: flex; gap: 8px; }
-  .palette-compare-pill {
-    display: block; height: 40px; padding: 0 16px; border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, .25); background: rgba(20, 16, 28, .82);
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-    font: 500 13px/16px var(--font-title); color: #fff;
-  }
-}
-
-/* ---------- Compare view (review only) ---------- */
-.compare {
-  position: fixed; inset: 0; z-index: 200;
-  display: flex; flex-direction: column;
-  padding: 12px 16px 16px; background: #0b0810; color: #fff;
-  animation: fade-in .15s ease-out;
-}
-body.is-comparing { overflow: hidden; }
-body.is-comparing .palette-switch { display: none; }
-.compare-bar { display: flex; align-items: center; gap: 12px; min-height: 44px; }
-.compare-title { flex: 1; min-width: 0; font: 600 17px/22px var(--font-title); white-space: nowrap; }
-.compare-title:focus { outline: none; }
-.compare-nav { display: flex; align-items: center; gap: 4px; min-width: 0; }
-.compare-step, .compare-close { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 20px; background: rgba(255, 255, 255, .08); }
-.compare-step img { width: 20px; height: 20px; }
-.compare-close img { width: 18px; height: 18px; }
-.compare-screen {
-  min-width: 0; max-width: 260px; height: 40px; padding: 0 12px; border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, .2); background: #1c1c1e; color: #fff;
-  font: 500 14px/18px var(--font-title);
-}
-.compare-hint { margin: 4px 0 10px; font: 400 13px/18px var(--font-body); color: var(--tt-text-secondary); }
-.compare-grid {
-  --cols: 4; --gap: 24px; --s: .5;
-  flex: 1; min-height: 0;
-  display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: var(--gap);
-  align-content: start; justify-items: center;
-}
-.compare-cell { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; margin: 0; min-width: 0; }
-.compare-cell figcaption { display: flex; align-items: center; gap: 8px; max-width: 100%; font: 600 14px/18px var(--font-title); white-space: nowrap; }
-.compare-cell figcaption b { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-.compare-use { flex-shrink: 0; padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .25); font: 500 12px/16px var(--font-title); }
-.compare-use:hover { background: rgba(255, 255, 255, .08); }
-.compare-frame {
-  position: relative; overflow: hidden; flex-shrink: 0;
-  width: calc(375px * var(--s)); height: calc(812px * var(--s));
-  border-radius: calc(36px * var(--s)); background: #1a1226;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, .12);
-}
-.compare-frame iframe { position: absolute; left: 0; top: 0; width: 375px; height: 812px; border: 0; transform: scale(var(--s)); transform-origin: 0 0; }
-@media (max-width: 599px) {
-  .compare { padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px calc(env(safe-area-inset-bottom, 0px) + 12px); }
-  .compare-bar { flex-wrap: wrap; gap: 8px; }
-  .compare-nav { order: 3; flex: 1 1 100%; }
-  .compare-screen { flex: 1; max-width: none; }
-  .compare-cell figcaption { gap: 6px; font-size: 12px; }
-  .compare-cell figcaption .palette-swatch { width: 14px; height: 14px; }
-  .compare-use { padding: 3px 8px; font-size: 11px; }
-}
-@media (prefers-reduced-motion: reduce) { .compare { animation: none; } }
 
 /* TV list: opens under the Home chip (C7b). */
 .tv-menu {

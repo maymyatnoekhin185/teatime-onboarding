@@ -112,40 +112,25 @@ Figma draws many Home frames (A4, A5, A6, B7, B8, D1, D4, D5, G1, the joined fam
 | `#notifications` | Notifications | From what happened (TV connected, joined, approvals, "Lisa saw your photo…", waiting for a subscription, the family's activity once you're in one). Unread rows tinted with the option's colour; count badge; ⋯ marks all read; leaving the tab marks them read. Empty → "Nothing yet". Nav bell shows a dot while anything is unread. |
 | `#profile` | My profile | Name, photo (Apple/Google) or initial, families as chips (Owner/Member, open the family), Memories row once they have uploaded anything (bulk or their own pick), Moments grid of their own photos with the count. Settings and photo edit → not built. |
 
-Bottom nav on Home and every tab: Home · Families · + (share) · Notifications · Profile. Same in every colour option: the selected tab is a filled white icon with a white dot, the others are white at 60%, and the gradient "+" is the only colour.
+Bottom nav on Home and every tab: Home · Families · + (share) · Notifications · Profile. The selected tab is a filled white icon with a white dot, the others are white at 60%, and the gradient "+" is the only colour.
 
 ### Review list: "Start as…" presets
 Each fills in the choices a person would have made and opens Home (or its sheet): uploaded everything + TV on · uploading · chose 6 photos + TV on · kept photos, waiting for Mum's TV · skipped everything · shared, no TV · TV on, invite family · joined by PIN · asked to join, waiting · admin with a request · two families, two TVs (one off) · care community, linked · care community, waiting to confirm · 3 free uploads used · 4th upload, locked moment. Everything else is reached by clicking through.
 
-### Colour options (temporary, for the client to choose)
-Source: Figma `13960:30674` ("CTA colour options"). The original pink-orange palette has been removed, leaving four options. Only buttons, links and selected states change. All four share option 2’s background: near-black #0E0C12 with the purple / pink glow at 45%.
+### Colours (Option 3, chosen by the client on 25 Nov)
+The client picked Option 3 "Analogous" from the four options in Figma `13960:30674` ("CTA colour options"). The other three options, the colour switcher and the Compare view have been removed. The Figma source for every colour is the Uplift V2 colour styles on the page "Style Guide + assets for version 2".
 
-| # | Option | Primary button | Text buttons / links | Selected (ticks, badges, chips) | Brand moments ("+", avatar ring) |
-|---|---|---|---|---|---|
-| 1 | Brand gradient (default) | Magenta → gold, white label | Gold | Magenta → gold | Magenta → gold |
-| 2 | Strong blue | #2F6BFF, white label | White / links #5B8CFF | Blue | Magenta → gold |
-| 3 | Analogous | Violet → pink, white label | White / links pink | Violet → pink | Violet → pink |
-| 4 | Logo gold | #F2B53B, dark label #1A1226 | Gold | Gold, dark tick | Magenta → gold |
-
-Option 2 colour rule (Instagram approach): blue = actions only (buttons, links, selected chips); white = navigation and "where am I" (active Home tab as a filled white house with a white dot, other tabs white at 60%, pagination dots white 100% / 40%); logo gradient = brand moments only ("+" share disc, avatar / TV rings, success). So the "+" is the only colour in the nav. In option 2 the empty-state "Share a moment" button and the Memory rings are blue too (white button / gradient rings in options 1, 3 and 4). The bottom nav follows this rule in all four options (selected tab = filled white icon + white dot, others white at 60%); only the pagination dots stay in each option’s accent in options 1, 3 and 4.
-
-"Use email instead" (text button under the phone button on A1 / B1): gold in options 1 and 4, white in option 2, white at 60% in option 3.
-
-All four share the same secondary button (2px white outline at 30%, as on the A1 option screens) and disabled button (grey fill, faded label).
-
-| Scenario | Behaviour |
+| Element | Colour |
 |---|---|
-| Switching | Phone: round swatch tab on the left edge. Wide screen: "Colour N · name" pill bottom-right, outside the phone. Opens a list of the four options; tapping one applies it instantly, closes the list and shows a toast. |
-| Sharing one option | The page address carries `?palette=N`, so a copied link opens on that option (e.g. `…/teatime-onboarding/?palette=3#a1`). |
-| Coming back | This browser remembers the last pick. A link with `?palette=` wins. |
-| Closing the list | Tap outside or Esc; focus returns to the switcher. Arrow keys move between options. |
-| No flash | The option is applied before the page draws. |
-| Compare | "Compare" pill next to the switcher (wide screens) or "Compare all four side by side" in the switcher list (phones). Shows the current screen in all four options: one row of four on a computer, 2 × 2 on a phone, whichever makes the phones bigger. |
-| Moving through screens in Compare | Tap through any phone and all four follow. ‹ › step through the screens in review-list order; the dropdown jumps to any screen. Sheets, typing and photo picks stay in the phone you used. |
-| Choosing from Compare | "Use this" under an option sets it, closes Compare and shows a toast. Close (X) or Esc returns to the same screen with the colour unchanged. |
-| Sharing Compare | The address carries `?compare=1`, so a copied link opens straight into Compare on that screen. |
+| Background | Near-black #0E0C12, purple / pink glow at 45% |
+| Primary button | Violet → pink gradient (#8A3FFC → #EC4899), white label. Disabled: white 12% fill, white 40% label |
+| Secondary button | 2 px white outline at 30%, white label, no fill |
+| Text buttons | White. "Use email instead" (A1 / B1) is white at 60% |
+| Links and accents | Pink #EC4899: inline links, pagination dot, "Add new TV" outline, unread rows (pink at 16%) |
+| Selected (ticks, numbered picks, chips, badges) | Violet → pink gradient, white mark |
+| Brand moments ("+" share disc, avatar / TV rings, empty-state ring) | Violet → pink gradient |
 
-**When the client picks:** copy that option's values into `:root` in `styles.css`, then delete the other `[data-palette]` blocks, the switcher and Compare styles, the "Colour options" and "Compare" blocks in `app.js` (plus `EMBED`) and the head script in `index.html`. Or go back to the old palette with the `before-palettes` tag.
+To go back to the four-option review build, check out the commit before "Colour: Option 3 only" (or the `before-palettes` tag for the original palette).
 
 ### Shortcuts and choices to confirm
 - On screen the auto-made clips are called **Memories**, not "Stories": Stories suggests something you post yourself, as on Instagram / Facebook. Figma’s working name was Stories, with Albums / Collections as alternatives — to confirm.

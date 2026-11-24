@@ -9,15 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script>
-    /* Colour option (review only): ?palette=1-4 in the link wins, then this browser's last pick. Runs before paint so there is no flash. */
-    (function () {
-      var q = new URLSearchParams(location.search), p = q.get("palette"), embed = q.has("embed");
-      if (embed) document.documentElement.classList.add("is-embed"); // one phone inside Compare: never overwrite the viewer's pick
-      try { p = /^[1-4]$/.test(p) ? (embed || localStorage.setItem("teatime.palette", p), p) : localStorage.getItem("teatime.palette"); } catch (e) {}
-      if (/^[2-4]$/.test(p)) document.documentElement.dataset.palette = p;
-    })();
-  </script>
   <script src="home.js" defer></script>
   <script src="app.js" defer></script>
 </head>

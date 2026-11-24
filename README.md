@@ -8,7 +8,7 @@ A clickable prototype of the TeaTime mobile app, built in plain HTML, CSS and JS
 - **Onboarding, seven journeys:** scanned the TV, from an ad, skipped everything, joined with the family PIN, asked to join from the TV's small QR, care community, and after onboarding.
 - **Home and tabs:** moments arriving, the TV list, Memories, Families, Profile and Notifications.
 - **Locked moments and the paywall:** the first 3 uploads are free. From the 4th, a moment arrives locked, and the paywall (F4) unlocks it.
-- **Four colour options:** a switcher and a Compare view to show them side by side.
+- **Colours:** Option 3, violet to pink, chosen by the client. Figma source: the Uplift V2 colour styles.
 
 The full screen map, scenarios and intended behaviour are in [UX.md](UX.md).
 
@@ -24,16 +24,15 @@ Then open http://localhost:5173.
 ## Reviewing
 - **Phone:** open the live link. Screens fill the phone.
 - **Computer:** the app shows as a 375 × 812 phone. A side list jumps to any screen, and its **"Start as…"** presets open ready-made states, such as two families, a care community or a 4th upload that arrives locked.
-- **Colour options:** add `?palette=1`–`4` to a link to open on an option. Add `?compare=1` to see all four side by side.
 - Each screen has its own address (for example `#e2`), so a copied link opens on that screen. A refresh keeps where you were for the session.
 
 ## Files
 | File | What it is |
 |---|---|
 | `index.html` | Every screen's markup |
-| `app.js` | Router, onboarding flow, session state, colour options and Compare |
+| `app.js` | Router, onboarding flow, session state |
 | `home.js` | Home, tabs, families, TVs, moments and the presets |
-| `styles.css` | Styles and the colour tokens for each option |
+| `styles.css` | Styles and colour tokens (Option 3) |
 | `assets/` | Icons, images and glows exported from Figma |
 | `dev-server.mjs` | Local preview server with no dependencies |
 | `UX.md` | UX spec: journeys, screen map, scenarios |
